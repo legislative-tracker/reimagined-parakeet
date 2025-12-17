@@ -5,9 +5,10 @@
       [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      <a mat-list-item routerLink="/">Home</a>
+      <a mat-list-item routerLink="/about">About</a>
+      <a mat-list-item routerLink="/profile">Profile</a>
+      <a mat-list-item routerLink="/myreps">My Representatives</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -21,8 +22,8 @@
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>
       }
-      <span>legislative-tracker</span>
+      <span>CWA Legislative Tracker</span>
     </mat-toolbar>
-    <!-- Add Content Here -->
+    <router-outlet />
   </mat-sidenav-content>
 </mat-sidenav-container>
