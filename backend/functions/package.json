@@ -1,5 +1,5 @@
 {
-  "name": "functions",
+  "name": "legislative-tracker-functions",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
