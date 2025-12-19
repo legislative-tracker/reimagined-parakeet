@@ -21,7 +21,7 @@ module.exports = {
   ignorePatterns: [
     "/lib/**/*", // Ignore built files.
     "/generated/**/*", // Ignore generated files.
-    "api-keys.ts"
+    "api-keys.ts",
   ],
   plugins: ["@typescript-eslint", "import"],
   rules: {
