@@ -116,7 +116,7 @@ const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
     memberships: [
       {
         id: m.chamber,
-        label: "chamber",
+        label: "chamber & district",
         area_id: `${m.districtCode}`,
       },
     ],
