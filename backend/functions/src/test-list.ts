@@ -5,7 +5,7 @@ interface Legislation extends Motion {
   title?: string;
   version?: string;
   sponsors?: {
-    legislatorId: string;
+    legislator_id: string;
     name: string;
   }[];
 }
