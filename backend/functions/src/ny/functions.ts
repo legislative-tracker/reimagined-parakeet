@@ -8,6 +8,11 @@ const options = new Options({
   responseType: "json",
   resolveBodyOnly: true,
   method: "GET",
+  searchParams: {
+    key: APIKEY,
+    full: "true",
+    limit: 1000,
+  },
 });
 
 interface Legislator extends popolo.Person {
@@ -35,13 +40,7 @@ export const updateMembers = async (): Promise<Legislator[]> => {
   const instance = got.extend(options);
 
   try {
-    const res = await instance("members/" + year, {
-      searchParams: {
-        key: APIKEY,
-        full: "true",
-        limit: 1000,
-      },
-    });
+    const res = await instance("members/" + year);
     if (isSuccess<api.FullMember[]>(res)) {
       if (isItemsResponse<api.FullMember[]>(res.result)) {
         const legislators: Legislator[] = res.result.items.map(
