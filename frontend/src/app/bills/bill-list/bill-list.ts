@@ -10,7 +10,7 @@ import { BILLS } from '../bills';
   styleUrl: './bill-list.sass',
 })
 export class BillList {
-  readonly displayedColumns: string[] = ['id', 'title', 'activeVersion', 'publishedDateTime'];
+  readonly displayedColumns: string[] = ['id', 'title', 'version', 'date'];
   sort = viewChild(MatSort);
   dataSource = new MatTableDataSource(BILLS);
 

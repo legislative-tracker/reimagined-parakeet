@@ -7,13 +7,13 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
     <td mat-cell *matCellDef="let bill">{{ bill.title }}</td>
   </ng-container>
-  <ng-container matColumnDef="publishedDateTime">
+  <ng-container matColumnDef="date">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Published</th>
-    <td mat-cell *matCellDef="let bill">{{ bill.publishedDateTime }}</td>
+    <td mat-cell *matCellDef="let bill">{{ bill.date }}</td>
   </ng-container>
-  <ng-container matColumnDef="activeVersion">
+  <ng-container matColumnDef="version">
     <th mat-header-cell *matHeaderCellDef mat-sort-header>Active Version</th>
-    <td mat-cell *matCellDef="let bill">{{ bill.activeVersion }}</td>
+    <td mat-cell *matCellDef="let bill">{{ bill.version }}</td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
