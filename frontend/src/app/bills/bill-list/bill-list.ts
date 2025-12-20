@@ -1,7 +1,8 @@
-import { Component, input, computed, viewChild, effect } from '@angular/core';
+import { Component, inject, input, computed, viewChild, effect } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule, MatSort } from '@angular/material/sort';
-import { BILLS } from '../bills';
+import { BillService } from '../bill-service';
+// import { BILLS } from '../bills';
 
 @Component({
   selector: 'app-bill-list',
@@ -10,15 +11,22 @@ import { BILLS } from '../bills';
   styleUrl: './bill-list.sass',
 })
 export class BillList {
+  protected readonly billService = inject(BillService);
   readonly displayedColumns: string[] = ['id', 'title', 'version', 'date'];
+
   sort = viewChild(MatSort);
-  dataSource = new MatTableDataSource(BILLS);
+  dataSource = computed(() => {
+    const data = this.billService.bills();
+    console.log(data);
+
+    return new MatTableDataSource(data);
+  });
 
   constructor() {
     effect(() => {
       const sortDirective = this.sort();
       if (sortDirective) {
-        this.dataSource.sort = sortDirective;
+        this.dataSource().sort = sortDirective;
       }
     });
   }
