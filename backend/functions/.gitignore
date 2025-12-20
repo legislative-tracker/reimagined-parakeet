@@ -1,4 +1,5 @@
 api-keys.ts
+*.log
 
 # Compiled JavaScript files
 lib/**/*.js
