@@ -10,7 +10,8 @@
 import { setGlobalOptions } from "firebase-functions";
 import { onRequest } from "firebase-functions/https";
 // import * as logger from "firebase-functions/logger";
-import { updateMembers } from "./ny/functions";
+import { updateBills } from "./ny/functions";
+import { testList } from "./test-list";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -28,5 +29,6 @@ import { updateMembers } from "./ny/functions";
 setGlobalOptions({ maxInstances: 10 });
 
 export const helloWorld = onRequest((request, response) => {
-  updateMembers().then((res) => response.send(res));
+  updateBills(testList).then((res) => response.send(res));
 });
+

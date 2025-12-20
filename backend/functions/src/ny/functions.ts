@@ -23,15 +23,15 @@ interface Legislator extends popolo.Person {
   }[];
 }
 
-// interface Legislation extends popolo.Motion {
-//   id: string;
-//   title: string;
-//   version: string;
-//   sponsors?: {
-//     legislatorId: string;
-//     name: string;
-//   }[];
-// }
+interface Legislation extends popolo.Motion {
+  id: string;
+  title?: string;
+  version?: string;
+  sponsors?: {
+    legislatorId: string;
+    name: string;
+  }[];
+}
 
 export const updateMembers = async (): Promise<Legislator[]> => {
   let year: number = new Date().getFullYear();
@@ -61,10 +61,33 @@ export const updateMembers = async (): Promise<Legislator[]> => {
   }
 };
 
-// export const updateBills = async (
-//   billList: Legislation[],
-//   legislatorList: Legislator[]
-// ) => {};
+export const updateBills = async (
+  billList: Legislation[]
+): Promise<Legislation[]> => {
+  const updatedBillList: Legislation[] = [];
+  billList.forEach(async (bill: Legislation) => {
+    const billParts: string[] = bill.id.split("-");
+    const instance = got.extend(options);
+
+    try {
+      const res = await instance(`bills/${billParts.pop()}/${billParts.pop()}`);
+      if (isSuccess<api.Bill>(res)) {
+        if (!isItemsResponse(res.result)) {
+          updatedBillList.push(mapAPIBillToLegislation(res.result));
+        } else {
+          const error: Error = new Error(JSON.stringify(res.result));
+          throw error;
+        }
+      } else {
+        const error: Error = new Error(JSON.stringify(res));
+        throw error;
+      }
+    } catch (error) {
+      throw error;
+    }
+  });
+  return await Promise.all(updatedBillList);
+};
 
 const generateSortName = (p: api.FullMember["person"]): string => {
   let sortName = p.lastName;
@@ -124,20 +147,20 @@ const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
   return legislator;
 };
 
-// const mapAPIBillToLegislation = (b: api.Bill): Legislation => {
-//   const legislation: Legislation = {
-//     id: b.basePrintNoStr,
-//     version: b.activeVersion,
-//     legislative_session_id: `${b.session}`,
-//     organization_id: b.billType.chamber,
-//     title: b.title,
-//     date: b.publishedDateTime,
-//     text: b.summary,
-//     updated_at: new Date().toISOString(),
-//   };
+const mapAPIBillToLegislation = (b: api.Bill): Legislation => {
+  const legislation: Legislation = {
+    id: b.basePrintNoStr,
+    version: b.activeVersion,
+    legislative_session_id: `${b.session}`,
+    organization_id: b.billType.chamber,
+    title: b.title,
+    date: b.publishedDateTime,
+    text: b.summary,
+    updated_at: new Date().toISOString(),
+  };
 
-//   return legislation;
-// };
+  return legislation;
+};
 
 const isSuccess = <T>(v: unknown): v is api.APIResponseSuccess<T> => {
   if ((v as api.APIResponseSuccess<T>).success === true) return true;
