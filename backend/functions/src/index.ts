@@ -18,7 +18,7 @@ import { testList } from "./test-list";
 
 setGlobalOptions({ maxInstances: 10 });
 
-export const helloWorld = onRequest((request, response) => {
-  updateBills(testList).then((res) => response.send(res));
+export const helloWorld = onRequest(async (request, response) => {
+  const res = await updateBills(testList);
+  response.send(res);
 });
-

@@ -61,32 +61,32 @@ export const updateMembers = async (): Promise<Legislator[]> => {
   }
 };
 
-export const updateBills = async (
-  billList: Legislation[]
-): Promise<Legislation[]> => {
-  const updatedBillList: Legislation[] = [];
-  billList.forEach(async (bill: Legislation) => {
-    const billParts: string[] = bill.id.split("-");
-    const instance = got.extend(options);
-
-    try {
-      const res = await instance(`bills/${billParts.pop()}/${billParts.pop()}`);
-      if (isSuccess<api.Bill>(res)) {
-        if (!isItemsResponse(res.result)) {
-          updatedBillList.push(mapAPIBillToLegislation(res.result));
+export const updateBills = async (billList: Legislation[]) => {
+  return await Promise.all(
+    billList.map(async (bill: Legislation) => {
+      const billParts: string[] = bill.id.split("-");
+      const instance = got.extend(options);
+      try {
+        const res = await instance(
+          `bills/${billParts.pop()}/${billParts.pop()}`
+        );
+        if (isSuccess<api.Bill>(res)) {
+          if (!isItemsResponse<api.Bill>(res.result)) {
+            return mapAPIBillToLegislation(res.result);
+          } else {
+            throw new Error(
+              "Expected single bill, but received items response."
+            );
+          }
         } else {
-          const error: Error = new Error(JSON.stringify(res.result));
-          throw error;
+          throw new Error("Fetch failed");
         }
-      } else {
-        const error: Error = new Error(JSON.stringify(res));
+      } catch (error) {
+        console.error(`Error fetching bill ${bill.id}:`, error);
         throw error;
       }
-    } catch (error) {
-      throw error;
-    }
-  });
-  return await Promise.all(updatedBillList);
+    })
+  );
 };
 
 const generateSortName = (p: api.FullMember["person"]): string => {
