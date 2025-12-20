@@ -16,6 +16,7 @@ const options = new Options({
 });
 
 interface Legislator extends popolo.Person {
+  id: string;
   sponsorships?: {
     billId: string;
     version: string;
