@@ -28,5 +28,5 @@ import { updateMembers } from "./ny/functions";
 setGlobalOptions({ maxInstances: 10 });
 
 export const helloWorld = onRequest((request, response) => {
-  updateMembers().then((res) => response.send(res[0]));
+  updateMembers().then((res) => response.send(res));
 });
