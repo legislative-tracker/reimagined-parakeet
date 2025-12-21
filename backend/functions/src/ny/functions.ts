@@ -1,6 +1,6 @@
 import got, { Options } from "got";
 import { APIKEY } from "./api-keys";
-import popolo from "popolo-types";
+import popolo, { Identifier } from "popolo-types";
 import api from "nys-openlegislation-types";
 
 const options = new Options({
@@ -28,10 +28,9 @@ interface Legislation extends popolo.Motion {
   id: string;
   title?: string;
   version?: string;
-  sponsors?: {
-    legislator_id: string;
-    name: string;
-  }[];
+  cosponsors?: {
+    [key: string]: Identifier[];
+  };
 }
 
 export const updateMembers = async (): Promise<Legislator[]> => {
@@ -157,10 +156,29 @@ const mapAPIBillToLegislation = (b: api.Bill): Legislation => {
     title: b.title,
     date: b.publishedDateTime,
     text: b.summary,
+    cosponsors: getCosponsors(b),
     updated_at: new Date().toISOString(),
   };
 
   return legislation;
+};
+
+const getCosponsors = (b: api.Bill): { [key: string]: Identifier[] } => {
+  const cosponsorsByVersion: { [key: string]: Identifier[] } = {};
+  const amendmentVersions: string[] = b.amendmentVersions.items;
+
+  amendmentVersions.forEach((v: string) => {
+    const cosponsors: Identifier[] = [];
+    b.amendments.items[v].coSponsors.items.forEach((c: api.Member) =>
+      cosponsors.push({
+        identifier: generateLegislatorId(c.fullName),
+        scheme: "legislator id",
+      })
+    );
+    cosponsorsByVersion[v === "" ? "Original" : v] = cosponsors;
+  });
+
+  return cosponsorsByVersion;
 };
 
 const isSuccess = <T>(v: unknown): v is api.APIResponseSuccess<T> => {
