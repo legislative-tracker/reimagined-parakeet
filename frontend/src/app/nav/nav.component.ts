@@ -35,12 +35,12 @@ import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 export class NavComponent {
   private router = inject(Router);
   private breakpointObserver = inject(BreakpointObserver);
+  stateControl = new FormControl({ value: 'ny', disabled: true });
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay()
   );
-  stateControl = new FormControl({ value: 'ny', disabled: true });
 
   onSelectionChange(state: string) {
     this.router.navigate([state]);
