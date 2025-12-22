@@ -1,1 +1,21 @@
-<p>{{ state() }}</p>
+<mat-tab-group>
+  <mat-tab label="Bills">
+    <ng-template matTabContent>
+      <app-table [dataSource]="bills()" [columnSource]="billCols"></app-table>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Assemblymembers">
+    <ng-template matTabContent>
+      <app-table
+        [dataSource]="members()"
+        [columnSource]="memberCols"
+        chamber="ASSEMBLY"
+      ></app-table>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Senators">
+    <ng-template matTabContent>
+      <app-table [dataSource]="members()" [columnSource]="memberCols" chamber="SENATE"></app-table>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

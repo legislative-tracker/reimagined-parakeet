@@ -15,6 +15,7 @@ export class BillService {
   // This method fetches legislators filtered by the 'state' field
   getMembersByState(stateCode: string): Observable<any[]> {
     const membersRef = collection(this.firestore, `legislatures/${stateCode}/legislators`);
-    return collectionData(membersRef, { idField: 'id' });
+    const q = query(membersRef, where('chamber', '==', 'ASSEMBLY'));
+    return collectionData(q, { idField: 'id' });
   }
 }
