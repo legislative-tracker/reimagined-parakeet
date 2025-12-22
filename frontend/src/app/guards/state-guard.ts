@@ -12,7 +12,7 @@ export const stateGuard: CanActivateFn = (route, state) => {
   if (implementedStates.includes(stateParam)) {
     return true; // Navigation allowed
   } else {
-    // Redirect to 'ny' if the user tries to enter an unauthorized state
-    return router.createUrlTree(['/ny']);
+    // Redirect to home if the user tries to enter an unauthorized state
+    return router.createUrlTree(['/']);
   }
 };
