@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-view',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './view.scss',
 })
 export class View {
-
+  state = input.required<string>();
 }
