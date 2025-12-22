@@ -1,4 +1,4 @@
-import { Component, input, inject } from '@angular/core';
+import { Component, input, inject, computed } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
@@ -35,4 +35,7 @@ export class View {
     ),
     { initialValue: [] }
   );
+
+  senateMembers = computed(() => this.members().filter((m) => m.chamber === 'SENATE'));
+  assemblyMembers = computed(() => this.members().filter((m) => m.chamber === 'ASSEMBLY'));
 }
