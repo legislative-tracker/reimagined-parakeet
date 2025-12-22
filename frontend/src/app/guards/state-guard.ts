@@ -4,13 +4,12 @@ import { CanActivateFn, Router } from '@angular/router';
 export const stateGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
-  // Define only 'ny' and 'nj' as allowed states
-  const allowedStates = ['ny', 'nj'];
+  const implementedStates = ['ny'];
 
   // Get the 'state' parameter from the current route snapshot
   const stateParam = route.params['state']?.toLowerCase();
 
-  if (allowedStates.includes(stateParam)) {
+  if (implementedStates.includes(stateParam)) {
     return true; // Navigation allowed
   } else {
     // Redirect to 'ny' if the user tries to enter an unauthorized state
