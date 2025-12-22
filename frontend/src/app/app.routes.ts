@@ -32,6 +32,12 @@ export const routes: Routes = [
         canActivate: [stateGuard],
         loadComponent: () => import('./home/view/view').then((m) => m.View),
       },
+      {
+        path: ':state/:id',
+        pathMatch: 'full',
+        canActivate: [stateGuard],
+        loadComponent: () => import('./home/view/view').then((m) => m.View),
+      },
     ],
   },
 
