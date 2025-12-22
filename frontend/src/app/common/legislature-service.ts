@@ -3,7 +3,7 @@ import { Firestore, collection, collectionData, query, where } from '@angular/fi
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
-export class BillService {
+export class LegislatureService {
   private firestore = inject(Firestore);
 
   // This method fetches legislation filtered by the 'state' field

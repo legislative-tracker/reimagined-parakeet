@@ -5,7 +5,7 @@ import { switchMap } from 'rxjs/operators';
 
 import { MatTabsModule } from '@angular/material/tabs';
 
-import { BillService } from '../../common/bill-service';
+import { LegislatureService } from '../../common/legislature-service';
 import { TableComponent } from '../../common/table/table.component';
 import { BILL_COLS, MEMBER_COLS } from './columns';
 
@@ -17,21 +17,21 @@ import { BILL_COLS, MEMBER_COLS } from './columns';
 })
 export class View {
   state = input.required<string>();
-  private billService = inject(BillService);
+  private legislatureService = inject(LegislatureService);
 
   billCols = BILL_COLS;
   memberCols = MEMBER_COLS;
 
   bills = toSignal(
     toObservable(this.state).pipe(
-      switchMap((stateCode) => this.billService.getBillsByState(stateCode))
+      switchMap((stateCode) => this.legislatureService.getBillsByState(stateCode))
     ),
     { initialValue: [] }
   );
 
   members = toSignal(
     toObservable(this.state).pipe(
-      switchMap((stateCode) => this.billService.getMembersByState(stateCode))
+      switchMap((stateCode) => this.legislatureService.getMembersByState(stateCode))
     ),
     { initialValue: [] }
   );
