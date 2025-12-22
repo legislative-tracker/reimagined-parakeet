@@ -3,10 +3,10 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  standalone: true,
+  imports: [RouterOutlet], // Remove NavComponent from here
+  template: '<router-outlet />',
 })
 export class App {
-  protected readonly title = signal('legislative-tracker');
+  protected readonly title = signal('Tracker | CWAPolitical.org');
 }
