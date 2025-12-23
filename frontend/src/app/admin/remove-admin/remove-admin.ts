@@ -39,9 +39,9 @@ export class RemoveAdmin {
 
     try {
       // Call the function we added to AuthService
-      await this.auth.makeUserAdmin(this.email());
+      await this.auth.makeAdminUser(this.email());
 
-      this.snackBar.open(`Success! ${this.email()} is now an Admin.`, 'Close', {
+      this.snackBar.open(`Success! ${this.email()} is no longer an Admin.`, 'Close', {
         duration: 5000,
         panelClass: ['success-snackbar'],
       });
@@ -49,7 +49,7 @@ export class RemoveAdmin {
       this.email.set(''); // Clear the form
     } catch (error: any) {
       console.error(error);
-      this.snackBar.open(error.message || 'Promotion failed.', 'Close', {
+      this.snackBar.open(error.message || 'Demotion failed.', 'Close', {
         duration: 5000,
         panelClass: ['error-snackbar'],
       });

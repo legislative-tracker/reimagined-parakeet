@@ -95,4 +95,22 @@ export class AuthService {
       throw error;
     }
   }
+
+  async makeAdminUser(email: string) {
+    // 1. Reference the callable function by name
+    const removeAdminRole = httpsCallable(this.functions, 'removeAdminRole');
+
+    try {
+      // 2. Trigger the function with the payload
+      // The Cloud Function expects "request.data.email", so we pass { email }
+      const result = await removeAdminRole({ email });
+
+      console.log('Demotion successful:', result.data);
+      return result;
+    } catch (error: any) {
+      console.error('Demotion failed:', error);
+      // Re-throw so the UI component can show the specific error message
+      throw error;
+    }
+  }
 }
