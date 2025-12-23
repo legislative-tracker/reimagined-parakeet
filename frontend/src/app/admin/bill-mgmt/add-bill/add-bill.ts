@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService } from '../../common/auth-service';
-import { ImplementedStatePairs } from '../../common/implemented-states';
+import { AuthService } from '../../../common/auth-service';
+import { ImplementedStatePairs } from '../../../common/implemented-states';
 
 @Component({
   selector: 'app-add-bill',

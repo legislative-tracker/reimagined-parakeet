@@ -35,21 +35,23 @@ export const routes: Routes = [
 
           {
             path: 'addAdmin',
-            loadComponent: () => import('./admin/add-admin/add-admin').then((m) => m.AddAdmin),
+            loadComponent: () =>
+              import('./admin/user-mgmt/add-admin/add-admin').then((m) => m.AddAdmin),
           },
           {
             path: 'removeAdmin',
             loadComponent: () =>
-              import('./admin/remove-admin/remove-admin').then((m) => m.RemoveAdmin),
+              import('./admin/user-mgmt/remove-admin/remove-admin').then((m) => m.RemoveAdmin),
           },
           {
             path: 'addBill',
-            loadComponent: () => import('./admin/add-bill/add-bill').then((m) => m.AddBill),
+            loadComponent: () =>
+              import('./admin/bill-mgmt/add-bill/add-bill').then((m) => m.AddBill),
           },
           {
             path: 'removeBill',
             loadComponent: () =>
-              import('./admin/remove-bill/remove-bill').then((m) => m.RemoveBill),
+              import('./admin/bill-mgmt/remove-bill/remove-bill').then((m) => m.RemoveBill),
           },
         ],
       },
