@@ -1,1 +1,29 @@
-<p>login works!</p>
+<div class="login-wrapper">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Welcome Back</mat-card-title>
+      <mat-card-subtitle>Sign in to your Legislative Tracker</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="hint-text">
+        Use your Google account to access state bill data and your favorites list.
+      </p>
+
+      <button mat-flat-button class="google-login-btn" (click)="loginWithGoogle()">
+        <img src="assets/signin-providers/sign-in-with-google.svg" alt="Google Logo" />
+        <!-- <span>Sign in with Google</span> -->
+      </button>
+
+      @if (authError()) {
+      <div class="error-box">
+        {{ authError() }}
+      </div>
+      }
+    </mat-card-content>
+
+    <mat-card-footer>
+      <p class="footer-note">Secure login powered by Firebase Auth</p>
+    </mat-card-footer>
+  </mat-card>
+</div>

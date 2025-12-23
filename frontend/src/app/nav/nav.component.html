@@ -11,7 +11,11 @@
     <mat-nav-list>
       <a mat-list-item routerLink="/" routerLinkActive="active">Home</a>
       <a mat-list-item routerLink="/about" routerLinkActive="active">About</a>
+      @if (auth.isLoggedIn()) {
       <a mat-list-item routerLink="/profile" routerLinkActive="active">Profile</a>
+      } @if (!auth.isLoggedIn()) {
+      <a mat-list-item routerLink="/login" routerLinkActive="active">Login</a>
+      }
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
