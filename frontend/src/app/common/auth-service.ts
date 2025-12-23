@@ -1,30 +1,67 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Auth, user, signInWithPopup, GoogleAuthProvider, signOut, User } from '@angular/fire/auth';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { switchMap, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private auth = inject(Auth);
+  private firestore = inject(Firestore);
 
-  // 1. Convert the Firebase user observable to a Signal
-  // This will automatically update when the user logs in or out
   private userSignal = toSignal(user(this.auth));
 
-  // 2. Expose specific states for the UI
   currentUser = computed(() => this.userSignal());
   isLoggedIn = computed(() => !!this.userSignal());
 
+  private firebaseUser = toSignal(user(this.auth));
+
+  userProfile = toSignal(
+    toObservable(this.firebaseUser).pipe(
+      switchMap((user) => {
+        if (!user) return of(null);
+
+        const userRef = doc(this.firestore, `users/${user.uid}`);
+        return docData(userRef);
+      })
+    )
+  );
+
   async loginWithGoogle() {
-    try {
-      const provider = new GoogleAuthProvider();
-      return await signInWithPopup(this.auth, provider);
-    } catch (error) {
-      console.error('Login failed', error);
-      return null;
+    const provider = new GoogleAuthProvider();
+    const credential = await signInWithPopup(this.auth, provider);
+
+    if (credential.user) {
+      const userRef = doc(this.firestore, `users/${credential.user.uid}`);
+      // Use { merge: true } to avoid overwriting existing data
+      await setDoc(
+        userRef,
+        {
+          uid: credential.user.uid,
+          email: credential.user.email,
+          displayName: credential.user.displayName,
+          lastLogin: new Date(),
+        },
+        { merge: true }
+      );
     }
+    return credential;
   }
 
   async logout() {
     return await signOut(this.auth);
+  }
+
+  async toggleFavorite(billId: string) {
+    const user = this.firebaseUser();
+    if (!user) return;
+
+    const currentFavorites = (this.userProfile() as any)?.favorites || [];
+    const newFavorites = currentFavorites.includes(billId)
+      ? currentFavorites.filter((id: string) => id !== billId)
+      : [...currentFavorites, billId];
+
+    const userRef = doc(this.firestore, `users/${user.uid}`);
+    return setDoc(userRef, { favorites: newFavorites }, { merge: true });
   }
 }

@@ -1,31 +1,32 @@
 import { Routes } from '@angular/router';
 import { NavComponent } from './nav/nav.component';
 import { stateGuard } from './guards/state-guard';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   {
-    // The empty path acts as the base layout
     path: '',
     component: NavComponent,
     children: [
-      // 1. Default landing page redirects to 'ny'
       {
         path: '',
         pathMatch: 'full',
         redirectTo: 'ny',
       },
-
-      // 2. Static pages (About and Profile)
       {
         path: 'about',
+        pathMatch: 'full',
         loadComponent: () => import('./home/about/about').then((m) => m.About),
       },
       {
+        path: 'login',
+        loadComponent: () => import('./home/login/login').then((m) => m.Login),
+      },
+      {
         path: 'profile',
+        canActivate: [authGuard],
         loadComponent: () => import('./home/profile/profile').then((m) => m.Profile),
       },
-
-      // 3. Dynamic state-based route with the Route Guard
       {
         path: ':state',
         pathMatch: 'full',
@@ -40,7 +41,5 @@ export const routes: Routes = [
       },
     ],
   },
-
-  // 4. Wildcard route to catch everything else
   { path: '**', redirectTo: '' },
 ];
