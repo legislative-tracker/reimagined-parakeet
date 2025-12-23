@@ -20,6 +20,7 @@ jobs:
       # 1. Install and Build Angular (Frontend)
       - name: Install and Build
         run: |
+          cd frontend
           npm ci
           npm run build
 
