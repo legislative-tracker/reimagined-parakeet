@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { NavComponent } from './nav/nav.component';
 import { stateGuard } from './guards/state-guard';
 import { authGuard } from './guards/auth-guard';
+import { adminGuard } from './guards/admin-guard';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,27 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./home/login/login').then((m) => m.Login),
+      },
+      {
+        path: 'admin',
+        canActivate: [adminGuard],
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () => import('./admin/admin/admin').then((m) => m.Admin),
+          },
+
+          {
+            path: 'addAdmin',
+            loadComponent: () => import('./admin/add-admin/add-admin').then((m) => m.AddAdmin),
+          },
+          {
+            path: 'removeAdmin',
+            loadComponent: () =>
+              import('./admin/remove-admin/remove-admin').then((m) => m.RemoveAdmin),
+          },
+        ],
       },
       {
         path: 'profile',

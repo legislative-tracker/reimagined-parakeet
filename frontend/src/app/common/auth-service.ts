@@ -2,13 +2,14 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { Auth, user, signInWithPopup, GoogleAuthProvider, signOut, User } from '@angular/fire/auth';
 import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { switchMap, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private auth = inject(Auth);
   private firestore = inject(Firestore);
-
+  private functions = inject(Functions);
   private userSignal = toSignal(user(this.auth));
 
   currentUser = computed(() => this.userSignal());
@@ -75,5 +76,23 @@ export class AuthService {
 
     const userRef = doc(this.firestore, `users/${user.uid}`);
     return setDoc(userRef, { favorites: newFavorites }, { merge: true });
+  }
+
+  async makeUserAdmin(email: string) {
+    // 1. Reference the callable function by name
+    const addAdminRole = httpsCallable(this.functions, 'addAdminRole');
+
+    try {
+      // 2. Trigger the function with the payload
+      // The Cloud Function expects "request.data.email", so we pass { email }
+      const result = await addAdminRole({ email });
+
+      console.log('Promotion successful:', result.data);
+      return result;
+    } catch (error: any) {
+      console.error('Promotion failed:', error);
+      // Re-throw so the UI component can show the specific error message
+      throw error;
+    }
   }
 }

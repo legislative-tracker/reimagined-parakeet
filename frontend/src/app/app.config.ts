@@ -14,6 +14,7 @@ import {
   UserTrackingService,
 } from '@angular/fire/analytics';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getFunctions, provideFunctions } from '@angular/fire/functions';
 
 import { routes } from './app.routes';
 import { env } from '../env/dev';
@@ -29,5 +30,6 @@ export const appConfig: ApplicationConfig = {
     ScreenTrackingService,
     UserTrackingService,
     provideFirestore(() => getFirestore()),
+    provideFunctions(() => getFunctions()),
   ],
 };
