@@ -1,10 +1,11 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { ImplementedStatesList } from '../common/implemented-states';
 
 export const stateGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
-  const implementedStates = ['ny'];
+  const implementedStates = ImplementedStatesList;
 
   // Get the 'state' parameter from the current route snapshot
   const stateParam = route.params['state']?.toLowerCase();

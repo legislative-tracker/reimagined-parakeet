@@ -120,3 +120,45 @@ export const removeAdminRole = onCall(async (request) => {
     throw new HttpsError("internal", "Error removing admin claim.");
   }
 });
+
+/**
+ * CALLABLE FUNCTION: Adds or Updates a Bill in a specific state.
+ */
+export const addBill = onCall(async (request) => {
+  // Security Check: Only admins can add bills manually
+  if (request.auth?.token.admin !== true) {
+    throw new HttpsError(
+      "permission-denied",
+      "Only admins can add new legislation."
+    );
+  }
+
+  const { state, bill } = request.data;
+
+  // Input Validation
+  if (!state || !bill || !bill.id) {
+    throw new HttpsError(
+      "invalid-argument",
+      "Request must include 'state', 'bill' object, and 'bill.id'."
+    );
+  }
+
+  try {
+    // Path: legislatures/{state}/legislation/{billId}
+    const billRef = db
+      .collection(`legislatures/${state}/legislation`)
+      .doc(bill.id);
+
+    // We use set({ merge: true }) so if the bill exists, it updates it;
+    // if not, it creates it.
+    await billRef.set(bill, { merge: true });
+
+    return {
+      message: `Success! Bill ${bill.id} added to ${state}.`,
+      path: billRef.path,
+    };
+  } catch (error) {
+    console.error("Error adding bill:", error);
+    throw new HttpsError("internal", "Failed to save bill to database.");
+  }
+});
