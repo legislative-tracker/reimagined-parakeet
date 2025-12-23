@@ -130,4 +130,17 @@ export class AuthService {
       throw error;
     }
   }
+
+  async removeBill(state: string, billId: string) {
+    const removeBill = httpsCallable(this.functions, 'removeBill');
+
+    try {
+      const result = await removeBill({ state, billId });
+      console.log('Bill created:', result.data);
+      return result;
+    } catch (error) {
+      console.error('Failed to create bill:', error);
+      throw error;
+    }
+  }
 }

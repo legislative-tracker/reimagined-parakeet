@@ -46,6 +46,11 @@ export const routes: Routes = [
             path: 'addBill',
             loadComponent: () => import('./admin/add-bill/add-bill').then((m) => m.AddBill),
           },
+          {
+            path: 'removeBill',
+            loadComponent: () =>
+              import('./admin/remove-bill/remove-bill').then((m) => m.RemoveBill),
+          },
         ],
       },
       {

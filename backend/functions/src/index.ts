@@ -162,3 +162,53 @@ export const addBill = onCall(async (request) => {
     throw new HttpsError("internal", "Failed to save bill to database.");
   }
 });
+
+/**
+ * CALLABLE FUNCTION: Deletes a Bill from a specific state.
+ */
+export const removeBill = onCall(async (request) => {
+  // Security Check: Only admins can delete bills
+  if (request.auth?.token.admin !== true) {
+    throw new HttpsError(
+      "permission-denied",
+      "Only admins can delete legislation."
+    );
+  }
+
+  const { state, billId } = request.data;
+
+  // Input Validation
+  if (!state || !billId) {
+    throw new HttpsError(
+      "invalid-argument",
+      "Request must include 'state' and 'billId'."
+    );
+  }
+
+  try {
+    // Delete from Firestore
+    // Path: legislatures/{state}/legislation/{billId}
+    const billRef = db
+      .collection(`legislatures/${state}/legislation`)
+      .doc(billId);
+
+    // Check if it exists first (optional, but good for reporting)
+    const doc = await billRef.get();
+    if (!doc.exists) {
+      throw new HttpsError("not-found", "Bill not found.");
+    }
+
+    await billRef.delete();
+
+    return {
+      message: `Success! Bill ${billId} removed from ${state}.`,
+      id: billId,
+    };
+  } catch (error: any) {
+    // Re-throw specific HTTP errors we created above
+    if (error instanceof HttpsError) throw error;
+
+    console.error("Error deleting bill:", error);
+    throw new HttpsError("internal", "Failed to delete bill from database.");
+  }
+});
