@@ -8,8 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService } from '../../../common/auth-service';
-import { ImplementedStatePairs } from '../../../common/implemented-states';
+import { AuthService } from '@common/auth-service';
+import { ImplementedStatePairs } from '@common/implemented-states';
 
 interface SimpleBill {
   id: string;

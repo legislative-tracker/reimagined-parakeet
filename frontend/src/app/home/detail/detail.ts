@@ -6,8 +6,8 @@ import { combineLatest } from 'rxjs';
 
 import { MatTabsModule } from '@angular/material/tabs';
 
-import { LegislatureService } from '../../common/legislature-service';
-import { TableComponent } from '../../common/table/table.component';
+import { LegislatureService } from '@common/legislature-service';
+import { TableComponent } from '@common/table/table.component';
 import { COSPONSOR_COLS, SPONSORSHIP_COLS } from './columns';
 
 @Component({

@@ -5,8 +5,8 @@ import { switchMap } from 'rxjs/operators';
 
 import { MatTabsModule } from '@angular/material/tabs';
 
-import { LegislatureService } from '../../common/legislature-service';
-import { TableComponent } from '../../common/table/table.component';
+import { LegislatureService } from '@common/legislature-service';
+import { TableComponent } from '@common/table/table.component';
 import { BILL_COLS, MEMBER_COLS } from './columns';
 
 @Component({
