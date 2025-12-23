@@ -21,7 +21,7 @@ export class Login {
 
     if (result) {
       // Navigate to the dashboard or previously requested route
-      this.router.navigate(['/ny']);
+      this.router.navigate(['/profile']);
     } else {
       this.authError.set('Unable to authenticate with Google. Please try again.');
     }

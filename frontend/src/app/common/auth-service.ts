@@ -14,6 +14,18 @@ export class AuthService {
   currentUser = computed(() => this.userSignal());
   isLoggedIn = computed(() => !!this.userSignal());
 
+  // Fetch the claims from the ID Token
+  isAdmin = toSignal(
+    toObservable(this.userSignal).pipe(
+      switchMap(async (user) => {
+        if (!user) return false;
+        const token = await user.getIdTokenResult();
+        return !!token.claims['admin'];
+      })
+    ),
+    { initialValue: false }
+  );
+
   private firebaseUser = toSignal(user(this.auth));
 
   userProfile = toSignal(
