@@ -36,7 +36,7 @@ export const routes: Routes = [
         path: ':state/:id',
         pathMatch: 'full',
         canActivate: [stateGuard],
-        loadComponent: () => import('./home/view/view').then((m) => m.View),
+        loadComponent: () => import('./home/detail/detail').then((m) => m.Detail),
       },
     ],
   },
