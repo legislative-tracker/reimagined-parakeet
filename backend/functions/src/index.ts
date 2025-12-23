@@ -12,6 +12,7 @@ const auth = getAuth(); // Initialize Auth
 
 setGlobalOptions({ maxInstances: 10 });
 
+// test function
 export const helloWorld = onRequest(async (request, response) => {
   const members = await updateMembers();
   const bills = await updateBills(testList);
