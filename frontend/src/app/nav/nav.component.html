@@ -8,18 +8,45 @@
     [opened]="(isHandset$ | async) === false"
   >
     <mat-toolbar>Menu</mat-toolbar>
-    <mat-form-field>
-      <mat-label>Choose a State</mat-label>
-      <mat-select [formControl]="stateControl" (selectionChange)="onSelectionChange($event.value)">
-        <mat-option value="nj">New Jersey</mat-option>
-        <mat-option value="ny">New York</mat-option>
-      </mat-select>
-    </mat-form-field>
     <mat-nav-list>
-      <a mat-list-item routerLink="/">Home</a>
-      <a mat-list-item routerLink="/about">About</a>
-      <a mat-list-item routerLink="/profile">Profile</a>
-      <a mat-list-item routerLink="/myreps">My Representatives</a>
+      <a mat-list-item routerLink="/" routerLinkActive="active">
+        <mat-icon matListItemIcon>home</mat-icon>
+        <span matListItemTitle>Home</span>
+      </a>
+      <a mat-list-item routerLink="/about" routerLinkActive="active">
+        <mat-icon matListItemIcon>info</mat-icon>
+        <span matListItemTitle>About</span>
+      </a>
+
+      @if (auth.isLoggedIn()) {
+      <a mat-list-item routerLink="/profile" routerLinkActive="active">
+        <mat-icon matListItemIcon>person</mat-icon>
+        <span matListItemTitle>Profile</span>
+      </a>
+
+      @if (auth.isAdmin()) {
+      <a mat-list-item routerLink="/admin" routerLinkActive="active">
+        <mat-icon matListItemIcon>settings</mat-icon>
+        <span matListItemTitle>Admin</span>
+      </a>
+      }
+
+      <div class="spacer"></div>
+
+      <a mat-list-item (click)="handleLogout()">
+        <mat-icon matListItemIcon>logout</mat-icon>
+        <span matListItemTitle color="warn">Log Out</span>
+      </a>
+
+      } @if (!auth.isLoggedIn()) {
+
+      <div class="spacer"></div>
+
+      <a mat-list-item routerLink="/login" routerLinkActive="active">
+        <mat-icon matListItemIcon>login</mat-icon>
+        <span matListItemTitle>Login</span>
+      </a>
+      }
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

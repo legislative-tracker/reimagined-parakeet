@@ -1,0 +1,37 @@
+name: Deploy to Preview Channel
+on:
+  pull_request:
+    # Trigger when a PR is opened, updated, or reopened against main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build_and_preview:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # 1. Install and Build Angular (Frontend)
+      - name: Install and Build
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      # 2. Deploy to Preview Channel
+      - name: Deploy to Firebase Hosting Preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}"
+          projectId: tracker-cwapolitical-org
+          # Point this to your actual output folder (check your angular.json)
+          # Often 'dist/your-app-name/browser' for Angular 17+
+          channelId: "pr-${{ github.event.number }}"
+          expires: 7d

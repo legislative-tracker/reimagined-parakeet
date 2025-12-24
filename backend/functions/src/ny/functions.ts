@@ -17,6 +17,9 @@ const options = new Options({
 
 interface Legislator extends popolo.Person {
   id: string;
+  chamber?: string;
+  district?: string;
+  party?: string;
   sponsorships?: {
     billId: string;
     version: string;
@@ -117,6 +120,8 @@ const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
     sort_name: generateSortName(m.person),
     email: m.person.email,
     image: m.imgName,
+    chamber: m.chamber,
+    district: `${m.districtCode}`,
     identifiers: [
       {
         identifier: m.shortName,

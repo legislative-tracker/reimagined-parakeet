@@ -1,9 +1,7 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -11,38 +9,36 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
+import { AuthService } from '../common/auth-service';
 
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
-  styleUrl: './nav.component.css',
+  styleUrl: './nav.component.scss',
   imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
     MatToolbarModule,
     MatButtonModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
     AsyncPipe,
-    RouterOutlet,
-    RouterLinkWithHref,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavComponent {
+  auth = inject(AuthService);
   private router = inject(Router);
   private breakpointObserver = inject(BreakpointObserver);
-  stateControl = new FormControl({ value: 'ny', disabled: true });
+
+  async handleLogout() {
+    await this.auth.logout();
+    this.router.navigate(['/login']);
+  }
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((result) => result.matches),
     shareReplay()
   );
-
-  onSelectionChange(state: string) {
-    this.router.navigate([state]);
-  }
 }

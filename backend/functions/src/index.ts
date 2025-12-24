@@ -1,47 +1,215 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
 import { setGlobalOptions } from "firebase-functions";
-import { onRequest } from "firebase-functions/https";
+import { onRequest, onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
 import { initializeApp } from "firebase-admin/app";
-// import * as logger from "firebase-functions/logger";
+import { getAuth } from "firebase-admin/auth";
 import { updateBills, updateMembers } from "./ny/functions";
 import { testList } from "./test-list";
 
 initializeApp();
 const db = getFirestore();
-
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+const auth = getAuth(); // Initialize Auth
 
 setGlobalOptions({ maxInstances: 10 });
 
+// test function
 export const helloWorld = onRequest(async (request, response) => {
   const members = await updateMembers();
   const bills = await updateBills(testList);
 
-  bills.forEach(
-    async (bill) =>
-      await db
-        .collection("legislatures/ny/legislation")
-        .doc(bill.id)
-        .set(bill, { merge: true })
+  const billPromises = bills.map((bill) =>
+    db
+      .collection("legislatures/ny/legislation")
+      .doc(bill.id)
+      .set(bill, { merge: true })
   );
 
-  members.forEach(
-    async (member) =>
-      await db
-        .collection("legislatures/ny/legislators")
-        .doc(member.id)
-        .set(member, { merge: true })
+  const memberPromises = members.map((member) =>
+    db
+      .collection("legislatures/ny/legislators")
+      .doc(member.id)
+      .set(member, { merge: true })
   );
+
+  await Promise.all([...billPromises, ...memberPromises]);
 
   response.send("Update Complete!");
+});
+
+/**
+ * CALLABLE FUNCTION: Promotes a user to Admin status.
+ */
+export const addAdminRole = onCall(async (request) => {
+  if (request.auth?.token.admin !== true) {
+    throw new HttpsError(
+      "permission-denied",
+      "Only admins can promote other users."
+    );
+  }
+
+  const targetEmail = request.data.email;
+
+  if (!targetEmail) {
+    throw new HttpsError(
+      "invalid-argument",
+      "You must provide an email address."
+    );
+  }
+
+  try {
+    // 2. Look up the user by email
+    const user = await auth.getUserByEmail(targetEmail);
+
+    // 3. Set Custom Claim: { admin: true }
+    await auth.setCustomUserClaims(user.uid, { admin: true });
+
+    return {
+      message: `Success! ${targetEmail} has been granted admin privileges.`,
+    };
+  } catch (error: any) {
+    if (error.code === "auth/user-not-found") {
+      throw new HttpsError(
+        "not-found",
+        "No user found with that email address."
+      );
+    }
+    throw new HttpsError("internal", "Error setting admin claim.");
+  }
+});
+
+/**
+ * CALLABLE FUNCTION: Removes Admin status from a user.
+ */
+export const removeAdminRole = onCall(async (request) => {
+  if (request.auth?.token.admin !== true) {
+    throw new HttpsError("permission-denied", "Only admins can demote users.");
+  }
+
+  const targetEmail = request.data.email;
+
+  if (!targetEmail) {
+    throw new HttpsError(
+      "invalid-argument",
+      "You must provide an email address."
+    );
+  }
+
+  // This prevents an admin from accidentally locking themselves out
+  if (request.auth.token.email === targetEmail) {
+    throw new HttpsError(
+      "failed-precondition",
+      "You cannot demote yourself. Ask another admin to do it."
+    );
+  }
+
+  try {
+    const user = await auth.getUserByEmail(targetEmail);
+
+    // Setting it to null effectively deletes the claim
+    await auth.setCustomUserClaims(user.uid, { admin: null });
+
+    return {
+      message: `Success! ${targetEmail} is no longer an admin.`,
+    };
+  } catch (error: any) {
+    if (error.code === "auth/user-not-found") {
+      throw new HttpsError(
+        "not-found",
+        "No user found with that email address."
+      );
+    }
+    throw new HttpsError("internal", "Error removing admin claim.");
+  }
+});
+
+/**
+ * CALLABLE FUNCTION: Adds or Updates a Bill in a specific state.
+ */
+export const addBill = onCall(async (request) => {
+  // Security Check: Only admins can add bills manually
+  if (request.auth?.token.admin !== true) {
+    throw new HttpsError(
+      "permission-denied",
+      "Only admins can add new legislation."
+    );
+  }
+
+  const { state, bill } = request.data;
+
+  // Input Validation
+  if (!state || !bill || !bill.id) {
+    throw new HttpsError(
+      "invalid-argument",
+      "Request must include 'state', 'bill' object, and 'bill.id'."
+    );
+  }
+
+  try {
+    // Path: legislatures/{state}/legislation/{billId}
+    const billRef = db
+      .collection(`legislatures/${state}/legislation`)
+      .doc(bill.id);
+
+    // We use set({ merge: true }) so if the bill exists, it updates it;
+    // if not, it creates it.
+    await billRef.set(bill, { merge: true });
+
+    return {
+      message: `Success! Bill ${bill.id} added to ${state}.`,
+      path: billRef.path,
+    };
+  } catch (error) {
+    console.error("Error adding bill:", error);
+    throw new HttpsError("internal", "Failed to save bill to database.");
+  }
+});
+
+/**
+ * CALLABLE FUNCTION: Deletes a Bill from a specific state.
+ */
+export const removeBill = onCall(async (request) => {
+  // Security Check: Only admins can delete bills
+  if (request.auth?.token.admin !== true) {
+    throw new HttpsError(
+      "permission-denied",
+      "Only admins can delete legislation."
+    );
+  }
+
+  const { state, billId } = request.data;
+
+  // Input Validation
+  if (!state || !billId) {
+    throw new HttpsError(
+      "invalid-argument",
+      "Request must include 'state' and 'billId'."
+    );
+  }
+
+  try {
+    // Delete from Firestore
+    // Path: legislatures/{state}/legislation/{billId}
+    const billRef = db
+      .collection(`legislatures/${state}/legislation`)
+      .doc(billId);
+
+    // Check if it exists first (optional, but good for reporting)
+    const doc = await billRef.get();
+    if (!doc.exists) {
+      throw new HttpsError("not-found", "Bill not found.");
+    }
+
+    await billRef.delete();
+
+    return {
+      message: `Success! Bill ${billId} removed from ${state}.`,
+      id: billId,
+    };
+  } catch (error: any) {
+    // Re-throw specific HTTP errors we created above
+    if (error instanceof HttpsError) throw error;
+
+    console.error("Error deleting bill:", error);
+    throw new HttpsError("internal", "Failed to delete bill from database.");
+  }
 });

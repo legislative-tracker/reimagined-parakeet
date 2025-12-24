@@ -1,17 +1,13 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "cli": {
-    "packageManager": "npm",
-    "analytics": "e14d3f13-4f90-41d6-8429-70fc5bcd5f67"
-  },
   "newProjectRoot": "projects",
   "projects": {
     "legislative-tracker": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "sass"
+          "style": "scss"
         }
       },
       "root": "",
@@ -23,7 +19,7 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "sass",
+            "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
@@ -31,9 +27,7 @@
               }
             ],
             "styles": [
-              "src/styles/_theme.scss",
-              "src/custom-theme.scss",
-              "src/styles.sass"
+              "src/styles.scss"
             ]
           },
           "configurations": {
@@ -72,10 +66,29 @@
           },
           "defaultConfiguration": "development"
         },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
         "test": {
-          "builder": "@angular/build:unit-test"
+          "builder": "@angular/build:karma",
+          "options": {
+            "tsConfig": "tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.scss"
+            ]
+          }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "5982e428-3e7f-4c25-ab16-947e892ee50e"
   }
 }

@@ -1,0 +1,25 @@
+<mat-tab-group>
+  <mat-tab label="Bills">
+    <ng-template matTabContent>
+      <app-table [dataSource]="bills()" [columnSource]="billCols" [state]="state()"></app-table>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Assemblymembers">
+    <ng-template matTabContent>
+      <app-table
+        [dataSource]="assemblyMembers()"
+        [columnSource]="memberCols"
+        [state]="state()"
+      ></app-table>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="Senators">
+    <ng-template matTabContent>
+      <app-table
+        [dataSource]="senateMembers()"
+        [columnSource]="memberCols"
+        [state]="state()"
+      ></app-table>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

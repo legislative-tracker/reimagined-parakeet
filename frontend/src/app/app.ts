@@ -1,12 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { NavComponent } from './nav/nav.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [NavComponent],
-  templateUrl: './app.html',
-  styleUrl: './app.sass'
+  standalone: true,
+  imports: [RouterOutlet], // Remove NavComponent from here
+  template: '<router-outlet />',
 })
 export class App {
-  protected readonly title = signal('Legislative Tracker | CWAPolitical.org');
+  protected readonly title = signal('Tracker | CWAPolitical.org');
 }
