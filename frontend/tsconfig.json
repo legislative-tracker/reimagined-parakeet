@@ -5,7 +5,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@common/*": ["src/app/common/*"]
+      "@common/*": ["src/app/common/*"],
+      "@models/*": ["src/app/models/*"]
     },
     "strict": true,
     "noImplicitOverride": true,

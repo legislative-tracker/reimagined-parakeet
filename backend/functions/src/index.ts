@@ -3,12 +3,17 @@ import { onRequest, onCall, HttpsError } from "firebase-functions/v2/https";
 import { getFirestore } from "firebase-admin/firestore";
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
+import { defineSecret } from "firebase-functions/params";
+import got, { Options } from "got";
 import { updateBills, updateMembers } from "./ny/functions";
 import { testList } from "./test-list";
+import { Person } from "popolo-types";
+import { Legislator } from "@models/legislator";
+import { GoogleGeocodeingResponse } from "@models/geocode";
 
 initializeApp();
 const db = getFirestore();
-const auth = getAuth(); // Initialize Auth
+const auth = getAuth();
 
 setGlobalOptions({ maxInstances: 10 });
 
@@ -213,3 +218,215 @@ export const removeBill = onCall(async (request) => {
     throw new HttpsError("internal", "Failed to delete bill from database.");
   }
 });
+
+/**
+ * CALLABLE FUNCTION: fetches user's legislators & districts on formSubmit
+ */
+interface OpenStatesResponse<T> {
+  results: T[];
+}
+
+interface OpenStatesPerson extends Person {
+  id: string;
+  name: string;
+  party: string;
+  current_role: {
+    title: string;
+    org_classification: string;
+    district: string;
+    division_id: string;
+  };
+  jurisdiction: {
+    id: string;
+    name: string;
+    classification: string;
+  };
+  given_name: string;
+  family_name: string;
+  image: string;
+  email: string;
+  birth_date: string;
+  death_date: string;
+  extras: {
+    [key: string]: string;
+  };
+  created_at: string;
+  updated_at: string;
+  openstates_url: string;
+}
+
+const isOpenStatesResponseSuccess = <T>(
+  v: unknown
+): v is OpenStatesResponse<T> => {
+  if ((v as OpenStatesResponse<T>).results) return true;
+  return false;
+};
+
+const openStatesKey = defineSecret("OPENSTATES_KEY");
+const googleMapsKey = defineSecret("GOOGLE_MAPS_KEY");
+
+export const fetchUserReps = onCall(
+  { secrets: [openStatesKey, googleMapsKey] },
+  async (request) => {
+    console.log("Incoming Data:", request.data);
+
+    const address = request.data.address;
+
+    if (!address) {
+      throw new HttpsError(
+        "invalid-argument",
+        `Address is required. Received: ${JSON.stringify(request.data)}`
+      );
+    }
+
+    const geocoding = await getGeocode(address, googleMapsKey.value());
+
+    if (!geocoding) {
+      throw new HttpsError("not-found", "geocoding not found");
+    }
+
+    const options = new Options({
+      prefixUrl: "https://v3.openstates.org/",
+      responseType: "json",
+      resolveBodyOnly: true,
+      searchParams: {
+        apikey: openStatesKey.value(),
+        lat: geocoding.lat,
+        lng: geocoding.lng,
+      },
+    });
+
+    let userId = request.auth?.uid || "IWrLUtKusOMG6UxvEMxuu5s0lz03";
+
+    if (!userId) {
+      throw new HttpsError("invalid-argument", "You must provide a user id.");
+    }
+
+    const instance = got.extend(options);
+
+    try {
+      const res = await instance("people.geo");
+
+      if (isOpenStatesResponseSuccess<OpenStatesPerson>(res)) {
+        const legislators = {
+          federal: res.results
+            .filter(
+              (p: OpenStatesPerson) =>
+                p.jurisdiction.classification === "country"
+            )
+            .map((person: OpenStatesPerson) =>
+              mapOpenStatesPersonToLegislator(person)
+            ),
+          state: res.results
+            .filter(
+              (p: OpenStatesPerson) => p.jurisdiction.classification === "state"
+            )
+            .map((person: OpenStatesPerson) =>
+              mapOpenStatesPersonToLegislator(person)
+            ),
+        };
+
+        const districts = {
+          federal: legislators.federal.filter((p) => p.chamber === "House")[0]
+            .district,
+          state: {
+            assembly: legislators.state.filter(
+              (p) => p.chamber === "Assembly"
+            )[0].district,
+            senate: legislators.state.filter((p) => p.chamber === "Senate")[0]
+              .district,
+          },
+        };
+
+        await updateUserProfile(userId, {
+          legislators: legislators,
+          districts: districts,
+        });
+
+        return { legislators, districts };
+      } else {
+        console.error("OpenStates returned invalid format:", res);
+        throw new HttpsError("unavailable", "Failed to parse legislator data.");
+      }
+    } catch (error: any) {
+      console.error("error fetching user representatives", error);
+      throw new HttpsError("unknown", "Failed to fetch user representatives");
+    }
+  }
+);
+
+const updateUserProfile = async (userId: string, data: any) => {
+  const db = getFirestore();
+  const userRef = db.collection("users").doc(userId);
+
+  await userRef.set(data, { merge: true });
+};
+
+const mapOpenStatesPersonToLegislator = (
+  person: OpenStatesPerson
+): Legislator => {
+  const chamber: string = chamberMapper(
+    person.jurisdiction.classification,
+    person.current_role.org_classification
+  );
+
+  return {
+    id: person.name.replaceAll(" ", "-"),
+    honorific_prefix: person.current_role.title,
+    name: person.name,
+    party: person.party,
+    chamber: chamber,
+    district: person.current_role.district,
+  };
+};
+
+interface ChamberMapping {
+  [key: string]: {
+    [key: string]: string;
+  };
+}
+
+const chamberMapping: ChamberMapping = {
+  country: {
+    upper: "Senate",
+    lower: "House",
+  },
+  state: {
+    upper: "Senate",
+    lower: "Assembly",
+  },
+};
+
+const chamberMapper = (jurisdiction: string, org: string): string => {
+  return chamberMapping[jurisdiction][org];
+};
+
+const isGoogleGeocodingResponseSuccess = (
+  v: unknown
+): v is GoogleGeocodeingResponse => {
+  if ((v as GoogleGeocodeingResponse).results) return true;
+  return false;
+};
+
+const getGeocode = async (address: string, googleMapsKey: string) => {
+  const options = {
+    prefixUrl: "https://maps.googleapis.com/maps/api/geocode", // Changed new Options to plain object (see tip below)
+    responseType: "json" as const, // 'as const' fixes strict typing for got
+    resolveBodyOnly: true,
+    searchParams: {
+      key: googleMapsKey,
+      address: address, // 'got' automatically encodes this, double encoding breaks things!
+    },
+  };
+
+  const instance = got.extend(options);
+
+  // No try/catch needed here
+  const res = await instance("json");
+
+  if (isGoogleGeocodingResponseSuccess(res)) {
+    return res.results[0].geometry.location;
+  }
+
+  throw new HttpsError("not-found", "Error finding geocoding", res);
+};

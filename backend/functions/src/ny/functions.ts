@@ -1,28 +1,9 @@
 import got, { Options } from "got";
-import popolo, { Identifier } from "popolo-types";
+import { Identifier } from "popolo-types";
 import api from "nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
-
-interface Legislator extends popolo.Person {
-  id: string;
-  chamber?: string;
-  district?: string;
-  party?: string;
-  sponsorships?: {
-    billId: string;
-    version: string;
-    name: string;
-  }[];
-}
-
-interface Legislation extends popolo.Motion {
-  id: string;
-  title?: string;
-  version?: string;
-  cosponsors?: {
-    [key: string]: Identifier[];
-  };
-}
+import { Legislator } from "@models/legislator";
+import { Legislation } from "@models/legislation";
 
 export const updateMembers = async (): Promise<Legislator[]> => {
   const options = new Options({
