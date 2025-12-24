@@ -1,7 +1,7 @@
 import got, { Options } from "got";
-import { APIKEY } from "./api-keys";
 import popolo, { Identifier } from "popolo-types";
 import api from "nys-openlegislation-types";
+import { defineSecret } from "firebase-functions/params";
 
 const options = new Options({
   prefixUrl: "https://legislation.nysenate.gov/api/3/",
@@ -9,7 +9,7 @@ const options = new Options({
   resolveBodyOnly: true,
   method: "GET",
   searchParams: {
-    key: APIKEY,
+    key: defineSecret("NY_SENATE_KEY").value(),
     full: "true",
     limit: 1000,
   },
