@@ -17,7 +17,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
 
 import { routes } from './app.routes';
-import { env } from '../env/dev';
+import { env } from '../environments/prod';
 
 export const appConfig: ApplicationConfig = {
   providers: [

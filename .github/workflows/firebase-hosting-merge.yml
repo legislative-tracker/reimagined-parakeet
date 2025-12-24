@@ -4,15 +4,29 @@ on:
     branches:
       - main
 jobs:
-  build_and_deploy:
+  build_tag_and_deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0" # Required for version calculation
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
+
+      # We set DRY_RUN: true so it calculates the version but doesn't tag yet.
+      - name: Calculate Next Version
+        id: version_calc
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+          DRY_RUN: true
 
       - name: Install and Build Functions
         run: |
@@ -20,11 +34,23 @@ jobs:
           npm ci
           npm run build
 
+      # We pass the calculated tag into the build command as an environment variable.
       - name: Install and Build Angular
+        env:
+          APP_VERSION: ${{ steps.version_calc.outputs.new_tag }}
         run: |
           cd frontend 
           npm ci
+          echo "export const appVersion = '${{ steps.version_calc.outputs.new_tag }}';" > src/environments/version.ts
           npm run build
+
+      - name: Push New Tag
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+          DRY_RUN: false # Now we really tag it
 
       - name: Deploy to Firebase (Live)
         run: |
