@@ -3,18 +3,6 @@ import popolo, { Identifier } from "popolo-types";
 import api from "nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
 
-const options = new Options({
-  prefixUrl: "https://legislation.nysenate.gov/api/3/",
-  responseType: "json",
-  resolveBodyOnly: true,
-  method: "GET",
-  searchParams: {
-    key: defineSecret("NY_SENATE_KEY").value(),
-    full: "true",
-    limit: 1000,
-  },
-});
-
 interface Legislator extends popolo.Person {
   id: string;
   chamber?: string;
@@ -37,6 +25,18 @@ interface Legislation extends popolo.Motion {
 }
 
 export const updateMembers = async (): Promise<Legislator[]> => {
+  const options = new Options({
+    prefixUrl: "https://legislation.nysenate.gov/api/3/",
+    responseType: "json",
+    resolveBodyOnly: true,
+    method: "GET",
+    searchParams: {
+      key: defineSecret("NY_SENATE_KEY").value(),
+      full: "true",
+      limit: 1000,
+    },
+  });
+
   let year: number = new Date().getFullYear();
   if (year % 2 === 0) year--;
 
@@ -65,6 +65,18 @@ export const updateMembers = async (): Promise<Legislator[]> => {
 };
 
 export const updateBills = async (billList: Legislation[]) => {
+  const options = new Options({
+    prefixUrl: "https://legislation.nysenate.gov/api/3/",
+    responseType: "json",
+    resolveBodyOnly: true,
+    method: "GET",
+    searchParams: {
+      key: defineSecret("NY_SENATE_KEY").value(),
+      full: "true",
+      limit: 1000,
+    },
+  });
+
   return await Promise.all(
     billList.map(async (bill: Legislation) => {
       const billParts: string[] = bill.id.split("-");
