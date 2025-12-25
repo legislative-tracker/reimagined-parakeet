@@ -4,23 +4,26 @@ import { getFirestore } from "firebase-admin/firestore";
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { defineSecret } from "firebase-functions/params";
-import got, { Options } from "got";
+import got from "got";
 import { updateBills, updateMembers } from "./ny/functions";
-import { testList } from "./test-list";
-import { Person } from "popolo-types";
-import { Legislator } from "@models/legislator";
-import { GoogleGeocodeingResponse } from "@models/geocode";
+import { OpenStatesPerson } from "@models/openstates-person";
+import { GoogleGeocodingResponse } from "@models/geocode";
+import { isSuccess, mapPersonToLegislator } from "@common/helpers";
 
 initializeApp();
 const db = getFirestore();
 const auth = getAuth();
 
+const openStatesKey = defineSecret("OPENSTATES_KEY");
+const googleMapsKey = defineSecret("GOOGLE_MAPS_KEY");
+
 setGlobalOptions({ maxInstances: 10 });
 
 // test function
 export const helloWorld = onRequest(async (request, response) => {
+  const billList = await getBillList("ny");
   const members = await updateMembers();
-  const bills = await updateBills(testList);
+  const bills = await updateBills(billList);
 
   const billPromises = bills.map((bill) =>
     db
@@ -222,54 +225,10 @@ export const removeBill = onCall(async (request) => {
 /**
  * CALLABLE FUNCTION: fetches user's legislators & districts on formSubmit
  */
-interface OpenStatesResponse<T> {
-  results: T[];
-}
-
-interface OpenStatesPerson extends Person {
-  id: string;
-  name: string;
-  party: string;
-  current_role: {
-    title: string;
-    org_classification: string;
-    district: string;
-    division_id: string;
-  };
-  jurisdiction: {
-    id: string;
-    name: string;
-    classification: string;
-  };
-  given_name: string;
-  family_name: string;
-  image: string;
-  email: string;
-  birth_date: string;
-  death_date: string;
-  extras: {
-    [key: string]: string;
-  };
-  created_at: string;
-  updated_at: string;
-  openstates_url: string;
-}
-
-const isOpenStatesResponseSuccess = <T>(
-  v: unknown
-): v is OpenStatesResponse<T> => {
-  if ((v as OpenStatesResponse<T>).results) return true;
-  return false;
-};
-
-const openStatesKey = defineSecret("OPENSTATES_KEY");
-const googleMapsKey = defineSecret("GOOGLE_MAPS_KEY");
 
 export const fetchUserReps = onCall(
   { secrets: [openStatesKey, googleMapsKey] },
   async (request) => {
-    console.log("Incoming Data:", request.data);
-
     const address = request.data.address;
 
     if (!address) {
@@ -285,18 +244,18 @@ export const fetchUserReps = onCall(
       throw new HttpsError("not-found", "geocoding not found");
     }
 
-    const options = new Options({
+    const options = {
       prefixUrl: "https://v3.openstates.org/",
-      responseType: "json",
+      responseType: "json" as const,
       resolveBodyOnly: true,
       searchParams: {
         apikey: openStatesKey.value(),
         lat: geocoding.lat,
         lng: geocoding.lng,
       },
-    });
+    };
 
-    let userId = request.auth?.uid || "IWrLUtKusOMG6UxvEMxuu5s0lz03";
+    let userId = request.auth?.uid;
 
     if (!userId) {
       throw new HttpsError("invalid-argument", "You must provide a user id.");
@@ -307,23 +266,19 @@ export const fetchUserReps = onCall(
     try {
       const res = await instance("people.geo");
 
-      if (isOpenStatesResponseSuccess<OpenStatesPerson>(res)) {
+      if (isSuccess<OpenStatesPerson[]>(res)) {
         const legislators = {
           federal: res.results
             .filter(
               (p: OpenStatesPerson) =>
                 p.jurisdiction.classification === "country"
             )
-            .map((person: OpenStatesPerson) =>
-              mapOpenStatesPersonToLegislator(person)
-            ),
+            .map((person: OpenStatesPerson) => mapPersonToLegislator(person)),
           state: res.results
             .filter(
               (p: OpenStatesPerson) => p.jurisdiction.classification === "state"
             )
-            .map((person: OpenStatesPerson) =>
-              mapOpenStatesPersonToLegislator(person)
-            ),
+            .map((person: OpenStatesPerson) => mapPersonToLegislator(person)),
         };
 
         const districts = {
@@ -362,52 +317,6 @@ const updateUserProfile = async (userId: string, data: any) => {
   await userRef.set(data, { merge: true });
 };
 
-const mapOpenStatesPersonToLegislator = (
-  person: OpenStatesPerson
-): Legislator => {
-  const chamber: string = chamberMapper(
-    person.jurisdiction.classification,
-    person.current_role.org_classification
-  );
-
-  return {
-    id: person.name.replaceAll(" ", "-"),
-    honorific_prefix: person.current_role.title,
-    name: person.name,
-    party: person.party,
-    chamber: chamber,
-    district: person.current_role.district,
-  };
-};
-
-interface ChamberMapping {
-  [key: string]: {
-    [key: string]: string;
-  };
-}
-
-const chamberMapping: ChamberMapping = {
-  country: {
-    upper: "Senate",
-    lower: "House",
-  },
-  state: {
-    upper: "Senate",
-    lower: "Assembly",
-  },
-};
-
-const chamberMapper = (jurisdiction: string, org: string): string => {
-  return chamberMapping[jurisdiction][org];
-};
-
-const isGoogleGeocodingResponseSuccess = (
-  v: unknown
-): v is GoogleGeocodeingResponse => {
-  if ((v as GoogleGeocodeingResponse).results) return true;
-  return false;
-};
-
 const getGeocode = async (address: string, googleMapsKey: string) => {
   const options = {
     prefixUrl: "https://maps.googleapis.com/maps/api/geocode", // Changed new Options to plain object (see tip below)
@@ -424,9 +333,18 @@ const getGeocode = async (address: string, googleMapsKey: string) => {
   // No try/catch needed here
   const res = await instance("json");
 
-  if (isGoogleGeocodingResponseSuccess(res)) {
+  if (isSuccess<GoogleGeocodingResponse[]>(res)) {
     return res.results[0].geometry.location;
   }
 
   throw new HttpsError("not-found", "Error finding geocoding", res);
+};
+
+const getBillList = async (state: string) => {
+  const snapshot = await db
+    .collection(`legislatures/${state}/legislation`)
+    .get();
+  return snapshot.docs.map((doc) => {
+    return { id: doc.id };
+  });
 };

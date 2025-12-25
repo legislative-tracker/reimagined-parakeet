@@ -3,6 +3,13 @@ export interface ColumnConfig {
   label: string; // Header text (e.g., 'Bill #')
 }
 
+export const LEGISLATOR_COLS: ColumnConfig[] = [
+  { key: 'name', label: 'Name' },
+  { key: 'chamber', label: 'Chamber' },
+  { key: 'district', label: 'District' },
+  { key: 'party', label: 'Party' },
+];
+
 export const BILL_COLS: ColumnConfig[] = [
   { key: 'id', label: 'Bill Number' },
   { key: 'title', label: 'Title' },
