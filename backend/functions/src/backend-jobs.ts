@@ -1,6 +1,6 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { db } from "./config";
-import { getBillList } from "./helpers";
+import { getBillList } from "./common/helpers";
 import { updateBills, updateMembers } from "./ny/functions"; // Assuming these are in a folder
 
 // test function
