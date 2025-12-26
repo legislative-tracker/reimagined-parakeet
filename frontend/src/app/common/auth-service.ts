@@ -57,6 +57,8 @@ export class AuthService {
           uid: credential.user.uid,
           email: credential.user.email,
           displayName: credential.user.displayName,
+          photoURL: credential.user.photoURL || null,
+          phoneNumber: credential.user.phoneNumber,
           lastLogin: new Date(),
         },
         { merge: true }
