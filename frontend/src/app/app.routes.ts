@@ -15,6 +15,12 @@ export const routes: Routes = [
         redirectTo: 'ny',
       },
       {
+        path: '404',
+        pathMatch: 'full',
+        loadComponent: () => import('./common/not-found/not-found').then((m) => m.NotFound),
+      },
+
+      {
         path: 'about',
         pathMatch: 'full',
         loadComponent: () => import('./home/about/about').then((m) => m.About),
@@ -58,7 +64,7 @@ export const routes: Routes = [
       {
         path: 'profile',
         canActivate: [authGuard],
-        loadComponent: () => import('./profile/profile').then((m) => m.Profile),
+        loadComponent: () => import('./home/profile/profile').then((m) => m.Profile),
       },
       {
         path: ':state',

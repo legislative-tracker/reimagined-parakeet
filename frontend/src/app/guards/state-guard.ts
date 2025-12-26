@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { ImplementedStatesList } from '../common/implemented-states';
+import { ImplementedStatesList } from '@common/implemented-states';
 
 export const stateGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
@@ -14,6 +14,6 @@ export const stateGuard: CanActivateFn = (route, state) => {
     return true; // Navigation allowed
   } else {
     // Redirect to home if the user tries to enter an unauthorized state
-    return router.createUrlTree(['/']);
+    return router.createUrlTree(['/404']);
   }
 };

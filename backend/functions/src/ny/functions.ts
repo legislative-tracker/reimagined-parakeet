@@ -1,22 +1,22 @@
-import got, { Options } from "got";
+import got from "got";
 import { Identifier } from "popolo-types";
 import api from "nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
-import { Legislator } from "@models/legislator";
-import { Legislation } from "@models/legislation";
+import { Legislator, Legislation } from "../models/legislature";
+
+const nySenateKey = defineSecret("NY_SENATE_KEY");
 
 export const updateMembers = async (): Promise<Legislator[]> => {
-  const options = new Options({
+  const options = {
     prefixUrl: "https://legislation.nysenate.gov/api/3/",
-    responseType: "json",
+    responseType: "json" as const,
     resolveBodyOnly: true,
-    method: "GET",
     searchParams: {
-      key: defineSecret("NY_SENATE_KEY").value(),
+      key: nySenateKey.value(),
       full: "true",
       limit: 1000,
     },
-  });
+  };
 
   let year: number = new Date().getFullYear();
   if (year % 2 === 0) year--;
@@ -45,22 +45,21 @@ export const updateMembers = async (): Promise<Legislator[]> => {
   }
 };
 
-export const updateBills = async (billList: Legislation[]) => {
-  const options = new Options({
+export const updateBills = async (billList: string[]) => {
+  const options = {
     prefixUrl: "https://legislation.nysenate.gov/api/3/",
-    responseType: "json",
+    responseType: "json" as const,
     resolveBodyOnly: true,
-    method: "GET",
     searchParams: {
-      key: defineSecret("NY_SENATE_KEY").value(),
+      key: nySenateKey.value(),
       full: "true",
       limit: 1000,
     },
-  });
+  };
 
   return await Promise.all(
-    billList.map(async (bill: Legislation) => {
-      const billParts: string[] = bill.id.split("-");
+    billList.map(async (bill: string) => {
+      const billParts: string[] = bill.split("-");
       const instance = got.extend(options);
       try {
         const res = await instance(
@@ -78,7 +77,7 @@ export const updateBills = async (billList: Legislation[]) => {
           throw new Error("Fetch failed");
         }
       } catch (error) {
-        console.error(`Error fetching bill ${bill.id}:`, error);
+        console.error(`Error fetching bill ${bill}:`, error);
         throw error;
       }
     })
@@ -97,13 +96,9 @@ const generateSortName = (p: api.FullMember["person"]): string => {
   return sortName;
 };
 
-const generateLegislatorId = (name: string): string => {
-  return name.replaceAll(".", "").replaceAll(" ", "-");
-};
-
 const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
   const legislator: Legislator = {
-    id: generateLegislatorId(m.fullName),
+    id: m.fullName.replaceAll(".", "").replaceAll(" ", "-"),
     name: m.fullName,
     given_name: m.person.firstName,
     family_name: m.person.lastName,
@@ -169,7 +164,7 @@ const getCosponsors = (b: api.Bill): { [key: string]: Identifier[] } => {
     const cosponsors: Identifier[] = [];
     b.amendments.items[v].coSponsors.items.forEach((c: api.Member) =>
       cosponsors.push({
-        identifier: generateLegislatorId(c.fullName),
+        identifier: c.fullName.replaceAll(".", "").replaceAll(" ", "_"),
         scheme: "legislator id",
       })
     );

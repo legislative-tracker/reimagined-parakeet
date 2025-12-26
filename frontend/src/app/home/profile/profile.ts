@@ -7,7 +7,7 @@ import { DatePipe } from '@angular/common';
 import { AuthService } from '@common/auth-service';
 import { AddressForm } from '@common/address-form/address-form.component';
 import { TableComponent } from '@common/table/table.component';
-import { LEGISLATOR_COLS } from './column-config';
+import { LEGISLATOR_COLS } from '@models/column-config';
 
 interface SearchAddress {
   address: string;
