@@ -2,8 +2,7 @@ import got from "got";
 import { Identifier } from "popolo-types";
 import api from "nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
-import { Legislator } from "@models/legislator";
-import { Legislation } from "@models/legislation";
+import { Legislator, Legislation } from "../models/legislature";
 
 const nySenateKey = defineSecret("NY_SENATE_KEY");
 
@@ -46,7 +45,7 @@ export const updateMembers = async (): Promise<Legislator[]> => {
   }
 };
 
-export const updateBills = async (billList: Legislation[]) => {
+export const updateBills = async (billList: string[]) => {
   const options = {
     prefixUrl: "https://legislation.nysenate.gov/api/3/",
     responseType: "json" as const,
@@ -59,8 +58,8 @@ export const updateBills = async (billList: Legislation[]) => {
   };
 
   return await Promise.all(
-    billList.map(async (bill: Legislation) => {
-      const billParts: string[] = bill.id.split("-");
+    billList.map(async (bill: string) => {
+      const billParts: string[] = bill.split("-");
       const instance = got.extend(options);
       try {
         const res = await instance(
@@ -78,7 +77,7 @@ export const updateBills = async (billList: Legislation[]) => {
           throw new Error("Fetch failed");
         }
       } catch (error) {
-        console.error(`Error fetching bill ${bill.id}:`, error);
+        console.error(`Error fetching bill ${bill}:`, error);
         throw error;
       }
     })

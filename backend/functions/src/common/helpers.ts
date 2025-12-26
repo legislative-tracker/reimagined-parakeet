@@ -1,25 +1,21 @@
 import { HttpsError } from "firebase-functions/v2/https";
 import got from "got";
-import { db } from "../config";
+
+import {
+  Legislator,
+  Legislation,
+  LegislatureUpdateFnMap,
+} from "../models/legislature";
+import { OpenStatesPerson } from "../models/openstates-person";
 import { GoogleGeocodingResponse } from "../models/geocode";
+import { Success, ChamberMapping } from "../models/assorted";
 
-import { OpenStatesPerson } from "@models/openstates-person";
-import { Legislator } from "@models/legislator";
-
-interface Success<T> {
-  results: T;
-}
+import * as ny from "../ny/functions";
 
 export const isSuccess = <T>(res: unknown): res is Success<T> => {
   if ((res as Success<T>).results) return true;
   return false;
 };
-
-interface ChamberMapping {
-  [key: string]: {
-    [key: string]: string;
-  };
-}
 
 const chamberMapping: ChamberMapping = {
   country: {
@@ -32,7 +28,7 @@ const chamberMapping: ChamberMapping = {
   },
 };
 
-export const chamberMapper = (jurisdiction: string, org: string): string => {
+const chamberMapper = (jurisdiction: string, org: string): string => {
   return chamberMapping[jurisdiction][org];
 };
 
@@ -50,11 +46,6 @@ export const mapPersonToLegislator = (person: OpenStatesPerson): Legislator => {
     chamber: chamber,
     district: person.current_role.district,
   };
-};
-
-export const updateUserProfile = async (userId: string, data: any) => {
-  const userRef = db.collection("users").doc(userId);
-  await userRef.set(data, { merge: true });
 };
 
 export const getGeocode = async (address: string, googleMapsKey: string) => {
@@ -78,11 +69,18 @@ export const getGeocode = async (address: string, googleMapsKey: string) => {
   throw new HttpsError("not-found", "Error finding geocoding", res);
 };
 
-export const getBillList = async (state: string) => {
-  const snapshot = await db
-    .collection(`legislatures/${state}/legislation`)
-    .get();
-  return snapshot.docs.map((doc) => {
-    return { id: doc.id };
-  });
+const updateFnMap: LegislatureUpdateFnMap<Legislation[] | Legislator[]> = {
+  ny: {
+    bills: ny.updateBills,
+    members: ny.updateMembers,
+  },
+};
+
+export const getBillUpdates = async (o: { id: string; bills: string[] }) => {
+  const updateFn = updateFnMap[o.id].bills;
+
+  return {
+    id: o.id,
+    bills: await updateFn(o.bills),
+  };
 };

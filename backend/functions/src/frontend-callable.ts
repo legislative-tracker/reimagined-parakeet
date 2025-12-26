@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import got from "got";
 import { auth, db, openStatesKey, googleMapsKey } from "./config";
-import { updateUserProfile, getGeocode } from "./common/helpers";
+import { getGeocode } from "./common/helpers";
 import { OpenStatesPerson } from "./models/openstates-person";
 import { isSuccess, mapPersonToLegislator } from "./common/helpers";
 
@@ -104,6 +104,11 @@ export const removeBill = onCall(async (request) => {
     throw new HttpsError("internal", "Failed to delete bill.");
   }
 });
+
+const updateUserProfile = async (userId: string, data: any) => {
+  const userRef = db.collection("users").doc(userId);
+  await userRef.set(data, { merge: true });
+};
 
 /**
  * Fetches user's legislators & districts.
