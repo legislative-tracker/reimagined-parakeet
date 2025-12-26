@@ -1,6 +1,7 @@
 .header {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 12px;
 }
 
@@ -13,14 +14,7 @@
   height: 40px;
   border-radius: 50%;
 
-  // Important: Crops the image so it doesn't look stretched
   object-fit: cover;
 
-  // Optional: A light border to separate it from dark backgrounds
   border: 1px solid #ddd;
-}
-
-h1 {
-  margin-top: 12px;
-  font-size: 2rem; // Adjust size as needed
 }
