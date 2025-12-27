@@ -1,8 +1,8 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import got from "got";
 import { auth, db, openStatesKey, googleMapsKey } from "./config";
-import { getGeocode } from "./common/helpers";
-import { OSPerson } from "./models/openstates";
+import { getGeocode } from "./apis/google-geocoder/functions";
+import { OSPerson } from "./apis/open-states/types";
 import { isSuccess, mapPersonToLegislator } from "./common/helpers";
 
 /**

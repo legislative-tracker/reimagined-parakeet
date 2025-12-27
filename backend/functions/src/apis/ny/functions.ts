@@ -2,9 +2,18 @@ import got from "got";
 import { Identifier } from "popolo-types";
 import api from "nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
-import { Legislator, Legislation } from "../models/legislature";
+import { Legislator, Legislation } from "../../models/legislature";
 
 const nySenateKey = defineSecret("NY_SENATE_KEY");
+
+const isSuccess = <T>(v: unknown): v is api.APIResponseSuccess<T> => {
+  if ((v as api.APIResponseSuccess<T>).success === true) return true;
+  return false;
+};
+const isItemsResponse = <T>(v: unknown): v is api.Items<T> => {
+  if ((v as api.Items<T>).items) return true;
+  return false;
+};
 
 export const updateMembers = async (): Promise<Legislator[]> => {
   const options = {
@@ -164,7 +173,7 @@ const getCosponsors = (b: api.Bill): { [key: string]: Identifier[] } => {
     const cosponsors: Identifier[] = [];
     b.amendments.items[v].coSponsors.items.forEach((c: api.Member) =>
       cosponsors.push({
-        identifier: c.fullName.replaceAll(".", "").replaceAll(" ", "_"),
+        identifier: c.fullName.replaceAll(".", "").replaceAll(" ", "-"),
         scheme: "legislator id",
       })
     );
@@ -172,14 +181,4 @@ const getCosponsors = (b: api.Bill): { [key: string]: Identifier[] } => {
   });
 
   return cosponsorsByVersion;
-};
-
-const isSuccess = <T>(v: unknown): v is api.APIResponseSuccess<T> => {
-  if ((v as api.APIResponseSuccess<T>).success === true) return true;
-  return false;
-};
-
-const isItemsResponse = <T>(v: unknown): v is api.Items<T> => {
-  if ((v as api.Items<T>).items) return true;
-  return false;
 };

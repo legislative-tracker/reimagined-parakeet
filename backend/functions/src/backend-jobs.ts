@@ -4,8 +4,8 @@ import * as logger from "firebase-functions/logger";
 
 import { db } from "./config";
 import { getBillUpdates, isEmail, isImageLink } from "./common/helpers";
-import { getOpenStatesData } from "./open-states/functions";
-import { OSPerson } from "./models/openstates";
+import { getOpenStatesData } from "./apis/open-states/functions";
+import { OSPerson } from "./apis/open-states/types";
 
 /**
  * Scheduled Functions
