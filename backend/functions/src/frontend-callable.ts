@@ -2,7 +2,7 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import got from "got";
 import { auth, db, openStatesKey, googleMapsKey } from "./config";
 import { getGeocode } from "./common/helpers";
-import { OpenStatesPerson } from "./models/openstates-person";
+import { OSPerson } from "./models/openstates";
 import { isSuccess, mapPersonToLegislator } from "./common/helpers";
 
 /**
@@ -140,7 +140,7 @@ export const fetchUserReps = onCall(
     try {
       const res = await instance("people.geo");
 
-      if (isSuccess<OpenStatesPerson[]>(res)) {
+      if (isSuccess<OSPerson[]>(res)) {
         // Logic remains the same, shortened for brevity
         const legislators = {
           federal: res.results

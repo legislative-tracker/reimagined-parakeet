@@ -6,7 +6,7 @@ import {
   Legislation,
   LegislatureUpdateFnMap,
 } from "../models/legislature";
-import { OpenStatesPerson } from "../models/openstates-person";
+import { OSPerson } from "../models/openstates";
 import { GoogleGeocodingResponse } from "../models/geocode";
 import { Success, ChamberMapping } from "../models/assorted";
 
@@ -23,6 +23,7 @@ const chamberMapping: ChamberMapping = {
     lower: "House",
   },
   state: {
+    //TODO: refactor when implementing a state with different names
     upper: "Senate",
     lower: "Assembly",
   },
@@ -32,7 +33,7 @@ const chamberMapper = (jurisdiction: string, org: string): string => {
   return chamberMapping[jurisdiction][org];
 };
 
-export const mapPersonToLegislator = (person: OpenStatesPerson): Legislator => {
+export const mapPersonToLegislator = (person: OSPerson): Legislator => {
   const chamber: string = chamberMapper(
     person.jurisdiction.classification,
     person.current_role.org_classification
@@ -81,6 +82,27 @@ export const getBillUpdates = async (o: { id: string; bills: string[] }) => {
 
   return {
     id: o.id,
-    bills: await updateFn(o.bills),
+    bills: (await updateFn(o.bills)) as Legislation[],
   };
+};
+
+export const getMemberUpdates = async (
+  legislature: string
+): Promise<Legislator[]> => {
+  const updateFn = updateFnMap[legislature].members;
+
+  return (await updateFn()) as Legislator[];
+};
+
+export const isImageLink = (link: string | undefined): boolean => {
+  if (!link) return false;
+  if (!link.includes("https://")) return false;
+  if (link?.includes("no_image")) return false;
+  return true;
+};
+
+export const isEmail = (email: string | undefined): boolean => {
+  if (!email?.trim()) return false;
+  if (email.includes("https://")) return false;
+  return true;
 };

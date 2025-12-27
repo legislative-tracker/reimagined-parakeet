@@ -1,6 +1,16 @@
 import { Person } from "popolo-types";
 
-export interface OpenStatesPerson extends Person {
+export interface OSResponse<T> {
+  results: T[];
+  pagination: {
+    per_page: number;
+    page: number;
+    max_page: number;
+    total_items: number;
+  };
+}
+
+export interface OSPerson extends Person {
   id: string;
   name: string;
   party: string;
