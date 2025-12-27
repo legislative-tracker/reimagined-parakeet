@@ -38,8 +38,8 @@ export class Profile {
     const fetchUserReps = httpsCallable(this.functions, 'fetchUserReps');
 
     try {
-      console.log(addressStr);
       const result = await fetchUserReps({ address: addressStr });
+      alert('Success!');
     } catch (error) {
       alert(error);
     }

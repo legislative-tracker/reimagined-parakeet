@@ -3,7 +3,9 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
 
 import { db } from "./config";
-import { getBillUpdates } from "./common/helpers";
+import { getBillUpdates, isEmail, isImageLink } from "./common/helpers";
+import { getOpenStatesData } from "./open-states/functions";
+import { OSPerson } from "./models/openstates";
 
 /**
  * Scheduled Functions
@@ -37,6 +39,70 @@ export const updateLegislationOnRequest = onRequest(
         status: "success",
         timestamp: new Date().toISOString(),
         data: data,
+      });
+    } catch (error: unknown) {
+      logger.error("HTTP Update Failed", error);
+      response.status(500).send({ error: error });
+    }
+  }
+);
+
+export const updateLegislatorsOnRequest = onRequest(
+  async (request, response) => {
+    const bulkWriter = db.bulkWriter();
+    const state = "New York"; //TODO: refactor when adding new states
+    try {
+      const openStatesMembers = await getOpenStatesData(state, "people");
+
+      const snapshot = await db
+        .collection(`legislatures/${state}/legislators`)
+        .get();
+
+      const warnings: string[] = [];
+
+      snapshot.docs.forEach((doc) => {
+        //current legislator data
+        const currentData = doc.data();
+
+        //find the corresponding Open States Member
+        const member = openStatesMembers.find(
+          (m: OSPerson) =>
+            m.current_role.title === currentData.honorific_prefix &&
+            m.current_role.district == currentData.district
+        );
+
+        if (member) {
+          const updates = {
+            party: member.party,
+            image: isImageLink(currentData.image)
+              ? currentData.image
+              : member.image,
+            gender: member.gender,
+            birth_date: member.birth_date,
+            email: isEmail(currentData.email)
+              ? currentData.email
+              : isEmail(member.email)
+              ? member.email
+              : null,
+            updated_at: new Date().toISOString(),
+          };
+
+          bulkWriter.update(doc.ref, updates);
+        } else {
+          const warningStr: string = `Couldn't find updates for ${currentData.name}`;
+          warnings.push(warningStr);
+          logger.warn(warningStr);
+        }
+      });
+
+      //write the updates to firestore
+      await bulkWriter.close();
+
+      response.send({
+        status: "success",
+        timestamp: new Date().toISOString(),
+        warnings: warnings,
+        // data: data,
       });
     } catch (error: unknown) {
       logger.error("HTTP Update Failed", error);
