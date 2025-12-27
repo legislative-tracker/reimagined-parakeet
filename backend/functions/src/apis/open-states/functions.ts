@@ -1,6 +1,6 @@
 import got from "got";
 import { defineSecret } from "firebase-functions/params";
-import { OSPerson, OSResponse } from "../models/openstates";
+import { OSPerson, OSResponse } from "./types";
 // import { HttpsError } from "firebase-functions/https";
 
 const openStatesKey = defineSecret("OPENSTATES_KEY");

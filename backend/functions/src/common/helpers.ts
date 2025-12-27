@@ -1,16 +1,12 @@
-import { HttpsError } from "firebase-functions/v2/https";
-import got from "got";
-
 import {
   Legislator,
   Legislation,
   LegislatureUpdateFnMap,
 } from "../models/legislature";
-import { OSPerson } from "../models/openstates";
-import { GoogleGeocodingResponse } from "../models/geocode";
+import { OSPerson } from "../apis/open-states/types";
 import { Success, ChamberMapping } from "../models/assorted";
 
-import * as ny from "../ny/functions";
+import * as ny from "../apis/ny/functions";
 
 export const isSuccess = <T>(res: unknown): res is Success<T> => {
   if ((res as Success<T>).results) return true;
@@ -47,27 +43,6 @@ export const mapPersonToLegislator = (person: OSPerson): Legislator => {
     chamber: chamber,
     district: person.current_role.district,
   };
-};
-
-export const getGeocode = async (address: string, googleMapsKey: string) => {
-  const options = {
-    prefixUrl: "https://maps.googleapis.com/maps/api/geocode",
-    responseType: "json" as const,
-    resolveBodyOnly: true,
-    searchParams: {
-      key: googleMapsKey,
-      address: address,
-    },
-  };
-
-  const instance = got.extend(options);
-  const res = await instance("json");
-
-  if (isSuccess<GoogleGeocodingResponse[]>(res)) {
-    return res.results[0].geometry.location;
-  }
-
-  throw new HttpsError("not-found", "Error finding geocoding", res);
 };
 
 const updateFnMap: LegislatureUpdateFnMap<Legislation[] | Legislator[]> = {
