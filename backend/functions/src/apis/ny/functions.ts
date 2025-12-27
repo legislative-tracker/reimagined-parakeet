@@ -173,7 +173,7 @@ const getCosponsors = (b: api.Bill): { [key: string]: Identifier[] } => {
     const cosponsors: Identifier[] = [];
     b.amendments.items[v].coSponsors.items.forEach((c: api.Member) =>
       cosponsors.push({
-        identifier: c.fullName.replaceAll(".", "").replaceAll(" ", "_"),
+        identifier: c.fullName.replaceAll(".", "").replaceAll(" ", "-"),
         scheme: "legislator id",
       })
     );
