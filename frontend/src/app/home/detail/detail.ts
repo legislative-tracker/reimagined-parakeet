@@ -17,7 +17,7 @@ import { COSPONSOR_COLS, SPONSORSHIP_COLS } from './columns';
   styleUrl: './detail.scss',
 })
 export class Detail {
-  state = input.required<string>();
+  stateCd = input.required<string>();
   id = input.required<string>();
   private legislatureService = inject(LegislatureService);
 
@@ -25,7 +25,7 @@ export class Detail {
   sponsorshipCols = SPONSORSHIP_COLS;
 
   billDetails = toSignal(
-    combineLatest([toObservable(this.state), toObservable(this.id)]).pipe(
+    combineLatest([toObservable(this.stateCd), toObservable(this.id)]).pipe(
       switchMap(([stateCode, billId]) => this.legislatureService.getBillById(stateCode, billId))
     )
   );
@@ -41,7 +41,7 @@ export class Detail {
   });
 
   memberDetails = toSignal(
-    combineLatest([toObservable(this.state), toObservable(this.id)]).pipe(
+    combineLatest([toObservable(this.stateCd), toObservable(this.id)]).pipe(
       switchMap(([stateCode, memberId]) =>
         this.legislatureService.getMemberById(stateCode, memberId)
       )

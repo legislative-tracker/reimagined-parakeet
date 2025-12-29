@@ -15,7 +15,7 @@
   <app-table
     [dataSource]="sponsorships()"
     [columnSource]="sponsorshipCols"
-    [state]="state()"
+    [state]="stateCd()"
   ></app-table>
 </mat-tab-group>
 } @else if (billDetails()) {
@@ -30,7 +30,7 @@
     <app-table
       [dataSource]="version.data"
       [columnSource]="cosponsorCols"
-      [state]="state()"
+      [state]="stateCd()"
     ></app-table>
   </mat-tab>
   }

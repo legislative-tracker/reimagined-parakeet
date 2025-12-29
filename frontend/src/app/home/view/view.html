@@ -1,19 +1,27 @@
 <mat-tab-group [selectedIndex]="selectedTabIndex()" (selectedIndexChange)="onTabChange($event)">
   <mat-tab label="Bills">
     <ng-template matTabContent>
-      @if (selectedTabIndex() === 0) {
-      <app-table [dataSource]="bills()" [columnSource]="billCols" [state]="state()"></app-table>
+      @if (billsResource.isLoading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+      } @else if (selectedTabIndex() === 0) {
+      <app-table [dataSource]="bills()" [columnSource]="billCols" [state]="stateCd()"> </app-table>
       }
     </ng-template>
   </mat-tab>
 
   <mat-tab label="Assemblymembers">
     <ng-template matTabContent>
-      @if (selectedTabIndex() === 1) {
+      @if (membersResource.isLoading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+      } @else if (selectedTabIndex() === 1) {
       <app-table
         [dataSource]="assemblyMembers()"
         [columnSource]="memberCols"
-        [state]="state()"
+        [state]="stateCd()"
       ></app-table>
       }
     </ng-template>
@@ -21,11 +29,15 @@
 
   <mat-tab label="Senators">
     <ng-template matTabContent>
-      @if (selectedTabIndex() === 2) {
+      @if (membersResource.isLoading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+      } @else if (selectedTabIndex() === 2) {
       <app-table
         [dataSource]="senateMembers()"
         [columnSource]="memberCols"
-        [state]="state()"
+        [state]="stateCd()"
       ></app-table>
       }
     </ng-template>

@@ -67,13 +67,13 @@ export const routes: Routes = [
         loadComponent: () => import('./home/profile/profile').then((m) => m.Profile),
       },
       {
-        path: ':state',
+        path: ':stateCd',
         pathMatch: 'full',
         canActivate: [stateGuard],
         loadComponent: () => import('./home/view/view').then((m) => m.View),
       },
       {
-        path: ':state/:id',
+        path: ':stateCd/:id',
         pathMatch: 'full',
         canActivate: [stateGuard],
         loadComponent: () => import('./home/detail/detail').then((m) => m.Detail),
