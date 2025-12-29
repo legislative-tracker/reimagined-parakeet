@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '@common/auth-service';
 import { ImplementedStatePairs } from '@common/implemented-states';
+import { LegislatureService } from '@common/legislature-service';
 
 interface SimpleBill {
   id: string;
@@ -35,6 +36,7 @@ interface SimpleBill {
 export class RemoveBill {
   public auth = inject(AuthService);
   private firestore = inject(Firestore);
+  private legislature = inject(LegislatureService);
   private snackBar = inject(MatSnackBar);
 
   selectedState = signal<string>('');
@@ -103,7 +105,7 @@ export class RemoveBill {
 
     try {
       // 2. Call the Cloud Function via AuthService
-      await this.auth.removeBill(state, billId);
+      await this.legislature.removeBill(state, billId);
 
       this.snackBar.open('Bill deleted successfully.', 'Close', {
         duration: 3000,
