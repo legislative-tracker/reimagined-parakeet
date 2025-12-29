@@ -39,7 +39,7 @@ export class RemoveAdmin {
 
     try {
       // Call the function we added to AuthService
-      await this.auth.makeAdminUser(this.email());
+      await this.auth.revokeAdminPrivileges(this.email());
 
       this.snackBar.open(`Success! ${this.email()} is no longer an Admin.`, 'Close', {
         duration: 5000,
