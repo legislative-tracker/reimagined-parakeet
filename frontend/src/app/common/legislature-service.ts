@@ -24,7 +24,11 @@ export class LegislatureService {
 
   // This method fetches a single bill within a state legislature
   getBillById(stateCode: string, id: string): Observable<any> {
-    const billRef = doc(this.firestore, `legislatures/${stateCode}/legislation/${id}`);
+    const path = `legislatures/${stateCode}/legislation/${id}`;
+
+    console.log(`[DEBUG] 🔎 Firestore Path: ${path}`);
+
+    const billRef = doc(this.firestore, path);
     return docData(billRef, { idField: 'id' });
   }
 

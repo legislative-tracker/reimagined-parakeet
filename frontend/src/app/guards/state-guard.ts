@@ -7,8 +7,8 @@ export const stateGuard: CanActivateFn = (route, state) => {
 
   const implementedStates = ImplementedStatesList;
 
-  // Get the 'state' parameter from the current route snapshot
-  const stateParam = route.params['state']?.toLowerCase();
+  // Get the 'stateCd' parameter from the current route snapshot
+  const stateParam = route.params['stateCd']?.toLowerCase();
 
   if (implementedStates.includes(stateParam)) {
     return true; // Navigation allowed

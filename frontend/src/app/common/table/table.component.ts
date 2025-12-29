@@ -18,14 +18,15 @@ export class TableComponent {
   dataSource = input.required<any[]>();
   columnSource = input.required<ColumnConfig[]>();
   chamber = input<'SENATE' | 'ASSEMBLY'>();
-  state = input<string>(''); // Passed from parent or route
+  stateCd = input<string>(''); // Passed from parent or route
+  routeType = input<'bill' | 'member'>('bill');
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = computed(() => this.columnSource().map((c) => c.key));
 
   testClick(row: any) {
     console.log('Row clicked!', row);
-    console.log('Target State:', this.state());
+    console.log('Target State:', this.stateCd());
     console.log('Target ID:', row.id);
   }
 }
