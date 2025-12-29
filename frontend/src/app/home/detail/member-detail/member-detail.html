@@ -1,0 +1,30 @@
+@if (memberResource.isLoading()) {
+<div class="loading-container">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+} @else if (member()) {
+<h1>{{ member()?.name }}</h1>
+<ul>
+  <li>{{ member()?.chamber }} District {{ member()?.district }}</li>
+  <li>
+    Email: <a [href]="'mailto:' + member()?.email">{{ member()?.email }}</a>
+  </li>
+</ul>
+
+<h2>Bill Sponsorships</h2>
+<mat-tab-group>
+  <mat-tab label="Sponsorships">
+    <app-table
+      [dataSource]="sponsorships()"
+      [columnSource]="sponsorshipCols"
+      [stateCd]="stateCd()"
+      routeType="bill"
+    ></app-table>
+  </mat-tab>
+</mat-tab-group>
+} @else {
+<div class="error-container">
+  <h1>Member Not Found</h1>
+  <p>We couldn't find a legislator with that ID in {{ stateCd() }}.</p>
+</div>
+}

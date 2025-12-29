@@ -6,7 +6,13 @@
         <mat-spinner diameter="40"></mat-spinner>
       </div>
       } @else if (selectedTabIndex() === 0) {
-      <app-table [dataSource]="bills()" [columnSource]="billCols" [state]="stateCd()"> </app-table>
+      <app-table
+        [dataSource]="bills()"
+        [columnSource]="billCols"
+        [stateCd]="stateCd()"
+        routeType="bill"
+      >
+      </app-table>
       }
     </ng-template>
   </mat-tab>
@@ -21,7 +27,8 @@
       <app-table
         [dataSource]="assemblyMembers()"
         [columnSource]="memberCols"
-        [state]="stateCd()"
+        [stateCd]="stateCd()"
+        routeType="member"
       ></app-table>
       }
     </ng-template>
@@ -37,7 +44,8 @@
       <app-table
         [dataSource]="senateMembers()"
         [columnSource]="memberCols"
-        [state]="stateCd()"
+        [stateCd]="stateCd()"
+        routeType="member"
       ></app-table>
       }
     </ng-template>

@@ -73,11 +73,22 @@ export const routes: Routes = [
         loadComponent: () => import('./home/view/view').then((m) => m.View),
       },
       {
-        path: ':stateCd/:id',
-        pathMatch: 'full',
-        canActivate: [stateGuard],
-        loadComponent: () => import('./home/detail/detail').then((m) => m.Detail),
+        path: ':stateCd/bill/:id',
+        loadComponent: () =>
+          import('./home/detail/bill-detail/bill-detail').then((m) => m.BillDetail),
       },
+
+      {
+        path: ':stateCd/member/:id',
+        loadComponent: () =>
+          import('./home/detail/member-detail/member-detail').then((m) => m.MemberDetail),
+      },
+      // {
+      //   path: ':stateCd/:id',
+      //   pathMatch: 'full',
+      //   canActivate: [stateGuard],
+      //   loadComponent: () => import('./home/detail/detail').then((m) => m.Detail),
+      // },
     ],
   },
   { path: '**', redirectTo: '' },
