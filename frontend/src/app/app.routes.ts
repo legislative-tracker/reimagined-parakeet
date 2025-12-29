@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { NavComponent } from './nav/nav.component';
-import { stateGuard } from './guards/state-guard';
-import { authGuard } from './guards/auth-guard';
-import { adminGuard } from './guards/admin-guard';
+import { stateGuard } from './core/state-guard';
+import { authGuard } from './core/auth-guard';
+import { adminGuard } from './core/admin-guard';
 
 export const routes: Routes = [
   {
@@ -17,7 +17,7 @@ export const routes: Routes = [
       {
         path: '404',
         pathMatch: 'full',
-        loadComponent: () => import('./common/not-found/not-found').then((m) => m.NotFound),
+        loadComponent: () => import('./shared/not-found/not-found').then((m) => m.NotFound),
       },
 
       {

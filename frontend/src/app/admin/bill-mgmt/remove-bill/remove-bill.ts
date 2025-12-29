@@ -1,6 +1,6 @@
 import { Component, inject, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SlicePipe } from '@angular/common';
 import { Firestore, collection, getDocs, query, orderBy } from '@angular/fire/firestore';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,9 +8,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService } from '@common/auth-service';
-import { ImplementedStatePairs } from '@common/implemented-states';
-import { LegislatureService } from '@common/legislature-service';
+import { AuthService } from 'src/app/core/auth-service';
+import { ImplementedStatePairs } from 'src/app/core/implemented-states';
+import { LegislatureService } from 'src/app/core/legislature-service';
 
 interface SimpleBill {
   id: string;
@@ -21,7 +21,7 @@ interface SimpleBill {
 @Component({
   selector: 'app-remove-bill',
   imports: [
-    CommonModule,
+    SlicePipe,
     FormsModule,
     MatCardModule,
     MatFormFieldModule,

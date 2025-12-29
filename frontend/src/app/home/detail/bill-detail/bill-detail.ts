@@ -1,18 +1,17 @@
 import { Component, input, inject, computed } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // App Imports
-import { LegislatureService } from '@common/legislature-service';
-import { TableComponent } from '@common/table/table.component';
+import { LegislatureService } from 'src/app/core/legislature-service';
+import { TableComponent } from 'src/app/shared/table/table.component';
 import { COSPONSOR_COLS } from '../columns';
 import { Legislation } from '@models/legislature';
 
 @Component({
   selector: 'app-bill-detail',
-  imports: [CommonModule, MatTabsModule, TableComponent, MatProgressSpinnerModule],
+  imports: [MatTabsModule, TableComponent, MatProgressSpinnerModule],
   templateUrl: './bill-detail.html',
   styleUrls: ['./bill-detail.scss'],
 })

@@ -1,5 +1,4 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,14 +6,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService } from '@common/auth-service';
-import { ImplementedStatePairs } from '@common/implemented-states';
-import { LegislatureService } from '@common/legislature-service';
+import { AuthService } from 'src/app/core/auth-service';
+import { ImplementedStatePairs } from 'src/app/core/implemented-states';
+import { LegislatureService } from 'src/app/core/legislature-service';
 
 @Component({
   selector: 'app-add-bill',
   imports: [
-    CommonModule,
     FormsModule,
     MatCardModule,
     MatFormFieldModule,

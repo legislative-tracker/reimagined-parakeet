@@ -141,7 +141,6 @@ export const fetchUserReps = onCall(
       const res = await instance("people.geo");
 
       if (isSuccess<OSPerson[]>(res)) {
-        // Logic remains the same, shortened for brevity
         const legislators = {
           federal: res.results
             .filter((p) => p.jurisdiction.classification === "country")
@@ -167,8 +166,9 @@ export const fetchUserReps = onCall(
       } else {
         throw new HttpsError("unavailable", "Failed to parse data.");
       }
-    } catch (error) {
-      throw new HttpsError("unknown", "Failed to fetch reps.");
+    } catch (error: any) {
+      console.error("Fetch Reps Error: ", error);
+      throw new HttpsError("unknown", "Failed to fetch reps.", error.message);
     }
   }
 );

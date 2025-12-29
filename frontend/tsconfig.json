@@ -5,7 +5,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@common/*": ["src/app/common/*"],
+      "@shared/*": ["src/app/shared/*"],
       "@models/*": ["src/app/models/*"]
     },
     "strict": true,

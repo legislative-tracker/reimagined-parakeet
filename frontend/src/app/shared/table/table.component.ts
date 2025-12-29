@@ -14,8 +14,8 @@ export interface ColumnConfig {
   styleUrl: './table.component.scss',
   imports: [MatTableModule, MatSortModule, RouterLink],
 })
-export class TableComponent {
-  dataSource = input.required<any[]>();
+export class TableComponent<T> {
+  dataSource = input.required<T[]>();
   columnSource = input.required<ColumnConfig[]>();
   chamber = input<'SENATE' | 'ASSEMBLY'>();
   stateCd = input<string>(''); // Passed from parent or route

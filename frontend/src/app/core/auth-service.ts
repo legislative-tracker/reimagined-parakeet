@@ -80,7 +80,7 @@ export class AuthService {
     return setDoc(userRef, { favorites: newFavorites }, { merge: true });
   }
 
-  async makeUserAdmin(email: string) {
+  async grantAdminPrivileges(email: string) {
     // 1. Reference the callable function by name
     const addAdminRole = httpsCallable(this.functions, 'addAdminRole');
 
@@ -98,7 +98,7 @@ export class AuthService {
     }
   }
 
-  async makeAdminUser(email: string) {
+  async revokeAdminPrivileges(email: string) {
     // 1. Reference the callable function by name
     const removeAdminRole = httpsCallable(this.functions, 'removeAdminRole');
 
