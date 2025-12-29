@@ -1,6 +1,5 @@
 import { Component, input, inject, computed } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -12,7 +11,7 @@ import { Legislation } from '@models/legislature';
 
 @Component({
   selector: 'app-bill-detail',
-  imports: [CommonModule, MatTabsModule, TableComponent, MatProgressSpinnerModule],
+  imports: [MatTabsModule, TableComponent, MatProgressSpinnerModule],
   templateUrl: './bill-detail.html',
   styleUrls: ['./bill-detail.scss'],
 })

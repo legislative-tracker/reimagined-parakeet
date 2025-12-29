@@ -1,6 +1,5 @@
 import { Component, input, inject, computed, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
 
 // Angular Material Imports
@@ -14,7 +13,7 @@ import { BILL_COLS, MEMBER_COLS } from '@models/column-config';
 
 @Component({
   selector: 'app-view',
-  imports: [CommonModule, MatTabsModule, TableComponent, MatProgressSpinnerModule],
+  imports: [MatTabsModule, TableComponent, MatProgressSpinnerModule],
   templateUrl: './view.html',
   styleUrl: './view.scss',
 })
