@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, collectionData, doc, docData } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
-import { Legislation } from '@models/legislature';
+import { Legislation, Legislator } from '@models/legislature';
 
 import { Observable } from 'rxjs';
 
@@ -19,31 +19,31 @@ export class LegislatureService {
   };
 
   // This method fetches all state legislation
-  getBillsByState(stateCode: string): Observable<any[]> {
+  getBillsByState(stateCode: string): Observable<Legislation[]> {
     const billsRef = collection(this.firestore, this.getPaths(stateCode).bills);
-    return collectionData(billsRef, { idField: 'id' });
+    return collectionData(billsRef, { idField: 'id' }) as Observable<Legislation[]>;
   }
 
   // This method fetches all state legislators
-  getMembersByState(stateCode: string): Observable<any[]> {
+  getMembersByState(stateCode: string): Observable<Legislator[]> {
     const membersRef = collection(this.firestore, this.getPaths(stateCode).members);
-    return collectionData(membersRef, { idField: 'id' });
+    return collectionData(membersRef, { idField: 'id' }) as Observable<Legislator[]>;
   }
 
   // This method fetches a single bill within a state legislature
-  getBillById(stateCode: string, id: string): Observable<any> {
+  getBillById(stateCode: string, id: string): Observable<Legislation> {
     const path = this.getPaths(stateCode).bills + `/${id}`;
 
     const billRef = doc(this.firestore, path);
-    return docData(billRef, { idField: 'id' });
+    return docData(billRef, { idField: 'id' }) as Observable<Legislation>;
   }
 
   // This method fetches a single member within a state legislature
-  getMemberById(stateCode: string, id: string): Observable<any> {
+  getMemberById(stateCode: string, id: string): Observable<Legislator> {
     const path = this.getPaths(stateCode).members + `/${id}`;
 
     const memberRef = doc(this.firestore, path);
-    return docData(memberRef, { idField: 'id' });
+    return docData(memberRef, { idField: 'id' }) as Observable<Legislator>;
   }
 
   //ADMIN FUNCTIONS
