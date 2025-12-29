@@ -1,6 +1,5 @@
 import { Component, input, inject, computed } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -11,7 +10,7 @@ import { Legislator } from '@models/legislature';
 
 @Component({
   selector: 'app-member-detail',
-  imports: [CommonModule, MatTabsModule, TableComponent, MatProgressSpinnerModule],
+  imports: [MatTabsModule, TableComponent, MatProgressSpinnerModule],
   templateUrl: './member-detail.html',
   styleUrls: ['./member-detail.scss'],
 })

@@ -1,6 +1,6 @@
 import { Component, inject, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SlicePipe } from '@angular/common';
 import { Firestore, collection, getDocs, query, orderBy } from '@angular/fire/firestore';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,7 +21,7 @@ interface SimpleBill {
 @Component({
   selector: 'app-remove-bill',
   imports: [
-    CommonModule,
+    SlicePipe,
     FormsModule,
     MatCardModule,
     MatFormFieldModule,
