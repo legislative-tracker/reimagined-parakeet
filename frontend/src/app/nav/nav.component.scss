@@ -22,11 +22,10 @@ mat-nav-list {
   height: 80%;
 
   .spacer {
-    flex: 1 1 auto; // Pushes everything below this to the bottom
+    flex: 1 1 auto;
   }
 }
 
-// Optional: Make the logout text red to warn the user
 [color='warn'] {
   color: #f44336;
 }
