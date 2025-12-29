@@ -10,23 +10,29 @@ export class LegislatureService {
   private firestore = inject(Firestore);
   private functions = inject(Functions);
 
+  // provides a db path string for the 'get' functions
+  private getPaths = (stateCd: string): { bills: string; members: string } => {
+    return {
+      bills: `legislatures/${stateCd}/legislation`,
+      members: `legislatures/${stateCd}/legislators`,
+    };
+  };
+
   // This method fetches all state legislation
   getBillsByState(stateCode: string): Observable<any[]> {
-    const billsRef = collection(this.firestore, `legislatures/${stateCode}/legislation`);
+    const billsRef = collection(this.firestore, this.getPaths(stateCode).bills);
     return collectionData(billsRef, { idField: 'id' });
   }
 
   // This method fetches all state legislators
   getMembersByState(stateCode: string): Observable<any[]> {
-    const membersRef = collection(this.firestore, `legislatures/${stateCode}/legislators`);
+    const membersRef = collection(this.firestore, this.getPaths(stateCode).members);
     return collectionData(membersRef, { idField: 'id' });
   }
 
   // This method fetches a single bill within a state legislature
   getBillById(stateCode: string, id: string): Observable<any> {
-    const path = `legislatures/${stateCode}/legislation/${id}`;
-
-    console.log(`[DEBUG] 🔎 Firestore Path: ${path}`);
+    const path = this.getPaths(stateCode).bills + `/${id}`;
 
     const billRef = doc(this.firestore, path);
     return docData(billRef, { idField: 'id' });
@@ -34,7 +40,9 @@ export class LegislatureService {
 
   // This method fetches a single member within a state legislature
   getMemberById(stateCode: string, id: string): Observable<any> {
-    const memberRef = doc(this.firestore, `legislatures/${stateCode}/legislators/${id}`);
+    const path = this.getPaths(stateCode).members + `/${id}`;
+
+    const memberRef = doc(this.firestore, path);
     return docData(memberRef, { idField: 'id' });
   }
 
