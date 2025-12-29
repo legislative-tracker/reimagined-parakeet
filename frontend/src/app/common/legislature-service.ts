@@ -1,10 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, collectionData, doc, docData } from '@angular/fire/firestore';
+import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Legislation } from '@models/legislature';
+
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LegislatureService {
   private firestore = inject(Firestore);
+  private functions = inject(Functions);
 
   // This method fetches all state legislation
   getBillsByState(stateCode: string): Observable<any[]> {
@@ -28,5 +32,32 @@ export class LegislatureService {
   getMemberById(stateCode: string, id: string): Observable<any> {
     const memberRef = doc(this.firestore, `legislatures/${stateCode}/legislators/${id}`);
     return docData(memberRef, { idField: 'id' });
+  }
+
+  //ADMIN FUNCTIONS
+  async addBill(state: string, billData: Legislation) {
+    const addBill = httpsCallable(this.functions, 'addBill');
+
+    try {
+      const result = await addBill({ state, bill: billData });
+      console.log('Bill created:', result.data);
+      return result;
+    } catch (error) {
+      console.error('Failed to create bill:', error);
+      throw error;
+    }
+  }
+
+  async removeBill(state: string, billId: string) {
+    const removeBill = httpsCallable(this.functions, 'removeBill');
+
+    try {
+      const result = await removeBill({ state, billId });
+      console.log('Bill created:', result.data);
+      return result;
+    } catch (error) {
+      console.error('Failed to create bill:', error);
+      throw error;
+    }
   }
 }

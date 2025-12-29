@@ -5,10 +5,6 @@ import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { switchMap, of, tap } from 'rxjs';
 
-interface Bill {
-  id: string;
-}
-
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private auth = inject(Auth);
@@ -116,32 +112,6 @@ export class AuthService {
     } catch (error: any) {
       console.error('Demotion failed:', error);
       // Re-throw so the UI component can show the specific error message
-      throw error;
-    }
-  }
-
-  async addBill(state: string, billData: Bill) {
-    const addBill = httpsCallable(this.functions, 'addBill');
-
-    try {
-      const result = await addBill({ state, bill: billData });
-      console.log('Bill created:', result.data);
-      return result;
-    } catch (error) {
-      console.error('Failed to create bill:', error);
-      throw error;
-    }
-  }
-
-  async removeBill(state: string, billId: string) {
-    const removeBill = httpsCallable(this.functions, 'removeBill');
-
-    try {
-      const result = await removeBill({ state, billId });
-      console.log('Bill created:', result.data);
-      return result;
-    } catch (error) {
-      console.error('Failed to create bill:', error);
       throw error;
     }
   }

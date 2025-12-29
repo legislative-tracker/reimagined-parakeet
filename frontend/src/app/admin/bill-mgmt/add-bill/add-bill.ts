@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '@common/auth-service';
 import { ImplementedStatePairs } from '@common/implemented-states';
+import { LegislatureService } from '@common/legislature-service';
 
 @Component({
   selector: 'app-add-bill',
@@ -27,6 +28,7 @@ import { ImplementedStatePairs } from '@common/implemented-states';
 })
 export class AddBill {
   private auth = inject(AuthService);
+  private legislature = inject(LegislatureService);
   private snackBar = inject(MatSnackBar);
 
   // Form State
@@ -50,7 +52,7 @@ export class AddBill {
 
     try {
       // Call the service method we created earlier
-      await this.auth.addBill(this.state, newBill);
+      await this.legislature.addBill(this.state, newBill);
 
       this.snackBar.open(`Success! Bill ${this.billId} added.`, 'Close', {
         duration: 3000,
