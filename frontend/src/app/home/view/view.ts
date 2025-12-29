@@ -3,9 +3,6 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
 
-// Test
-import { effect, untracked } from '@angular/core';
-
 // Angular Material Imports
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -39,14 +36,11 @@ export class View {
     [1, 2].includes(this.selectedTabIndex()) ? this.stateCd() : null
   );
 
-  // --- Resources (Data Fetchers) ---
+  // --- Resources ---
 
   billsResource = rxResource({
-    // v20 CHANGE: 'request' -> 'params'
     params: () => this.billsRequest(),
 
-    // v20 CHANGE: 'loader' -> 'stream'
-    // Also destructure 'params' instead of 'request'
     stream: ({ params: stateCode }: { params: string | null }) => {
       if (!stateCode) return of([]);
       return this.legislatureService.getBillsByState(stateCode);
@@ -71,27 +65,5 @@ export class View {
 
   onTabChange(index: number) {
     this.selectedTabIndex.set(index);
-  }
-
-  constructor() {
-    effect(() => {
-      // 1. Log the Input Signal
-      const currentState = this.stateCd();
-      console.log('🔍 Current State Input:', currentState);
-
-      // 2. Log the Request Signal (Computed)
-      const req = this.billsRequest();
-      console.log('🔍 Bills Request Param:', req);
-
-      // 3. Log the Resource State
-      // We use untracked() for the resource values to avoid infinite loops if we were writing signals,
-      // but here it helps to just see the snapshot when other things change.
-      console.log('Resource Status:', {
-        isLoading: this.billsResource.isLoading(),
-        error: this.billsResource.error(),
-        hasValue: !!this.billsResource.value(),
-        valueLength: this.billsResource.value()?.length,
-      });
-    });
   }
 }
