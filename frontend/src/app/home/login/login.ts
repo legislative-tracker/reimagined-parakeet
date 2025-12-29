@@ -1,7 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from '@common/auth-service';
+import { AuthService } from 'src/app/core/auth-service';
 import { Router } from '@angular/router';
 
 @Component({

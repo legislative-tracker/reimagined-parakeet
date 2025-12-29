@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { LegislatureService } from '@common/legislature-service';
-import { TableComponent } from '@common/table/table.component';
+import { LegislatureService } from 'src/app/core/legislature-service';
+import { TableComponent } from 'src/app/shared/table/table.component';
 import { SPONSORSHIP_COLS } from '../columns';
 import { Legislator } from '@models/legislature';
 

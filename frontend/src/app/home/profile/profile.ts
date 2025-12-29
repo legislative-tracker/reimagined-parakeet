@@ -4,9 +4,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DatePipe } from '@angular/common';
-import { AuthService } from '@common/auth-service';
-import { AddressForm } from '@common/address-form/address-form.component';
-import { TableComponent } from '@common/table/table.component';
+import { AuthService } from 'src/app/core/auth-service';
+import { AddressForm } from 'src/app/shared/address-form/address-form.component';
+import { TableComponent } from 'src/app/shared/table/table.component';
 import { LEGISLATOR_COLS } from '@models/column-config';
 
 interface SearchAddress {
