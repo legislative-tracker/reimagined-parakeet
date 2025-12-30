@@ -6,11 +6,7 @@ export interface Legislator extends Person {
   party: string;
   chamber: string;
   district: string;
-  sponsorships?: {
-    billId: string;
-    version: string;
-    name: string;
-  }[];
+  sponsorships?: Identifier[];
 }
 
 export interface Legislation extends Motion {

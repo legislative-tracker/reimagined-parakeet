@@ -3,10 +3,7 @@ import { MatTableModule, MatTable } from '@angular/material/table';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { RouterLink } from '@angular/router';
 
-export interface ColumnConfig<T> {
-  key: keyof T & string; // Object property (e.g., 'billNumber')
-  label: string; // Header text (e.g., 'Bill #')
-}
+import { ColumnConfig } from '@models/column-config';
 
 @Component({
   selector: 'app-table',
@@ -17,9 +14,9 @@ export interface ColumnConfig<T> {
 export class TableComponent<T> {
   dataSource = input.required<T[]>();
   columnSource = input.required<ColumnConfig<T>[]>();
+  routeType = input.required<'bill' | 'member'>();
   chamber = input<'SENATE' | 'ASSEMBLY'>();
-  stateCd = input<string>(''); // Passed from parent or route
-  routeType = input<'bill' | 'member'>('bill');
+  stateCd = input<string>(); // Passed from parent or route
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = computed(() => this.columnSource().map((c) => c.key));
