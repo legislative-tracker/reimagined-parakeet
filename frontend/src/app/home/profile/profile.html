@@ -9,7 +9,7 @@
     <h1>Hello, {{ u['displayName'] }}!</h1>
   </div>
 
-  <p>Your last login was {{ u['lastLogin'] }}</p>
+  <p>Your last login was {{ u['lastLogin'].toDate() | date : 'medium' }}</p>
   <mat-list>
     <mat-list-item>
       <mat-icon matListItemIcon>person</mat-icon>

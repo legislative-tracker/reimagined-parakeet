@@ -1,10 +1,11 @@
+import { Timestamp } from 'firebase/firestore';
 import { Legislator } from './legislature';
 
 export interface AppUser {
   displayName: string;
   email: string;
   uid: string;
-  lastLogin: string;
+  lastLogin: Timestamp;
   phoneNumber?: string;
   photoURL: string;
   districts: {
