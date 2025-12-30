@@ -3,7 +3,10 @@ import { Auth, user, signInWithPopup, GoogleAuthProvider, signOut, User } from '
 import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { Functions, httpsCallable } from '@angular/fire/functions';
-import { switchMap, of, tap } from 'rxjs';
+import { switchMap, of, tap, Observable } from 'rxjs';
+
+// App Imports
+import { AppUser } from '../models/user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -35,7 +38,7 @@ export class AuthService {
         if (!user) return of(null);
 
         const userRef = doc(this.firestore, `users/${user.uid}`);
-        return docData(userRef);
+        return docData(userRef) as Observable<AppUser>;
       })
     )
   );
@@ -46,7 +49,6 @@ export class AuthService {
 
     if (credential.user) {
       const userRef = doc(this.firestore, `users/${credential.user.uid}`);
-      // Use { merge: true } to avoid overwriting existing data
       await setDoc(
         userRef,
         {
@@ -68,50 +70,42 @@ export class AuthService {
   }
 
   async toggleFavorite(billId: string) {
-    const user = this.firebaseUser();
-    if (!user) return;
+    const profile = this.userProfile();
+    if (!profile) return;
 
-    const currentFavorites = (this.userProfile() as any)?.favorites || [];
+    const currentFavorites = profile.favorites || [];
     const newFavorites = currentFavorites.includes(billId)
       ? currentFavorites.filter((id: string) => id !== billId)
       : [...currentFavorites, billId];
 
-    const userRef = doc(this.firestore, `users/${user.uid}`);
+    const userRef = doc(this.firestore, `users/${profile.uid}`);
     return setDoc(userRef, { favorites: newFavorites }, { merge: true });
   }
 
   async grantAdminPrivileges(email: string) {
-    // 1. Reference the callable function by name
     const addAdminRole = httpsCallable(this.functions, 'addAdminRole');
 
     try {
-      // 2. Trigger the function with the payload
-      // The Cloud Function expects "request.data.email", so we pass { email }
       const result = await addAdminRole({ email });
 
       console.log('Promotion successful:', result.data);
       return result;
     } catch (error: any) {
       console.error('Promotion failed:', error);
-      // Re-throw so the UI component can show the specific error message
       throw error;
     }
   }
 
   async revokeAdminPrivileges(email: string) {
-    // 1. Reference the callable function by name
     const removeAdminRole = httpsCallable(this.functions, 'removeAdminRole');
 
     try {
-      // 2. Trigger the function with the payload
-      // The Cloud Function expects "request.data.email", so we pass { email }
       const result = await removeAdminRole({ email });
 
       console.log('Demotion successful:', result.data);
       return result;
     } catch (error: any) {
       console.error('Demotion failed:', error);
-      // Re-throw so the UI component can show the specific error message
       throw error;
     }
   }

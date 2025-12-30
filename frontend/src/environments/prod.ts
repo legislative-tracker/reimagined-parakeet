@@ -1,4 +1,5 @@
 export const env = {
+  production: true,
   firebase: {
     projectId: 'tracker-cwapolitical-org',
     appId: '1:204649723919:web:090e371e56888f2ad94b7a',

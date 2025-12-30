@@ -39,7 +39,8 @@
         <app-table
           [dataSource]="u['legislators'].state"
           [columnSource]="legislatorCols"
-          state="ny"
+          routeType="member"
+          stateCd="ny"
         ></app-table>
       </ng-template>
     </mat-tab>
@@ -48,7 +49,8 @@
         <app-table
           [dataSource]="u['legislators'].federal"
           [columnSource]="legislatorCols"
-          state="us"
+          routeType="member"
+          stateCd="us"
         ></app-table>
       </ng-template>
     </mat-tab>

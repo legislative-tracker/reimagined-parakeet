@@ -5,7 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { LegislatureService } from 'src/app/core/legislature-service';
 import { TableComponent } from 'src/app/shared/table/table.component';
-import { SPONSORSHIP_COLS } from '../columns';
+import { SPONSORSHIP_COLS } from '@models/column-config';
 import { Legislator } from '@models/legislature';
 
 @Component({
