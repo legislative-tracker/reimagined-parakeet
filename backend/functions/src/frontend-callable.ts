@@ -105,6 +105,13 @@ export const removeBill = onCall(async (request) => {
   }
 });
 
+// BUSINESS LOGIC
+
+/**
+ * Updates a user's profile
+ * @param userId the user's uid
+ * @param data the data to be added
+ */
 const updateUserProfile = async (userId: string, data: any) => {
   const userRef = db.collection("users").doc(userId);
   await userRef.set(data, { merge: true });
@@ -141,7 +148,7 @@ export const fetchUserReps = onCall(
       const res = await instance("people.geo");
 
       if (isSuccess<OSPerson[]>(res)) {
-        const legislators = {
+        const people = {
           federal: res.results
             .filter((p) => p.jurisdiction.classification === "country")
             .map(mapPersonToLegislator),
@@ -151,18 +158,76 @@ export const fetchUserReps = onCall(
         };
 
         const districts = {
-          federal: legislators.federal.find((p) => p.chamber === "House")
-            ?.district,
+          federal: people.federal.find((p) => p.chamber === "House")?.district,
           state: {
-            assembly: legislators.state.find((p) => p.chamber === "Assembly")
+            assembly: people.state.find((p) => p.chamber === "Assembly")
               ?.district,
-            senate: legislators.state.find((p) => p.chamber === "Senate")
-              ?.district,
+            senate: people.state.find((p) => p.chamber === "Senate")?.district,
           },
         };
 
-        await updateUserProfile(userId, { legislators, districts });
-        return { legislators, districts };
+        // cut the state code out of the federal district number
+        const stateCode: string = districts.federal
+          ?.split("-")[0]
+          .toLowerCase() as string;
+
+        const path = `legislatures/${stateCode}/legislators`;
+
+        console.log("Path = " + path);
+
+        // get legislators from firebase so the Ids are correct
+        const assemblySnapshot = await db
+          .collection(path)
+          .where("chamber", "==", "ASSEMBLY")
+          .where("district", "==", String(districts.state.assembly))
+          .get();
+
+        const senateSnapshot = await db
+          .collection(path)
+          .where("chamber", "==", "SENATE")
+          .where("district", "==", String(districts.state.senate))
+          .get();
+
+        if (assemblySnapshot.empty || senateSnapshot.empty) {
+          console.error("Couldn't find legislators");
+          console.log(assemblySnapshot, senateSnapshot);
+        }
+
+        //deconstruct the snapshot documents
+        const a = assemblySnapshot.docs.map((doc) => {
+          const o = {
+            id: doc.id,
+            ...doc.data(),
+          };
+
+          console.log(o);
+
+          return o;
+        });
+
+        const s = senateSnapshot.docs.map((doc) => {
+          const o = {
+            id: doc.id,
+            ...doc.data(),
+          };
+
+          console.log(o);
+
+          return o;
+        });
+
+        console.log(a, s);
+        const stateLegislators = [...a, ...s];
+
+        await updateUserProfile(userId, {
+          districts,
+          legislators: {
+            federal: people.federal,
+            state: stateLegislators,
+          },
+        });
+
+        return { districts };
       } else {
         throw new HttpsError("unavailable", "Failed to parse data.");
       }
