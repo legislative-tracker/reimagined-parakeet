@@ -8,14 +8,7 @@ import { AuthService } from 'src/app/core/auth-service';
 import { AddressForm } from 'src/app/shared/address-form/address-form.component';
 import { TableComponent } from 'src/app/shared/table/table.component';
 import { LEGISLATOR_COLS } from '@models/column-config';
-
-interface SearchAddress {
-  address: string;
-  address2: string | null;
-  city: string;
-  state: string;
-  postalCode: number;
-}
+import { SearchAddress } from '@models/address';
 
 @Component({
   selector: 'app-profile',
