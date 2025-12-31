@@ -1,16 +1,26 @@
 import { Component, input, inject, computed } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { LegislatureService } from 'src/app/core/legislature-service';
 import { TableComponent } from 'src/app/shared/table/table.component';
 import { SPONSORSHIP_COLS } from '@models/column-config';
 import { Legislator } from '@models/legislature';
+import { ImgFallbackDirective } from '@shared/directives/img-fallback';
 
 @Component({
   selector: 'app-member-detail',
-  imports: [MatTabsModule, TableComponent, MatProgressSpinnerModule],
+  imports: [
+    MatIconModule,
+    MatListModule,
+    MatTabsModule,
+    TableComponent,
+    MatProgressSpinnerModule,
+    ImgFallbackDirective,
+  ],
   templateUrl: './member-detail.html',
   styleUrls: ['./member-detail.scss'],
 })

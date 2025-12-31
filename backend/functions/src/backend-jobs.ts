@@ -50,12 +50,13 @@ export const updateLegislationOnRequest = onRequest(
 export const updateLegislatorsOnRequest = onRequest(
   async (request, response) => {
     const bulkWriter = db.bulkWriter();
-    const state = "New York"; //TODO: refactor when adding new states
+    const stateName = "New York"; //TODO: refactor when adding new states
+    const stateCode = "ny";
     try {
-      const openStatesMembers = await getOpenStatesData(state, "people");
+      const openStatesMembers = await getOpenStatesData(stateName, "people");
 
       const snapshot = await db
-        .collection(`legislatures/${state}/legislators`)
+        .collection(`legislatures/${stateCode}/legislators`)
         .get();
 
       const warnings: string[] = [];
@@ -68,7 +69,7 @@ export const updateLegislatorsOnRequest = onRequest(
         const member = openStatesMembers.find(
           (m: OSPerson) =>
             m.current_role.title === currentData.honorific_prefix &&
-            m.current_role.district == currentData.district
+            m.current_role.district === currentData.district
         );
 
         if (member) {
@@ -87,7 +88,7 @@ export const updateLegislatorsOnRequest = onRequest(
             updated_at: new Date().toISOString(),
           };
 
-          bulkWriter.update(doc.ref, updates);
+          bulkWriter.set(doc.ref, updates, { merge: true });
         } else {
           const warningStr: string = `Couldn't find updates for ${currentData.name}`;
           warnings.push(warningStr);
@@ -102,7 +103,6 @@ export const updateLegislatorsOnRequest = onRequest(
         status: "success",
         timestamp: new Date().toISOString(),
         warnings: warnings,
-        // data: data,
       });
     } catch (error: unknown) {
       logger.error("HTTP Update Failed", error);
