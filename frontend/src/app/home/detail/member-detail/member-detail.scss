@@ -5,3 +5,21 @@
   align-items: center;
   padding: 3rem;
 }
+
+.row {
+  display: flex;
+  flex-direction: row;
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}
+
+.headshot {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  object-position: top center;
+
+  border-radius: 50%;
+}
