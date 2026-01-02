@@ -20,7 +20,7 @@ export interface RuntimeConfig {
 
 const DEFAULT_CONFIG: RuntimeConfig = {
   branding: {
-    logoUrl: 'assets/default-logo.png',
+    logoUrl: 'assets/default_logo.png',
     primaryColor: '#673ab7',
     darkMode: false,
   },
