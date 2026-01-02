@@ -14,6 +14,7 @@ export interface RuntimeConfig {
     logoUrl: string;
     primaryColor: string;
     darkMode?: boolean;
+    faviconUrl?: string;
   };
 }
 
@@ -22,6 +23,7 @@ const DEFAULT_CONFIG: RuntimeConfig = {
     logoUrl: 'assets/default_logo.png',
     primaryColor: '#673ab7',
     darkMode: false,
+    faviconUrl: 'favicon.ico',
   },
 };
 
