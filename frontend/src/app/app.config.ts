@@ -3,6 +3,7 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
   inject,
+  provideAppInitializer,
 } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 
@@ -18,6 +19,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
 
 import { APP_CONFIG } from './core/app-config-token';
+import { ConfigService } from './core/config-service';
 import { routes } from './app.routes';
 import { env } from '../environments/prod';
 
@@ -38,5 +40,8 @@ export const appConfig: ApplicationConfig = {
     UserTrackingService,
     provideFirestore(() => getFirestore()),
     provideFunctions(() => getFunctions()),
+
+    // Block bootstrap until config is loaded
+    provideAppInitializer(() => inject(ConfigService).load()),
   ],
 };

@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ConfigService } from './core/config-service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,7 @@ import { RouterOutlet } from '@angular/router';
   template: '<router-outlet />',
 })
 export class App {
-  protected readonly title = signal('Tracker | CWAPolitical.org');
+  // Set up app branding
+  private readonly configService = inject(ConfigService);
+  protected readonly config = this.configService.config;
 }
