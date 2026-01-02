@@ -3,12 +3,11 @@ import { Firestore, doc, docData } from '@angular/fire/firestore';
 import {
   argbFromHex,
   themeFromSourceColor,
-  hexFromArgb, // <--- IMPORT THIS
+  hexFromArgb,
   Scheme,
 } from '@material/material-color-utilities';
 import { filter, map, take } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
-import { CONFIG } from '@angular/fire/compat/analytics';
 
 export interface RuntimeConfig {
   branding: {
@@ -20,7 +19,7 @@ export interface RuntimeConfig {
 
 const DEFAULT_CONFIG: RuntimeConfig = {
   branding: {
-    logoUrl: 'assets/default-logo.png',
+    logoUrl: 'assets/default_logo.png',
     primaryColor: '#673ab7',
     darkMode: false,
   },
