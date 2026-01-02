@@ -8,11 +8,13 @@ import {
 } from '@material/material-color-utilities';
 import { filter, map, take } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
+import { CONFIG } from '@angular/fire/compat/analytics';
 
 export interface RuntimeConfig {
   branding: {
     logoUrl: string;
     primaryColor: string;
+    darkMode?: boolean;
   };
 }
 
@@ -20,6 +22,7 @@ const DEFAULT_CONFIG: RuntimeConfig = {
   branding: {
     logoUrl: 'assets/default-logo.png',
     primaryColor: '#673ab7',
+    darkMode: false,
   },
 };
 
@@ -32,7 +35,7 @@ export class ConfigService {
   constructor() {
     effect(() => {
       const color = this.config().branding.primaryColor;
-      this.applyAngularMaterialTheme(color);
+      this.applyAngularMaterialTheme(color, this.config().branding.darkMode);
     });
   }
 
@@ -56,11 +59,11 @@ export class ConfigService {
     }
   }
 
-  private applyAngularMaterialTheme(hexColor: string) {
+  private applyAngularMaterialTheme(hexColor: string, darkMode?: boolean) {
     try {
       const sourceColor = argbFromHex(hexColor);
       const theme = themeFromSourceColor(sourceColor);
-      const scheme = theme.schemes.light;
+      const scheme = darkMode ? theme.schemes.dark : theme.schemes.light;
 
       const properties = this.flattenSchemeToCssVars(scheme);
 
