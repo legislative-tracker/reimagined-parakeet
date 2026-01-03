@@ -192,7 +192,7 @@ const performSponsorshipUpdate = async () => {
             const memberData = memberSnapshot.data() as Legislator;
 
             const sponsorshipEntry = {
-              billId: bill.id,
+              id: bill.id,
               version: billVer,
               title: bill.title as string,
             };
@@ -202,7 +202,7 @@ const performSponsorshipUpdate = async () => {
             }
 
             const index = memberData.sponsorships.findIndex(
-              (item) => item.billId === bill.id
+              (item) => item.id === bill.id
             );
 
             if (index === -1) {
