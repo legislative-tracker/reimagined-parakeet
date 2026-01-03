@@ -6,6 +6,7 @@ import { db } from "./config";
 import { getBillUpdates, isEmail, isImageLink } from "./common/helpers";
 import { getOpenStatesData } from "./apis/open-states/functions";
 import { OSPerson } from "./apis/open-states/types";
+import { Legislation, Legislator } from "./models/legislature";
 
 /**
  * Scheduled Functions
@@ -20,6 +21,7 @@ export const nightlyUpdate = onSchedule(
     logger.info("🌙 Starting nightly legislation update...");
 
     performLegislationUpdate();
+    performSponsorshipUpdate();
 
     logger.info("✅ Nightly update finished.");
   }
@@ -144,9 +146,97 @@ const performLegislationUpdate = async () => {
   });
 };
 
+const performSponsorshipUpdate = async () => {
+  const legislaturesSnapshot = await db.collection("legislatures").get();
+  const legislaturesList = legislaturesSnapshot.docs.map((doc) => doc.id);
+
+  const bulkWriter = db.bulkWriter();
+
+  await Promise.all(
+    legislaturesList.map(async (legislature) => {
+      const billsSnapshot = await db
+        .collection(`legislatures/${legislature}/legislation`)
+        .get();
+
+      for (const doc of billsSnapshot.docs) {
+        const billData = doc.data();
+        const bill: Legislation = {
+          id: doc.id,
+          title: billData.title,
+          version: billData.version,
+          cosponsors: billData.cosponsors,
+        };
+
+        if (!bill.cosponsors) continue;
+
+        const billVer =
+          bill.version === "" ? "Original" : (bill.version as string);
+
+        if (!bill.cosponsors[billVer]) continue;
+
+        const currentVersionSponsorIds: string[] = bill.cosponsors[billVer].map(
+          (o: any) => o.identifier
+        );
+
+        await Promise.all(
+          currentVersionSponsorIds.map(async (sponsorId) => {
+            const memberPath = `legislatures/${legislature}/legislators/${sponsorId}`;
+            const memberRef = db.doc(memberPath);
+            const memberSnapshot = await memberRef.get();
+
+            if (!memberSnapshot.exists) {
+              console.warn(`unknown Legislator at: ${memberPath}`);
+              return;
+            }
+
+            const memberData = memberSnapshot.data() as Legislator;
+
+            const sponsorshipEntry = {
+              billId: bill.id,
+              version: billVer,
+              title: bill.title as string,
+            };
+
+            if (!memberData.sponsorships) {
+              memberData.sponsorships = [sponsorshipEntry];
+            }
+
+            const index = memberData.sponsorships.findIndex(
+              (item) => item.billId === bill.id
+            );
+
+            if (index === -1) {
+              memberData.sponsorships.push(sponsorshipEntry);
+            } else {
+              memberData.sponsorships[index].version = billVer;
+            }
+
+            bulkWriter.set(memberRef, memberData, { merge: true });
+          })
+        );
+      }
+    })
+  );
+
+  await bulkWriter.close();
+
+  return { updated: true };
+};
+
 /**
  * Test function
  */
 export const helloWorld = onRequest(async (request, response) => {
-  response.send("Update Complete!");
+  try {
+    const data = await performSponsorshipUpdate();
+
+    response.send({
+      success: true,
+      message: "Update Complete!",
+      time: new Date().toISOString(),
+      data: data,
+    });
+  } catch (error) {
+    response.send({ success: false, message: "Update Failure!", error: error });
+  }
 });
