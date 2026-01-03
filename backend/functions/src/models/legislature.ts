@@ -7,7 +7,7 @@ export interface Legislator extends Person {
   chamber: string;
   district: string;
   sponsorships?: {
-    billId: string;
+    id: string;
     version: string;
     title: string;
   }[];
