@@ -6,13 +6,13 @@ export interface GoogleGeocodingResponse {
   }[];
   formatted_address: string;
   geometry: {
-    bounds: {};
+    bounds: object;
     location: {
       lat: number;
       lng: number;
     };
     location_type: string;
-    viewport: {};
+    viewport: object;
   };
   navigation_points: [];
   place_id: string;

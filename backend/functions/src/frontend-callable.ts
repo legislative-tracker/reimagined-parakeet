@@ -109,10 +109,10 @@ export const removeBill = onCall(async (request) => {
 
 /**
  * Updates a user's profile
- * @param userId the user's uid
- * @param data the data to be added
+ * @param {string} userId the user's uid
+ * @param {object} data the data to be added
  */
-const updateUserProfile = async (userId: string, data: any) => {
+const updateUserProfile = async (userId: string, data: object) => {
   const userRef = db.collection("users").doc(userId);
   await userRef.set(data, { merge: true });
 };
@@ -193,7 +193,7 @@ export const fetchUserReps = onCall(
           console.log(assemblySnapshot, senateSnapshot);
         }
 
-        //deconstruct the snapshot documents
+        // deconstruct the snapshot documents
         const a = assemblySnapshot.docs.map((doc) => {
           const o = {
             id: doc.id,

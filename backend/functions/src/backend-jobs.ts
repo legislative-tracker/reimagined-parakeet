@@ -6,6 +6,7 @@ import { db } from "./config";
 import { getBillUpdates, isEmail, isImageLink } from "./common/helpers";
 import { getOpenStatesData } from "./apis/open-states/functions";
 import { OSPerson } from "./apis/open-states/types";
+import { Legislation, Legislator } from "./models/legislature";
 
 /**
  * Scheduled Functions
@@ -16,10 +17,11 @@ export const nightlyUpdate = onSchedule(
     timeZone: "America/New_York",
     retryCount: 3, // Optional: Retry if it crashes
   },
-  async (event) => {
+  async () => {
     logger.info("🌙 Starting nightly legislation update...");
 
     performLegislationUpdate();
+    performSponsorshipUpdate();
 
     logger.info("✅ Nightly update finished.");
   }
@@ -50,7 +52,7 @@ export const updateLegislationOnRequest = onRequest(
 export const updateLegislatorsOnRequest = onRequest(
   async (request, response) => {
     const bulkWriter = db.bulkWriter();
-    const stateName = "New York"; //TODO: refactor when adding new states
+    const stateName = "New York"; // TODO: refactor when adding new states
     const stateCode = "ny";
     try {
       const openStatesMembers = await getOpenStatesData(stateName, "people");
@@ -62,10 +64,10 @@ export const updateLegislatorsOnRequest = onRequest(
       const warnings: string[] = [];
 
       snapshot.docs.forEach((doc) => {
-        //current legislator data
+        // current legislator data
         const currentData = doc.data();
 
-        //find the corresponding Open States Member
+        // find the corresponding Open States Member
         const member = openStatesMembers.find(
           (m: OSPerson) =>
             m.current_role.title === currentData.honorific_prefix &&
@@ -83,20 +85,20 @@ export const updateLegislatorsOnRequest = onRequest(
             email: isEmail(currentData.email)
               ? currentData.email
               : isEmail(member.email)
-              ? member.email
-              : null,
+                ? member.email
+                : null,
             updated_at: new Date().toISOString(),
           };
 
           bulkWriter.set(doc.ref, updates, { merge: true });
         } else {
-          const warningStr: string = `Couldn't find updates for ${currentData.name}`;
+          const warningStr = `Couldn't find updates for ${currentData.name}`;
           warnings.push(warningStr);
           logger.warn(warningStr);
         }
       });
 
-      //write the updates to firestore
+      // write the updates to firestore
       await bulkWriter.close();
 
       response.send({
@@ -144,9 +146,97 @@ const performLegislationUpdate = async () => {
   });
 };
 
+const performSponsorshipUpdate = async () => {
+  const legislaturesSnapshot = await db.collection("legislatures").get();
+  const legislaturesList = legislaturesSnapshot.docs.map((doc) => doc.id);
+
+  const bulkWriter = db.bulkWriter();
+
+  await Promise.all(
+    legislaturesList.map(async (legislature) => {
+      const billsSnapshot = await db
+        .collection(`legislatures/${legislature}/legislation`)
+        .get();
+
+      for (const doc of billsSnapshot.docs) {
+        const billData = doc.data();
+        const bill: Legislation = {
+          id: doc.id,
+          title: billData.title,
+          version: billData.version,
+          cosponsors: billData.cosponsors,
+        };
+
+        if (!bill.cosponsors) continue;
+
+        const billVer =
+          bill.version === "" ? "Original" : (bill.version as string);
+
+        if (!bill.cosponsors[billVer]) continue;
+
+        const currentVersionSponsorIds: string[] = bill.cosponsors[billVer].map(
+          (o) => o.identifier
+        );
+
+        await Promise.all(
+          currentVersionSponsorIds.map(async (sponsorId) => {
+            const memberPath = `legislatures/${legislature}/legislators/${sponsorId}`;
+            const memberRef = db.doc(memberPath);
+            const memberSnapshot = await memberRef.get();
+
+            if (!memberSnapshot.exists) {
+              console.warn(`unknown Legislator at: ${memberPath}`);
+              return;
+            }
+
+            const memberData = memberSnapshot.data() as Legislator;
+
+            const sponsorshipEntry = {
+              billId: bill.id,
+              version: billVer,
+              title: bill.title as string,
+            };
+
+            if (!memberData.sponsorships) {
+              memberData.sponsorships = [sponsorshipEntry];
+            }
+
+            const index = memberData.sponsorships.findIndex(
+              (item) => item.billId === bill.id
+            );
+
+            if (index === -1) {
+              memberData.sponsorships.push(sponsorshipEntry);
+            } else {
+              memberData.sponsorships[index].version = billVer;
+            }
+
+            bulkWriter.set(memberRef, memberData, { merge: true });
+          })
+        );
+      }
+    })
+  );
+
+  await bulkWriter.close();
+
+  return { updated: true };
+};
+
 /**
  * Test function
  */
 export const helloWorld = onRequest(async (request, response) => {
-  response.send("Update Complete!");
+  try {
+    const data = await performSponsorshipUpdate();
+
+    response.send({
+      success: true,
+      message: "Update Complete!",
+      time: new Date().toISOString(),
+      data: data,
+    });
+  } catch (error) {
+    response.send({ success: false, message: "Update Failure!", error: error });
+  }
 });

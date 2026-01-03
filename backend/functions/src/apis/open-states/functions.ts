@@ -9,8 +9,8 @@ const BASE_URL = "https://v3.openstates.org";
 
 /**
  * Generic function to fetch paginated data from OpenStates
- * @param jurisdiction - The state/jurisdiction name (e.g., "New York", "California")
- * @param targetEndpoint - The API endpoint suffix (e.g., "people", "committees")
+ * @param {string} jurisdiction - The state/jurisdiction name (e.g., "New York", "California")
+ * @param {string} targetEndpoint - The API endpoint suffix (e.g., "people", "committees")
  */
 export async function getOpenStatesData(
   jurisdiction: string,
