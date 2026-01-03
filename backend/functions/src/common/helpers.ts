@@ -19,7 +19,7 @@ const chamberMapping: ChamberMapping = {
     lower: "House",
   },
   state: {
-    //TODO: refactor when implementing a state with different names
+    // TODO: refactor when implementing a state with different names
     upper: "Senate",
     lower: "Assembly",
   },
