@@ -1,4 +1,4 @@
-import { Person, Motion, Identifier } from "popolo-types";
+import { Person, Motion } from "popolo-types";
 
 export interface Legislator extends Person {
   id: string;
@@ -18,9 +18,16 @@ export interface Legislation extends Motion {
   title?: string;
   version?: string;
   cosponsors?: {
-    [key: string]: Identifier[];
+    [key: string]: Cosponsor[];
   };
 }
+
+export type Cosponsor = {
+  id: string;
+  name: string;
+  chamber: string;
+  district: string;
+};
 
 export type Legislature = {
   name: string;

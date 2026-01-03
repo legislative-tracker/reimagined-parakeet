@@ -23,3 +23,10 @@ export type Sponsorship = {
   version: string;
   title: string;
 };
+
+export type Cosponsor = {
+  id: string;
+  name: string;
+  chamber: string;
+  district: string;
+};

@@ -1,5 +1,5 @@
 import { Identifier } from 'popolo-types';
-import { Legislation, Legislator, Sponsorship } from './legislature';
+import { Cosponsor, Legislation, Legislator, Sponsorship } from './legislature';
 
 export interface ColumnConfig<T> {
   key: keyof T & string; // Object property (e.g., 'billNumber')
@@ -27,8 +27,10 @@ export const MEMBER_COLS: ColumnConfig<Legislator>[] = [
   { key: 'district', label: 'District' },
 ];
 
-export const COSPONSOR_COLS: ColumnConfig<Identifier>[] = [
-  { key: 'identifier', label: 'Legislator Id' },
+export const COSPONSOR_COLS: ColumnConfig<Cosponsor>[] = [
+  { key: 'name', label: 'Name' },
+  { key: 'chamber', label: 'Chamber' },
+  { key: 'district', label: 'District' },
 ];
 
 export const SPONSORSHIP_COLS: ColumnConfig<Sponsorship>[] = [
