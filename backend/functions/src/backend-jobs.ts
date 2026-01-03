@@ -16,7 +16,7 @@ export const nightlyUpdate = onSchedule(
     timeZone: "America/New_York",
     retryCount: 3, // Optional: Retry if it crashes
   },
-  async (event) => {
+  async () => {
     logger.info("🌙 Starting nightly legislation update...");
 
     performLegislationUpdate();
@@ -50,7 +50,7 @@ export const updateLegislationOnRequest = onRequest(
 export const updateLegislatorsOnRequest = onRequest(
   async (request, response) => {
     const bulkWriter = db.bulkWriter();
-    const stateName = "New York"; //TODO: refactor when adding new states
+    const stateName = "New York"; // TODO: refactor when adding new states
     const stateCode = "ny";
     try {
       const openStatesMembers = await getOpenStatesData(stateName, "people");
@@ -62,10 +62,10 @@ export const updateLegislatorsOnRequest = onRequest(
       const warnings: string[] = [];
 
       snapshot.docs.forEach((doc) => {
-        //current legislator data
+        // current legislator data
         const currentData = doc.data();
 
-        //find the corresponding Open States Member
+        // find the corresponding Open States Member
         const member = openStatesMembers.find(
           (m: OSPerson) =>
             m.current_role.title === currentData.honorific_prefix &&
@@ -83,20 +83,20 @@ export const updateLegislatorsOnRequest = onRequest(
             email: isEmail(currentData.email)
               ? currentData.email
               : isEmail(member.email)
-              ? member.email
-              : null,
+                ? member.email
+                : null,
             updated_at: new Date().toISOString(),
           };
 
           bulkWriter.set(doc.ref, updates, { merge: true });
         } else {
-          const warningStr: string = `Couldn't find updates for ${currentData.name}`;
+          const warningStr = `Couldn't find updates for ${currentData.name}`;
           warnings.push(warningStr);
           logger.warn(warningStr);
         }
       });
 
-      //write the updates to firestore
+      // write the updates to firestore
       await bulkWriter.close();
 
       response.send({
