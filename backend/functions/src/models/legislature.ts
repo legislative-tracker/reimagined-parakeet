@@ -9,7 +9,7 @@ export interface Legislator extends Person {
   sponsorships?: {
     billId: string;
     version: string;
-    name: string;
+    title: string;
   }[];
 }
 
@@ -21,6 +21,10 @@ export interface Legislation extends Motion {
     [key: string]: Identifier[];
   };
 }
+
+export type Legislature = {
+  name: string;
+};
 
 export interface LegislatureUpdateFnMap<T> {
   [key: string]: {
