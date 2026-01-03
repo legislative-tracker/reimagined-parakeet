@@ -1,8 +1,7 @@
 import got from "got";
-import { Identifier } from "popolo-types";
 import api from "nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
-import { Legislator, Legislation } from "../../models/legislature";
+import { Legislator, Legislation, Cosponsor } from "../../models/legislature";
 
 const nySenateKey = defineSecret("NY_SENATE_KEY");
 
@@ -165,16 +164,18 @@ const mapAPIBillToLegislation = (b: api.Bill): Legislation => {
   return legislation;
 };
 
-const getCosponsors = (b: api.Bill): { [key: string]: Identifier[] } => {
-  const cosponsorsByVersion: { [key: string]: Identifier[] } = {};
+const getCosponsors = (b: api.Bill): { [key: string]: Cosponsor[] } => {
+  const cosponsorsByVersion: { [key: string]: Cosponsor[] } = {};
   const amendmentVersions: string[] = b.amendmentVersions.items;
 
   amendmentVersions.forEach((v: string) => {
-    const cosponsors: Identifier[] = [];
+    const cosponsors: Cosponsor[] = [];
     b.amendments.items[v].coSponsors.items.forEach((c: api.Member) =>
       cosponsors.push({
-        identifier: c.fullName.replaceAll(".", "").replaceAll(" ", "-"),
-        scheme: "legislator id",
+        id: c.fullName.replaceAll(".", "").replaceAll(" ", "-"),
+        name: c.fullName,
+        chamber: c.chamber,
+        district: `${c.districtCode}`,
       })
     );
     cosponsorsByVersion[v === "" ? "Original" : v] = cosponsors;

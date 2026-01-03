@@ -175,7 +175,7 @@ const performSponsorshipUpdate = async () => {
         if (!bill.cosponsors[billVer]) continue;
 
         const currentVersionSponsorIds: string[] = bill.cosponsors[billVer].map(
-          (o) => o.identifier
+          (o) => o.id
         );
 
         await Promise.all(
