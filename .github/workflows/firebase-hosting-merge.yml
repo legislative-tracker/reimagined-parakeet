@@ -53,12 +53,21 @@ jobs:
       # --- DEBUG ---
       - name: Debug Identity
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/service-account.json
+          # 👇 DOUBLE CHECK THIS NAME. Is it the DEV secret or the PROD secret?
+          MY_SECRET_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}
         run: |
-          echo "=== WHO AM I? ==="
-          gcloud auth list
-          echo "=== WHICH PROJECT DOES THIS KEY BELONG TO? ==="
-          grep "project_id" "${{ runner.temp }}/service-account.json"
+          echo "=== CHECKING SECRET CONTENT ==="
+
+          if [ -z "$MY_SECRET_JSON" ]; then
+            echo "❌ ERROR: The secret is EMPTY or the name is WRONG."
+            exit 1
+          fi
+
+          # Use jq to extract JUST the project_id from the JSON
+          PROJECT_ID=$(echo "$MY_SECRET_JSON" | jq -r '.project_id')
+
+          echo "✅ The Secret belongs to Project ID: $PROJECT_ID"
+          echo "⚠️  (You are trying to deploy to: tracker-cwapolitical-org)"
 
       # --- DEPLOY EVERYTHING ---
       - name: Deploy to Firebase
