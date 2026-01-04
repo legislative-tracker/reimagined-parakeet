@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.5](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.4...v0.7.5) (2026-01-04)
+
+
+### Bug Fixes
+
+* **ci:** warn on 'tag X already exists' and continue workflow ([4d88574](https://github.com/legislative-tracker/reimagined-parakeet/commit/4d88574bce30eaa791c9041d051a28d518c897d2))
+* **footer:** corrected "report bug" link ([2de4bb5](https://github.com/legislative-tracker/reimagined-parakeet/commit/2de4bb5adf560e1c12d32be1e3b9887fb86ad2c4))
+
 ### [0.7.4](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.3...v0.7.4) (2026-01-04)
 
 
