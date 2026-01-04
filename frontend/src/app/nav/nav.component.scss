@@ -21,6 +21,11 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  background: var(--mat-sys-primary);
+
+  .title {
+    color: var(--mat-sys-on-primary);
+  }
 }
 
 mat-nav-list {
@@ -45,7 +50,6 @@ mat-nav-list {
 
   max-width: 1200px;
   margin: 0 auto;
-  // width: 100%;
 }
 
 [color='warn'] {
