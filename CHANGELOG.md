@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.3](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.2...v0.7.3) (2026-01-04)
+
+
+### Bug Fixes
+
+* **ci:** wrong project name ([d9c79b7](https://github.com/legislative-tracker/reimagined-parakeet/commit/d9c79b785af4a000dc2553c1d57ffbc0410b5f35))
+
 ### [0.7.2](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.1...v0.7.2) (2026-01-04)
 
 
