@@ -1,57 +1,63 @@
-name: Deploy to Firebase Hosting on merge
+name: Deploy to Firebase Hosting & Functions on merge
 on:
   push:
     branches:
       - main
+permissions:
+  checks: write
+  contents: write
+  pull-requests: write
+
 jobs:
-  build_tag_and_deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: "0" # Required for version calculation
+          fetch-depth: 0 # Required for changelog history
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: "npm"
 
-      # We set DRY_RUN: true so it calculates the version but doesn't tag yet.
-      - name: Calculate Next Version
-        id: version_calc
-        uses: anothrNick/github-tag-action@1.67.0
+      - name: Install Root Dependencies
+        run: npm ci
+
+      # --- RELEASE SECTION ---
+      - name: Automated Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          DEFAULT_BUMP: patch
-          DRY_RUN: true
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          npm run release
+          git push --follow-tags origin main
 
-      - name: Install and Build Functions
+      # --- BUILD FRONTEND ---
+      - name: Install & Build Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
+      # --- BUILD BACKEND ---
+      - name: Install & Build Backend
         run: |
           cd backend/functions
           npm ci
           npm run build
 
-      # We pass the calculated tag into the build command as an environment variable.
-      - name: Install and Build Angular
+      # --- DEPLOY EVERYTHING ---
+      # We use the raw Firebase CLI here to ensure Functions, Rules, and Hosting all go out together.
+      - name: Deploy to Firebase
         env:
-          APP_VERSION: ${{ steps.version_calc.outputs.new_tag }}
+          # We write the secret to a file so the CLI can use it for auth
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/service-account.json
         run: |
-          cd frontend 
-          npm ci
-          echo "export const appVersion = '${{ steps.version_calc.outputs.new_tag }}';" > src/environments/version.ts
-          npm run build
+          # Create the credentials file from the GitHub Secret
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_REIMAGINED_PARAKEET_DEV }}' > ${{ runner.temp }}/service-account.json
 
-      - name: Push New Tag
-        uses: anothrNick/github-tag-action@1.67.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          DEFAULT_BUMP: patch
-          DRY_RUN: false # Now we really tag it
-
-      - name: Deploy to Firebase (Live)
-        run: |
-          npx firebase-tools deploy --token "${{ secrets.FIREBASE_TOKEN }}" --non-interactive
+          # Deploy everything (Hosting, Functions, Firestore Rules, etc.)
+          # Note: We run this from ROOT because that's where your main firebase.json lives
+          npx firebase-tools deploy --project reimagined-parakeet-dev --non-interactive
