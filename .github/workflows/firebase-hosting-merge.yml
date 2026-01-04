@@ -50,7 +50,16 @@ jobs:
           npm ci
           npm run build
 
-      # --- 4. DEPLOY EVERYTHING ---
+      # --- DEBUG ---
+      - name: Debug Auth
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/service-account.json
+        run: |
+          echo "Checking active credential identity..."
+          gcloud auth list
+          gcloud config list project
+
+      # --- DEPLOY EVERYTHING ---
       - name: Deploy to Firebase
         env:
           SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}
