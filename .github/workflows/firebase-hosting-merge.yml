@@ -26,6 +26,8 @@ jobs:
 
       # --- RELEASE SECTION ---
       - name: Automated Release
+        id: release
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
