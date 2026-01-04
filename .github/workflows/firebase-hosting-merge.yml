@@ -61,4 +61,4 @@ jobs:
           ls -lh "${{ runner.temp }}/service-account.json"
 
           # 5. Deploy
-          npx firebase-tools deploy --project reimagined-parakeet-dev --non-interactive
+          npx firebase-tools deploy --project tracker-cwapolitical-org --non-interactive
