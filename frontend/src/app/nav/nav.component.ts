@@ -13,6 +13,7 @@ import { map, shareReplay } from 'rxjs/operators';
 // App imports
 import { AuthService } from '../core/auth-service';
 import { ConfigService } from '../core/config-service';
+import { Footer } from '../core/footer/footer';
 
 @Component({
   selector: 'app-nav',
@@ -28,6 +29,7 @@ import { ConfigService } from '../core/config-service';
     MatListModule,
     MatIconModule,
     AsyncPipe,
+    Footer,
   ],
 })
 export class NavComponent {
