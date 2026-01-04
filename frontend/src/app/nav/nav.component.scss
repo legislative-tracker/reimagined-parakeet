@@ -9,8 +9,8 @@
 .sidenav ::ng-deep .mat-drawer-inner-container {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Force it to fill the drawer */
-  overflow: hidden; /* Optional: prevents double scrollbars if content overflows */
+  height: 100%;
+  overflow: hidden;
 }
 
 .sidenav .mat-toolbar {
