@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.4](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.3...v0.7.4) (2026-01-04)
+
+
+### Features
+
+* **footer:** added footer component ([6029c09](https://github.com/legislative-tracker/reimagined-parakeet/commit/6029c0933dd12886b2cb457cd9dc3400070ea97f))
+* **footer:** added info & links, changed background to primary ([f4e9dc5](https://github.com/legislative-tracker/reimagined-parakeet/commit/f4e9dc5edcc196bb863d236a20b745236c7b1426))
+* **privacy:** created a privacy policy component and appropriate routes ([8f09785](https://github.com/legislative-tracker/reimagined-parakeet/commit/8f0978518191fdd656bcdbe70281900b833911e6))
+
+
+### Bug Fixes
+
+* **nav:** fixed CSS for footer and login/logout btns ([ebe0f15](https://github.com/legislative-tracker/reimagined-parakeet/commit/ebe0f1557142a74de92a8a1a8e91810e03fe5d0d))
+
 ### [0.7.3](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.2...v0.7.3) (2026-01-04)
 
 
