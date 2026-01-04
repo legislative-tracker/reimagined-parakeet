@@ -136,14 +136,16 @@ const performLegislationUpdate = async () => {
     billListByLegislature.map((o) => getBillUpdates(o))
   );
 
-  updates.forEach(async (u) => {
-    const cRef = db.collection(`legislatures/${u.id}/legislation`);
-    const billUpdates = u.bills.map(async (bill) =>
-      cRef.doc(bill.id).set(bill, { merge: true })
-    );
+  await Promise.all(
+    updates.map(async (u) => {
+      const cRef = db.collection(`legislatures/${u.id}/legislation`);
+      const billUpdates = u.bills.map(async (bill) =>
+        cRef.doc(bill.id).set(bill, { merge: true })
+      );
 
-    await Promise.all(billUpdates);
-  });
+      await Promise.all(billUpdates);
+    })
+  );
 };
 
 const performSponsorshipUpdate = async () => {
