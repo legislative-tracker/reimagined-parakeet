@@ -1,12 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
+
+// App imports
 import pkg from '../../../../package.json';
 import { buildDate } from '../../build-info';
 
 @Component({
   selector: 'app-footer',
-  imports: [DatePipe, RouterLink],
+  imports: [RouterLink],
   templateUrl: './footer.html',
   styleUrl: './footer.scss',
 })
