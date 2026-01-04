@@ -1,6 +1,6 @@
 {
   "name": "legislative-tracker",
-  "version": "0.0.0",
+  "version": "0.7.0",
   "description": "Fresh Start for the Legislative Tracker PWA",
   "homepage": "https://github.com/legislative-tracker/reimagined-parakeet#readme",
   "bugs": {
@@ -19,6 +19,14 @@
     "build": "npm run build:backend && npm run build:frontend",
     "serve:backend": "npm run serve --prefix backend/functions",
     "serve:frontend": "npm run start --prefix frontend",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "standard-version",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.3.0",
+    "@commitlint/config-conventional": "^20.3.0",
+    "husky": "^9.1.7",
+    "standard-version": "^9.5.0"
   }
 }

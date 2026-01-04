@@ -1,6 +1,14 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Auth, user, signInWithPopup, GoogleAuthProvider, signOut, User } from '@angular/fire/auth';
-import { Firestore, doc, docData, setDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  doc,
+  docData,
+  setDoc,
+  arrayUnion,
+  arrayRemove,
+  updateDoc,
+} from '@angular/fire/firestore';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { switchMap, of, tap, Observable } from 'rxjs';
@@ -73,13 +81,14 @@ export class AuthService {
     const profile = this.userProfile();
     if (!profile) return;
 
-    const currentFavorites = profile.favorites || [];
-    const newFavorites = currentFavorites.includes(billId)
-      ? currentFavorites.filter((id: string) => id !== billId)
-      : [...currentFavorites, billId];
-
     const userRef = doc(this.firestore, `users/${profile.uid}`);
-    return setDoc(userRef, { favorites: newFavorites }, { merge: true });
+    const isFavorite = profile.favorites?.includes(billId);
+
+    if (isFavorite) {
+      return updateDoc(userRef, { favorites: arrayRemove(billId) });
+    } else {
+      return updateDoc(userRef, { favorites: arrayUnion(billId) });
+    }
   }
 
   async grantAdminPrivileges(email: string) {
