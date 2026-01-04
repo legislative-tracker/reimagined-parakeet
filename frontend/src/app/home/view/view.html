@@ -5,7 +5,9 @@
       <div class="loading-container">
         <mat-spinner diameter="40"></mat-spinner>
       </div>
-      } @else if (selectedTabIndex() === 0) {
+      } @else if (billsResource.error()) {
+      <div class="error">Failed to load bills</div>
+      }@else if (selectedTabIndex() === 0) {
       <app-table
         [dataSource]="bills()"
         [columnSource]="billCols"
@@ -23,6 +25,8 @@
       <div class="loading-container">
         <mat-spinner diameter="40"></mat-spinner>
       </div>
+      } @else if (membersResource.error()) {
+      <div class="error">Failed to load members</div>
       } @else if (selectedTabIndex() === 1) {
       <app-table
         [dataSource]="assemblyMembers()"
@@ -40,6 +44,8 @@
       <div class="loading-container">
         <mat-spinner diameter="40"></mat-spinner>
       </div>
+      } @else if (membersResource.error()) {
+      <div class="error">Failed to load members</div>
       } @else if (selectedTabIndex() === 2) {
       <app-table
         [dataSource]="senateMembers()"
