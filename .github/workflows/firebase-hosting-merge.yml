@@ -51,13 +51,14 @@ jobs:
           npm run build
 
       # --- DEBUG ---
-      - name: Debug Auth
+      - name: Debug Identity
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/service-account.json
         run: |
-          echo "Checking active credential identity..."
+          echo "=== WHO AM I? ==="
           gcloud auth list
-          gcloud config list project
+          echo "=== WHICH PROJECT DOES THIS KEY BELONG TO? ==="
+          grep "project_id" "${{ runner.temp }}/service-account.json"
 
       # --- DEPLOY EVERYTHING ---
       - name: Deploy to Firebase
