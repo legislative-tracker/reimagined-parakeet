@@ -53,21 +53,17 @@ jobs:
       # --- DEBUG ---
       - name: Debug Identity
         env:
-          # 👇 DOUBLE CHECK THIS NAME. Is it the DEV secret or the PROD secret?
           MY_SECRET_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}
         run: |
-          echo "=== CHECKING SECRET CONTENT ==="
+          echo "=== DEBUGGING SERVICE ACCOUNT IDENTITY ==="
 
-          if [ -z "$MY_SECRET_JSON" ]; then
-            echo "❌ ERROR: The secret is EMPTY or the name is WRONG."
-            exit 1
-          fi
+          # Extract the email address from the secret
+          CLIENT_EMAIL=$(echo "$MY_SECRET_JSON" | jq -r '.client_email')
 
-          # Use jq to extract JUST the project_id from the JSON
-          PROJECT_ID=$(echo "$MY_SECRET_JSON" | jq -r '.project_id')
+          echo "🔑 The Key in GitHub Secrets belongs to:"
+          echo "$CLIENT_EMAIL"
 
-          echo "✅ The Secret belongs to Project ID: $PROJECT_ID"
-          echo "⚠️  (You are trying to deploy to: tracker-cwapolitical-org)"
+          echo "=========================================="
 
       # --- DEPLOY EVERYTHING ---
       - name: Deploy to Firebase
