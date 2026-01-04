@@ -3,6 +3,7 @@ import { NavComponent } from './nav/nav.component';
 import { stateGuard } from './core/state-guard';
 import { authGuard } from './core/auth-guard';
 import { adminGuard } from './core/admin-guard';
+import { Privacy } from './legal/privacy/privacy';
 
 export const routes: Routes = [
   {
@@ -67,6 +68,11 @@ export const routes: Routes = [
         loadComponent: () => import('./home/profile/profile').then((m) => m.Profile),
       },
       {
+        path: 'privacy',
+        loadComponent: () => import('./legal/privacy/privacy').then((m) => m.Privacy),
+        title: 'Privacy Policy | Legislative Tracker', // Sets browser tab title
+      },
+      {
         path: ':stateCd',
         pathMatch: 'full',
         canActivate: [stateGuard],
@@ -83,12 +89,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./home/detail/member-detail/member-detail').then((m) => m.MemberDetail),
       },
-      // {
-      //   path: ':stateCd/:id',
-      //   pathMatch: 'full',
-      //   canActivate: [stateGuard],
-      //   loadComponent: () => import('./home/detail/detail').then((m) => m.Detail),
-      // },
     ],
   },
   { path: '**', redirectTo: '' },
