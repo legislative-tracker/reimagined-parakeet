@@ -1,9 +1,16 @@
 .sidenav-container {
-  height: 100%;
+  height: 100vh;
 }
 
 .sidenav {
   width: 150px;
+}
+
+.sidenav ::ng-deep .mat-drawer-inner-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .sidenav .mat-toolbar {
@@ -13,17 +20,36 @@
 .mat-toolbar.mat-primary {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
+  background: var(--mat-sys-primary);
+
+  .title {
+    color: var(--mat-sys-on-primary);
+  }
 }
 
 mat-nav-list {
   display: flex;
   flex-direction: column;
-  height: 80%;
+  flex: 1;
 
   .spacer {
     flex: 1 1 auto;
   }
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1rem;
+
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 [color='warn'] {
