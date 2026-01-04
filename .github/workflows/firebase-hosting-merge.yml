@@ -48,16 +48,17 @@ jobs:
           npm ci
           npm run build
 
-      # --- DEPLOY EVERYTHING ---
-      # We use the raw Firebase CLI here to ensure Functions, Rules, and Hosting all go out together.
+      # --- 4. DEPLOY EVERYTHING ---
       - name: Deploy to Firebase
         env:
-          # We write the secret to a file so the CLI can use it for auth
+          SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/service-account.json
         run: |
-          # Create the credentials file from the GitHub Secret
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_REIMAGINED_PARAKEET_DEV }}' > ${{ runner.temp }}/service-account.json
+          # 3. Write the variable to the file
+          echo "$SERVICE_ACCOUNT_JSON" > "${{ runner.temp }}/service-account.json"
 
-          # Deploy everything (Hosting, Functions, Firestore Rules, etc.)
-          # Note: We run this from ROOT because that's where your main firebase.json lives
+          # 4. Debug: Check if file exists and has content (Masks secrets automatically)
+          ls -lh "${{ runner.temp }}/service-account.json"
+
+          # 5. Deploy
           npx firebase-tools deploy --project reimagined-parakeet-dev --non-interactive
