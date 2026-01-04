@@ -17,13 +17,18 @@ export class Login {
 
   async loginWithGoogle() {
     this.authError.set(null);
-    const result = await this.authService.loginWithGoogle();
 
-    if (result) {
-      // Navigate to the dashboard or previously requested route
-      this.router.navigate(['/profile']);
-    } else {
-      this.authError.set('Unable to authenticate with Google. Please try again.');
+    try {
+      const result = await this.authService.loginWithGoogle();
+
+      if (result) {
+        this.router.navigate(['/profile']);
+      } else {
+        this.authError.set('Unable to authenticate with Google. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Auth Error Code:', error.code);
+      console.error('Auth Error Message:', error.message);
     }
   }
 }
