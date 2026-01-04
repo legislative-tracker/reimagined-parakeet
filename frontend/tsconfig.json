@@ -8,6 +8,8 @@
       "@shared/*": ["src/app/shared/*"],
       "@models/*": ["src/app/models/*"]
     },
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

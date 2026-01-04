@@ -1,0 +1,18 @@
+.app-footer {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  padding: 1rem;
+  margin-top: auto; /* Pushes footer to bottom if using flex-col layout */
+  background: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.875rem;
+}
+.content {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.version {
+  font-family: monospace;
+  opacity: 0.7;
+}
