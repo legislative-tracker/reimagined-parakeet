@@ -18,43 +18,26 @@ export const submitAnonymousIssue = onCall(
     secrets: ["GITHUB_BOT_TOKEN"],
   },
   async (request) => {
-    const token = process.env.GITHUB_BOT_TOKEN;
-
-    console.log("--- DEBUGGING TOKEN ---");
-    if (token) {
-      console.log(`Token exists. Length: ${token.length}`);
-      console.log(`First 3 chars: ${token.substring(0, 3)}`);
-      console.log(`Last 3 chars: ${token.substring(token.length - 3)}`);
-
-      // Check for hidden whitespace (common copy-paste error)
-      if (token.trim().length !== token.length) {
-        console.error("!! WARNING: Token has hidden whitespace !!");
-      }
-    } else {
-      console.error("!! FATAL: GITHUB_BOT_TOKEN is undefined !!");
-    }
-    console.log("-----------------------");
-
-    if (!token) {
-      throw new HttpsError("internal", "Configuration error");
-    }
-
     // Initialize Octokit with a stored secret
-    const octokit = new Octokit({ auth: token });
+    const octokit = new Octokit({ auth: process.env.GITHUB_BOT_TOKEN });
 
     // Validate data (zod or manual checks)
     const { title, body } = request.data;
 
     // Create the issue
     try {
-      await octokit.issues.create({
+      const res = await octokit.issues.create({
         owner: "legislative-tracker",
         repo: "reimagined-parakeet",
         title: `[App Feedback] ${title}`,
         body: `${body}\n\nSubmitted by an anonymous user via the App.`,
         labels: ["user-feedback", "triage-needed"],
       });
-      return { success: true };
+      return {
+        success: true,
+        issueNumber: res.data.number,
+        issueUrl: res.data.html_url,
+      };
     } catch (error) {
       throw new HttpsError("internal", "Failed to post issue");
     }

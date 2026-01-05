@@ -9,6 +9,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+// App Imports
+import { LinkSnackBar } from '@shared/snackbars/link-snackbar/link-snackbar';
 import { FeedbackService } from '../../core/feedback-service';
 
 @Component({
@@ -64,11 +67,15 @@ export class Feedback {
     const formattedBody = `**Type:** ${type.toUpperCase()}\n**Context:** \`${currentUrl}\`\n\n${description}`;
 
     try {
-      await this.feedbackService.sendFeedback(title, formattedBody);
+      const response = await this.feedbackService.sendFeedback(title, formattedBody);
 
-      this.snackBar.open('Feedback submitted successfully!', 'Close', {
-        duration: 3000,
-        panelClass: ['success-snackbar'],
+      this.snackBar.openFromComponent(LinkSnackBar, {
+        duration: 8000, // Give them time to click
+        data: {
+          message: `Issue #${response.issueNumber} successfully submitted.`,
+          linkText: 'View on GitHub',
+          linkUrl: response.issueUrl,
+        },
       });
 
       this.dialogRef.close();
