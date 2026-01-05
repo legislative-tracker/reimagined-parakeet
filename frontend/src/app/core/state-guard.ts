@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { ImplementedStatesList } from 'src/app/core/implemented-states';
+import { ImplementedStatesList } from './implemented-states';
 
 export const stateGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);

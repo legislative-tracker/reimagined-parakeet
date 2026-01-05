@@ -4,6 +4,45 @@ import { auth, db, openStatesKey, googleMapsKey } from "./config";
 import { getGeocode } from "./apis/google-geocoder/functions";
 import { OSPerson } from "./apis/open-states/types";
 import { isSuccess, mapPersonToLegislator } from "./common/helpers";
+import { Octokit } from "@octokit/rest";
+import * as logger from "firebase-functions/logger";
+
+/**
+ * Allows app users to report a bug without having a GitHub login
+ */
+export const submitAnonymousIssue = onCall(
+  {
+    cors: true,
+    timeoutSeconds: 60,
+    region: "us-central1",
+    secrets: ["GITHUB_BOT_TOKEN"],
+  },
+  async (request) => {
+    // Initialize Octokit with a stored secret
+    const octokit = new Octokit({ auth: process.env.GITHUB_BOT_TOKEN });
+
+    // Validate data (zod or manual checks)
+    const { title, body } = request.data;
+
+    // Create the issue
+    try {
+      const res = await octokit.issues.create({
+        owner: "legislative-tracker",
+        repo: "reimagined-parakeet",
+        title: `[App Feedback] ${title}`,
+        body: `${body}\n\nSubmitted by an anonymous user via the App.`,
+        labels: ["user-feedback", "triage-needed"],
+      });
+      return {
+        success: true,
+        issueNumber: res.data.number,
+        issueUrl: res.data.html_url,
+      };
+    } catch (error) {
+      throw new HttpsError("internal", "Failed to post issue");
+    }
+  }
+);
 
 /**
  * Promotes a user to Admin status.
@@ -173,7 +212,7 @@ export const fetchUserReps = onCall(
 
         const path = `legislatures/${stateCode}/legislators`;
 
-        console.log("Path = " + path);
+        logger.log("Path = " + path);
 
         // get legislators from firebase so the Ids are correct
         const assemblySnapshot = await db
@@ -190,7 +229,7 @@ export const fetchUserReps = onCall(
 
         if (assemblySnapshot.empty || senateSnapshot.empty) {
           console.error("Couldn't find legislators");
-          console.log(assemblySnapshot, senateSnapshot);
+          logger.log(assemblySnapshot, senateSnapshot);
         }
 
         // deconstruct the snapshot documents
@@ -200,7 +239,7 @@ export const fetchUserReps = onCall(
             ...doc.data(),
           };
 
-          console.log(o);
+          logger.log(o);
 
           return o;
         });
@@ -211,12 +250,12 @@ export const fetchUserReps = onCall(
             ...doc.data(),
           };
 
-          console.log(o);
+          logger.log(o);
 
           return o;
         });
 
-        console.log(a, s);
+        logger.log(a, s);
         const stateLegislators = [...a, ...s];
 
         await updateUserProfile(userId, {
