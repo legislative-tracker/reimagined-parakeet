@@ -10,7 +10,13 @@ export default defineConfig({
     setupFiles: ['src/test-setup.ts'],
     include: ['**/*.spec.ts'],
     reporters: ['default'],
+    server: {
+      deps: {
+        inline: ['@angular/fire', 'rxfire'],
+      },
+    },
   },
+
   define: {
     'import.meta.vitest': 'undefined',
   },
