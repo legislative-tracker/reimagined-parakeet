@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-import { authGuard } from './auth-guard';
-import { AuthService } from '../services/auth-service';
+import { authGuard } from './auth.guard';
+import { AuthService } from '../services/auth.service';
 
 describe('authGuard', () => {
   // 1. Helper to execute the functional guard in context

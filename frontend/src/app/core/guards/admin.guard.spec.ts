@@ -10,7 +10,7 @@ import { Auth, authState } from '@angular/fire/auth';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { of } from 'rxjs';
 
-import { adminGuard } from './admin-guard';
+import { adminGuard } from './admin.guard';
 
 // Mock the specific Firebase Auth functions we rely on
 vi.mock('@angular/fire/auth', async (importOriginal) => {

@@ -4,7 +4,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // App Imports
-import { LegislatureService } from 'src/app/core/services/legislature-service';
+import { LegislatureService } from 'src/app/core/services/legislature.service';
 import { TableComponent } from 'src/app/shared/table/table.component';
 import { COSPONSOR_COLS } from '@models/column-config';
 import { Legislation } from '@models/legislature';

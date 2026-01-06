@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { LegislatureService } from './legislature-service';
+import { LegislatureService } from './legislature.service';
 import { Firestore, collection, collectionData, doc, docData } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { of } from 'rxjs';

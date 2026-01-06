@@ -8,7 +8,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 
-import { stateGuard } from './state-guard';
+import { stateGuard } from './state.guard';
 
 describe('stateGuard', () => {
   // Helper to run the functional guard inside the Injection Context

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
-import { ConfigService, RuntimeConfig } from './config-service';
+import { ConfigService, RuntimeConfig } from './config.service';
 import { Firestore, doc, docData } from '@angular/fire/firestore';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
