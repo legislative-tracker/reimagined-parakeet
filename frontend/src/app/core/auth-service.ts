@@ -1,62 +1,78 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import { Auth, user, signInWithPopup, GoogleAuthProvider, signOut, User } from '@angular/fire/auth';
-import {
-  Firestore,
-  doc,
-  docData,
-  setDoc,
-  arrayUnion,
-  arrayRemove,
-  updateDoc,
-} from '@angular/fire/firestore';
-import { toSignal, toObservable } from '@angular/core/rxjs-interop';
-import { Functions, httpsCallable } from '@angular/fire/functions';
-import { switchMap, of, tap, Observable } from 'rxjs';
+import { Injectable, inject, signal, computed, Injector } from '@angular/core';
+import { Auth, user, User } from '@angular/fire/auth';
+import { FirebaseApp } from '@angular/fire/app';
+import { Router } from '@angular/router';
+import { AppUser } from '@models/user';
 
-// App Imports
-import { AppUser } from '../models/user';
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthService {
   private auth = inject(Auth);
-  private firestore = inject(Firestore);
-  private functions = inject(Functions);
-  private userSignal = toSignal(user(this.auth));
+  private router = inject(Router);
+  private app = inject(FirebaseApp);
 
-  currentUser = computed(() => this.userSignal());
-  isLoggedIn = computed(() => !!this.userSignal());
+  // Signals
+  userSig = signal<User | null>(null);
+  userProfile = signal<AppUser | null>(null);
 
-  // Fetch the claims from the ID Token
-  isAdmin = toSignal(
-    toObservable(this.userSignal).pipe(
-      switchMap(async (user) => {
-        if (!user) return false;
+  // Computed Signals
+  isLoggedIn = computed(() => !!this.userSig());
+
+  // Secure Admin Check (Initialized to false)
+  isAdmin = signal<boolean>(false);
+
+  constructor() {
+    // Subscribe to the lightweight Auth State (Core Auth SDK only)
+    user(this.auth).subscribe(async (user) => {
+      this.userSig.set(user);
+
+      if (user) {
+        // Secure Admin Check (Auth SDK only, no Firestore needed)
+        // We use the ID Token because it is cryptographically signed and secure.
         const token = await user.getIdTokenResult();
-        return !!token.claims['admin'];
-      })
-    ),
-    { initialValue: false }
-  );
+        this.isAdmin.set(!!token.claims['admin']);
 
-  private firebaseUser = toSignal(user(this.auth));
+        // Lazy Load User Profile (Firestore SDK)
+        this.fetchUserProfile(user.uid);
+      } else {
+        this.userProfile.set(null);
+        this.isAdmin.set(false);
+      }
+    });
+  }
 
-  userProfile = toSignal(
-    toObservable(this.firebaseUser).pipe(
-      switchMap((user) => {
-        if (!user) return of(null);
+  /**
+   * Lazy loads Firestore and subscribes to the user's profile document.
+   */
+  private async fetchUserProfile(uid: string) {
+    const { getFirestore, doc, docData } = await import('@angular/fire/firestore');
 
-        const userRef = doc(this.firestore, `users/${user.uid}`);
-        return docData(userRef) as Observable<AppUser>;
-      })
-    )
-  );
+    const firestore = getFirestore(this.app);
+    const userDoc = doc(firestore, `users/${uid}`);
 
+    docData(userDoc).subscribe((data) => {
+      this.userProfile.set(data as AppUser);
+    });
+  }
+
+  /**
+   * Logs the user in with Google and updates their User Record in Firestore.
+   * Lazily loads both Auth Providers and Firestore.
+   */
   async loginWithGoogle() {
+    // Lazy Load Auth Logic
+    const { GoogleAuthProvider, signInWithPopup } = await import('@angular/fire/auth');
+
     const provider = new GoogleAuthProvider();
     const credential = await signInWithPopup(this.auth, provider);
 
+    // Lazy Load Firestore to save/update the user record
     if (credential.user) {
-      const userRef = doc(this.firestore, `users/${credential.user.uid}`);
+      const { getFirestore, doc, setDoc } = await import('@angular/fire/firestore');
+      const firestore = getFirestore(this.app);
+
+      const userRef = doc(firestore, `users/${credential.user.uid}`);
       await setDoc(
         userRef,
         {
@@ -73,49 +89,43 @@ export class AuthService {
     return credential;
   }
 
+  /**
+   * Logs the user out and clears state.
+   */
   async logout() {
-    return await signOut(this.auth);
+    // Lazy Load SignOut Logic
+    const { signOut } = await import('@angular/fire/auth');
+
+    await signOut(this.auth);
+
+    // Explicitly clear signals (optional, as the user subscription will also fire null)
+    this.userSig.set(null);
+    this.userProfile.set(null);
+    this.isAdmin.set(false);
+
+    this.router.navigate(['/']);
   }
 
+  /**
+   * Toggles a bill as a favorite.
+   * Lazily loads Firestore to perform the write.
+   */
   async toggleFavorite(billId: string) {
     const profile = this.userProfile();
-    if (!profile) return;
+    const currentUser = this.userSig();
 
-    const userRef = doc(this.firestore, `users/${profile.uid}`);
-    const isFavorite = profile.favorites?.includes(billId);
+    if (!profile || !currentUser) return;
 
-    if (isFavorite) {
-      return updateDoc(userRef, { favorites: arrayRemove(billId) });
-    } else {
-      return updateDoc(userRef, { favorites: arrayUnion(billId) });
-    }
-  }
+    const currentFavorites = profile.favorites || [];
+    const newFavorites = currentFavorites.includes(billId)
+      ? currentFavorites.filter((id: string) => id !== billId)
+      : [...currentFavorites, billId];
 
-  async grantAdminPrivileges(email: string) {
-    const addAdminRole = httpsCallable(this.functions, 'addAdminRole');
+    // Lazy Load Firestore for the write operation
+    const { getFirestore, doc, setDoc } = await import('@angular/fire/firestore');
+    const firestore = getFirestore(this.app);
 
-    try {
-      const result = await addAdminRole({ email });
-
-      console.log('Promotion successful:', result.data);
-      return result;
-    } catch (error: any) {
-      console.error('Promotion failed:', error);
-      throw error;
-    }
-  }
-
-  async revokeAdminPrivileges(email: string) {
-    const removeAdminRole = httpsCallable(this.functions, 'removeAdminRole');
-
-    try {
-      const result = await removeAdminRole({ email });
-
-      console.log('Demotion successful:', result.data);
-      return result;
-    } catch (error: any) {
-      console.error('Demotion failed:', error);
-      throw error;
-    }
+    const userRef = doc(firestore, `users/${currentUser.uid}`);
+    return setDoc(userRef, { favorites: newFavorites }, { merge: true });
   }
 }
