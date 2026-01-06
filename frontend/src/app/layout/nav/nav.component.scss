@@ -1,5 +1,31 @@
-.sidenav-container {
+:host {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
+}
+
+.app-header {
+  flex: 0 0 auto;
+  z-index: 20;
+
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+
+  .branding-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 16px;
+  }
+
+  .title {
+    color: var(--mat-sys-on-primary);
+    font-weight: 500;
+  }
+}
+
+.sidenav-container {
+  flex: 1 1 auto;
 }
 
 .sidenav {
@@ -11,21 +37,6 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-}
-
-.sidenav .mat-toolbar {
-  background: inherit;
-}
-
-.mat-toolbar.mat-primary {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--mat-sys-primary);
-
-  .title {
-    color: var(--mat-sys-on-primary);
-  }
 }
 
 mat-nav-list {
@@ -47,11 +58,12 @@ mat-nav-list {
 .main-content {
   flex: 1;
   padding: 1rem;
-
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 [color='warn'] {
-  color: #f44336;
+  color: var(--mat-sys-error);
 }

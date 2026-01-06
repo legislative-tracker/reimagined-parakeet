@@ -20,7 +20,7 @@
     "serve:backend": "npm run serve --prefix backend/functions",
     "serve:frontend": "npm run start --prefix frontend",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release": "standard-version --first-release",
+    "release": "standard-version",
     "prepare": "husky"
   },
   "devDependencies": {

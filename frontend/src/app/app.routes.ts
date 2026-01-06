@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { NavComponent } from './nav/nav.component';
+import { NavComponent } from './layout/nav/nav.component';
 import { stateGuard } from './core/guards/state.guard';
 import { adminGuard } from './core/guards/admin.guard';
 

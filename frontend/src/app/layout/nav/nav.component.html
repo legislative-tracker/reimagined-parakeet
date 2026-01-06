@@ -1,13 +1,22 @@
+<mat-toolbar color="primary" class="app-header">
+  <button type="button" mat-icon-button (click)="drawer.toggle()" aria-label="Toggle sidenav">
+    <mat-icon style="color: white">menu</mat-icon>
+  </button>
+
+  <div class="branding-container">
+    <img [src]="config().branding.logoUrl" alt="Logo" height="32" />
+    <span class="title">| Legislative Tracker</span>
+  </div>
+</mat-toolbar>
+
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav
     #drawer
     class="sidenav"
-    fixedInViewport
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isHandset$ | async) === false"
   >
-    <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item routerLink="/" routerLinkActive="active">
         <mat-icon matListItemIcon>home</mat-icon>
@@ -49,19 +58,9 @@
       }
     </mat-nav-list>
   </mat-sidenav>
+
   <mat-sidenav-content>
     <div class="content-wrapper">
-      <mat-toolbar color="primary">
-        @if (isHandset$ | async) {
-        <button type="button" aria-label="Toggle sidenav" matIconButton (click)="drawer.toggle()">
-          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-        </button>
-        }
-        <div class="branding-container" style="display: flex; align-items: center; gap: 10px">
-          <img [src]="config().branding.logoUrl" alt="Logo" height="32" />
-          <span class="title">| Legislative Tracker</span>
-        </div>
-      </mat-toolbar>
       <main class="main-content">
         <router-outlet />
       </main>
