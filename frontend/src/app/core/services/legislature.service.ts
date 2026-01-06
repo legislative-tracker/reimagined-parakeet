@@ -4,7 +4,7 @@ import { Observable, from } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 
 // App imports
-import { Legislation, Legislator } from '@models/legislature';
+import { Legislation, Legislator } from '@app-models/legislature';
 
 @Injectable({ providedIn: 'root' })
 export class LegislatureService {

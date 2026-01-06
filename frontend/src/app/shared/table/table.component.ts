@@ -3,7 +3,7 @@ import { MatTableModule, MatTable } from '@angular/material/table';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { RouterLink } from '@angular/router';
 
-import { ColumnConfig } from '@models/column-config';
+import { ColumnConfig } from '@app-models/column-config';
 
 @Component({
   selector: 'app-table',

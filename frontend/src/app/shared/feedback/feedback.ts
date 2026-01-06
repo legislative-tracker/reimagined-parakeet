@@ -11,8 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 // App Imports
-import { LinkSnackBar } from '@shared/snackbars/link-snackbar/link-snackbar';
-import { FeedbackService } from '../../core/services/feedback.service';
+import { LinkSnackBar } from '@app-shared/snackbars/link-snackbar/link-snackbar';
+import { FeedbackService } from '@app-core/services/feedback.service';
 
 @Component({
   selector: 'app-feedback',

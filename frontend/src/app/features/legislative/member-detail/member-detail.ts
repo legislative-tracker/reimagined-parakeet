@@ -7,9 +7,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { LegislatureService } from 'src/app/core/services/legislature.service';
 import { TableComponent } from 'src/app/shared/table/table.component';
-import { SPONSORSHIP_COLS } from '@models/column-config';
-import { Legislator } from '@models/legislature';
-import { ImgFallbackDirective } from '@shared/directives/img-fallback';
+import { SPONSORSHIP_COLS } from '@app-models/column-config';
+import { Legislator } from '@app-models/legislature';
+import { ImgFallbackDirective } from '@app-shared/directives/img-fallback';
 
 @Component({
   selector: 'app-member-detail',

@@ -6,8 +6,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 // App Imports
 import { LegislatureService } from 'src/app/core/services/legislature.service';
 import { TableComponent } from 'src/app/shared/table/table.component';
-import { COSPONSOR_COLS } from '@models/column-config';
-import { Legislation } from '@models/legislature';
+import { COSPONSOR_COLS } from '@app-models/column-config';
+import { Legislation } from '@app-models/legislature';
 
 @Component({
   selector: 'app-bill-detail',

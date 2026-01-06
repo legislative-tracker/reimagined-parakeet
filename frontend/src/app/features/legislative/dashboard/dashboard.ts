@@ -9,7 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 // Project Imports
 import { LegislatureService } from 'src/app/core/services/legislature.service';
 import { TableComponent } from 'src/app/shared/table/table.component';
-import { BILL_COLS, MEMBER_COLS } from '@models/column-config';
+import { BILL_COLS, MEMBER_COLS } from '@app-models/column-config';
 
 @Component({
   selector: 'app-dashboard',
