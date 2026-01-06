@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.12](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.11...v0.7.12) (2026-01-06)
+
+
+### Bug Fixes
+
+* **component:** added lazy-loading for Firestore to remove-bill.ts ([c5e7697](https://github.com/legislative-tracker/reimagined-parakeet/commit/c5e769764d0e5ca0822a94a82e96e2d2846095a9))
+
+
+### Chores & Maintenance
+
+* **comments:** removed unnecessary comments ([30de77a](https://github.com/legislative-tracker/reimagined-parakeet/commit/30de77a10f6c8ccf45fb5ecb37ec3d296b0ee130))
+* **pkg:** --first-release doesn't do what I thought it did ([5b69b46](https://github.com/legislative-tracker/reimagined-parakeet/commit/5b69b46f389f7a6c2d885c3ef8c2c5286e462911))
+* **pkg:** standardize on json config files ([f4f42a1](https://github.com/legislative-tracker/reimagined-parakeet/commit/f4f42a197b7656a17d89d3a883f8b5720b90816f))
+* **pkg:** update package settings ([7306a4e](https://github.com/legislative-tracker/reimagined-parakeet/commit/7306a4ef20e62b504e747767f1f610de418d89e8))
+* **routes:** removed unnecessary imports ([3de5cd2](https://github.com/legislative-tracker/reimagined-parakeet/commit/3de5cd2988da9cd3ac7fcd0a28c116735c936c8e))
+
+
+### Code Refactoring
+
+* **auth:** avoid manual subscription to Observable in constructor ([7f35bba](https://github.com/legislative-tracker/reimagined-parakeet/commit/7f35bba2dc5ef761e636a78b0b6a23531522aba4))
+* **core & components:** re-organized based on functionality ([7ad45d7](https://github.com/legislative-tracker/reimagined-parakeet/commit/7ad45d75f279d6cc1bc80eb9b66afc7a032117c2))
+* **dashboard:** renamed 'view' to 'dashboard' for functional clarity ([54e1e53](https://github.com/legislative-tracker/reimagined-parakeet/commit/54e1e534a9087674deddcdbf27f47328825562b9))
+* **dashboard:** switched tabIndex from "magic numbers" to enums for readability ([d12e85c](https://github.com/legislative-tracker/reimagined-parakeet/commit/d12e85cff71737ad6c450905575c1b82ba8b5ded))
+* **layout:** re-organized nav and footer components under the 'layout' folder ([b5c9749](https://github.com/legislative-tracker/reimagined-parakeet/commit/b5c974986297b28e7b01fb5e85a42ec4d1811dfd))
+* **routes:** added route modules for cleanliness ([325cf83](https://github.com/legislative-tracker/reimagined-parakeet/commit/325cf83e0b91cd4e92b21c0b5ca532c0b9645b9e))
+* **services/guards:** renamed with dot-notation for personal sanity ([0596baa](https://github.com/legislative-tracker/reimagined-parakeet/commit/0596baafbc7dccd8b046caf9d87ada8ee03c5ca6))
+* **table:** removed testClick and replaced @Output() with output<T>() ([0754050](https://github.com/legislative-tracker/reimagined-parakeet/commit/0754050aafa6802bd982e802f2e137417919b43d))
+* **tsconfig:** added custom paths & updated imports ([9c0622c](https://github.com/legislative-tracker/reimagined-parakeet/commit/9c0622cefca16a7a990ab776a4fd63d7afa355cc))
+* **tsconfig:** added custom paths & updated imports ([c3084e4](https://github.com/legislative-tracker/reimagined-parakeet/commit/c3084e441be572953c00decaae190891fb5deb39))
+
 ### [0.7.11](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.10...v0.7.11) (2026-01-06)
 
 ### [0.7.10](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.9...v0.7.10) (2026-01-05)
