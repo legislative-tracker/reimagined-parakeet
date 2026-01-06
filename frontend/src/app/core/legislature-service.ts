@@ -1,14 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, doc, docData } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
-import { Legislation, Legislator } from '@models/legislature';
+import { FirebaseApp } from '@angular/fire/app';
+import { Observable, from } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 
-import { Observable } from 'rxjs';
+// App imports
+import { Legislation, Legislator } from '@models/legislature';
 
 @Injectable({ providedIn: 'root' })
 export class LegislatureService {
-  private firestore = inject(Firestore);
-  private functions = inject(Functions);
+  private app = inject(FirebaseApp);
 
   // provides a db path string for the 'get' functions
   private getPaths = (stateCd: string): { bills: string; members: string } => {
@@ -20,38 +20,68 @@ export class LegislatureService {
 
   // This method fetches all state legislation
   getBillsByState(stateCode: string): Observable<Legislation[]> {
-    const billsRef = collection(this.firestore, this.getPaths(stateCode).bills);
-    return collectionData(billsRef, { idField: 'id' }) as Observable<Legislation[]>;
+    // 1. Lazy load the Firestore SDK
+    return from(import('@angular/fire/firestore')).pipe(
+      switchMap((firestoreLib) => {
+        // 2. Instantiate Firestore manually
+        const firestore = firestoreLib.getFirestore(this.app);
+
+        // 3. Create Reference and Data Stream
+        const billsRef = firestoreLib.collection(firestore, this.getPaths(stateCode).bills);
+        return firestoreLib.collectionData(billsRef, { idField: 'id' }) as Observable<
+          Legislation[]
+        >;
+      })
+    );
   }
 
   // This method fetches all state legislators
   getMembersByState(stateCode: string): Observable<Legislator[]> {
-    const membersRef = collection(this.firestore, this.getPaths(stateCode).members);
-    return collectionData(membersRef, { idField: 'id' }) as Observable<Legislator[]>;
+    return from(import('@angular/fire/firestore')).pipe(
+      switchMap((firestoreLib) => {
+        const firestore = firestoreLib.getFirestore(this.app);
+        const membersRef = firestoreLib.collection(firestore, this.getPaths(stateCode).members);
+        return firestoreLib.collectionData(membersRef, { idField: 'id' }) as Observable<
+          Legislator[]
+        >;
+      })
+    );
   }
 
   // This method fetches a single bill within a state legislature
   getBillById(stateCode: string, id: string): Observable<Legislation> {
-    const path = this.getPaths(stateCode).bills + `/${id}`;
-
-    const billRef = doc(this.firestore, path);
-    return docData(billRef, { idField: 'id' }) as Observable<Legislation>;
+    return from(import('@angular/fire/firestore')).pipe(
+      switchMap((firestoreLib) => {
+        const firestore = firestoreLib.getFirestore(this.app);
+        const path = this.getPaths(stateCode).bills + `/${id}`;
+        const billRef = firestoreLib.doc(firestore, path);
+        return firestoreLib.docData(billRef, { idField: 'id' }) as Observable<Legislation>;
+      })
+    );
   }
 
   // This method fetches a single member within a state legislature
   getMemberById(stateCode: string, id: string): Observable<Legislator> {
-    const path = this.getPaths(stateCode).members + `/${id}`;
-
-    const memberRef = doc(this.firestore, path);
-    return docData(memberRef, { idField: 'id' }) as Observable<Legislator>;
+    return from(import('@angular/fire/firestore')).pipe(
+      switchMap((firestoreLib) => {
+        const firestore = firestoreLib.getFirestore(this.app);
+        const path = this.getPaths(stateCode).members + `/${id}`;
+        const memberRef = firestoreLib.doc(firestore, path);
+        return firestoreLib.docData(memberRef, { idField: 'id' }) as Observable<Legislator>;
+      })
+    );
   }
 
   //ADMIN FUNCTIONS
   async addBill(state: string, billData: Legislation) {
-    const addBill = httpsCallable(this.functions, 'addBill');
+    // Lazy load Functions SDK
+    const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
+    const functions = getFunctions(this.app);
+
+    const addBillFn = httpsCallable(functions, 'addBill');
 
     try {
-      const result = await addBill({ state, bill: billData });
+      const result = await addBillFn({ state, bill: billData });
       console.log('Bill created:', result.data);
       return result;
     } catch (error) {
@@ -61,14 +91,17 @@ export class LegislatureService {
   }
 
   async removeBill(state: string, billId: string) {
-    const removeBill = httpsCallable(this.functions, 'removeBill');
+    const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
+    const functions = getFunctions(this.app);
+
+    const removeBillFn = httpsCallable(functions, 'removeBill');
 
     try {
-      const result = await removeBill({ state, billId });
-      console.log('Bill created:', result.data);
+      const result = await removeBillFn({ state, billId });
+      console.log('Bill removed:', result.data);
       return result;
     } catch (error) {
-      console.error('Failed to create bill:', error);
+      console.error('Failed to remove bill:', error);
       throw error;
     }
   }
