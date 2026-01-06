@@ -5,8 +5,14 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@shared/*": ["src/app/shared/*"],
-      "@models/*": ["src/app/models/*"]
+      "@app-admin/*": ["src/app/admin/*"],
+      "@app-core/*": ["src/app/core/*"],
+      "@app-features/*": ["src/app/features/*"],
+      "@app-models/*": ["src/app/models/*"],
+      "@app-pages/*": ["src/app/pages/*"],
+      "@app-root/*": ["src/app/*"],
+      "@app-shared/*": ["src/app/shared/*"],
+      "@project-root/*": ["./*"]
     },
     "resolveJsonModule": true,
     "esModuleInterop": true,

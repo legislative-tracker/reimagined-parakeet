@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { FirebaseApp } from '@angular/fire/app';
 
 // App imports
-import { FeedbackResponse } from '@models/feedback';
+import { FeedbackResponse } from '@app-models/feedback';
 
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {

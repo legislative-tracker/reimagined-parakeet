@@ -2,7 +2,7 @@ import { Injectable, inject, signal, computed, Injector } from '@angular/core';
 import { Auth, user, User } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import { Router } from '@angular/router';
-import { AppUser } from '@models/user';
+import { AppUser } from '@app-models/user';
 
 @Injectable({
   providedIn: 'root',

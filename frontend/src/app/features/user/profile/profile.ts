@@ -9,8 +9,8 @@ import { DatePipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { AddressForm } from 'src/app/shared/address-form/address-form.component';
 import { TableComponent } from 'src/app/shared/table/table.component';
-import { LEGISLATOR_COLS } from '@models/column-config';
-import { SearchAddress } from '@models/address';
+import { LEGISLATOR_COLS } from '@app-models/column-config';
+import { SearchAddress } from '@app-models/address';
 
 @Component({
   selector: 'app-profile',
