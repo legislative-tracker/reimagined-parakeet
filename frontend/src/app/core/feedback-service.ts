@@ -1,14 +1,19 @@
 // frontend/src/app/core/feedback.service.ts
 import { inject, Injectable } from '@angular/core';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { FirebaseApp } from '@angular/fire/app';
+
+// App imports
 import { FeedbackResponse } from '@models/feedback';
 
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {
-  private functions = inject(Functions);
+  private app = inject(FirebaseApp);
 
   async sendFeedback(title: string, body: string): Promise<FeedbackResponse> {
-    const submitIssue = httpsCallable(this.functions, 'submitAnonymousIssue');
+    const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
+
+    const functions = getFunctions(this.app);
+    const submitIssue = httpsCallable(functions, 'submitAnonymousIssue');
 
     const result = await submitIssue({ title, body });
     return result.data as FeedbackResponse;
