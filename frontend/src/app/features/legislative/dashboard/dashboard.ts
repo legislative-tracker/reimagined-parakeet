@@ -12,12 +12,12 @@ import { TableComponent } from 'src/app/shared/table/table.component';
 import { BILL_COLS, MEMBER_COLS } from '@models/column-config';
 
 @Component({
-  selector: 'app-view',
+  selector: 'app-dashboard',
   imports: [MatTabsModule, TableComponent, MatProgressSpinnerModule],
-  templateUrl: './view.html',
-  styleUrl: './view.scss',
+  templateUrl: './dashboard.html',
+  styleUrl: './dashboard.scss',
 })
-export class View {
+export class Dashboard {
   stateCd = input.required<string>();
   private legislatureService = inject(LegislatureService);
 

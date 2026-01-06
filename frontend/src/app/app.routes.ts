@@ -81,7 +81,8 @@ export const routes: Routes = [
         path: ':stateCd',
         pathMatch: 'full',
         canActivate: [stateGuard],
-        loadComponent: () => import('./features/legislative/view/view').then((m) => m.View),
+        loadComponent: () =>
+          import('./features/legislative/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: ':stateCd/bill/:id',
