@@ -103,7 +103,7 @@ export class RemoveBill {
 
     if (!state || !billId) return;
 
-    // 1. Confirm Intent
+    // Confirm Intent
     if (
       !confirm(`ARE YOU SURE?\n\nThis will permanently delete bill ${billId} from the database.`)
     ) {
@@ -113,7 +113,7 @@ export class RemoveBill {
     this.isDeleting.set(true);
 
     try {
-      // 2. Call the Cloud Function via AuthService
+      // Call the Cloud Function via AuthService
       await this.legislature.removeBill(state, billId);
 
       this.snackBar.open('Bill deleted successfully.', 'Close', {
@@ -121,7 +121,7 @@ export class RemoveBill {
         panelClass: ['success-snackbar'],
       });
 
-      // 3. Refresh list
+      // Refresh list
       this.fetchBillsForState(state);
     } catch (error: any) {
       this.snackBar.open(error.message || 'Deletion failed.', 'Close', {
