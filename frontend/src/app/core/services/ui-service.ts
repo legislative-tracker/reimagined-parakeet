@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Feedback } from '../shared/feedback/feedback';
+import { Feedback } from '../../shared/feedback/feedback';
 
 @Injectable({ providedIn: 'root' })
 export class UiService {

@@ -8,9 +8,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService } from 'src/app/core/auth-service';
-import { ImplementedStatePairs } from 'src/app/core/implemented-states';
-import { LegislatureService } from 'src/app/core/legislature-service';
+import { AuthService } from 'src/app/core/services/auth-service';
+import { ImplementedStatePairs } from 'src/app/core/app-config/implemented-states';
+import { LegislatureService } from 'src/app/core/services/legislature-service';
 
 interface SimpleBill {
   id: string;

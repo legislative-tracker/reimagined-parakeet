@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 // App imports
 import pkg from '../../../../package.json';
 import { buildDate } from '../../build-info';
-import { UiService } from '../ui-service';
+import { UiService } from '../services/ui-service';
 
 @Component({
   selector: 'app-footer',

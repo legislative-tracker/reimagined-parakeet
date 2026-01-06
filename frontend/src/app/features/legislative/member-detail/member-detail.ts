@@ -5,7 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { LegislatureService } from 'src/app/core/legislature-service';
+import { LegislatureService } from 'src/app/core/services/legislature-service';
 import { TableComponent } from 'src/app/shared/table/table.component';
 import { SPONSORSHIP_COLS } from '@models/column-config';
 import { Legislator } from '@models/legislature';

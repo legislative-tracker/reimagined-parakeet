@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 // App Imports
 import { LinkSnackBar } from '@shared/snackbars/link-snackbar/link-snackbar';
-import { FeedbackService } from '../../core/feedback-service';
+import { FeedbackService } from '../../core/services/feedback-service';
 
 @Component({
   selector: 'app-feedback',
