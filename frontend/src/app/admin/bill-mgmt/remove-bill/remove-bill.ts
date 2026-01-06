@@ -1,13 +1,15 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SlicePipe } from '@angular/common';
-import { Firestore, collection, getDocs, query, orderBy } from '@angular/fire/firestore';
+import { FirebaseApp } from '@angular/fire/app';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+// App imports
 import { AuthService } from 'src/app/core/services/auth.service';
 import { ImplementedStatePairs } from 'src/app/core/app-config/implemented-states';
 import { LegislatureService } from 'src/app/core/services/legislature.service';
@@ -35,7 +37,8 @@ interface SimpleBill {
 })
 export class RemoveBill {
   public auth = inject(AuthService);
-  private firestore = inject(Firestore);
+
+  private app = inject(FirebaseApp);
   private legislature = inject(LegislatureService);
   private snackBar = inject(MatSnackBar);
 
@@ -67,8 +70,14 @@ export class RemoveBill {
     this.selectedBillId.set(''); // Reset selected bill
 
     try {
+      const { getFirestore, collection, query, orderBy, getDocs } = await import(
+        '@angular/fire/firestore'
+      );
+
+      const firestore = getFirestore(this.app);
+
       // Path: legislatures/{state}/legislation
-      const billsRef = collection(this.firestore, `legislatures/${state}/legislation`);
+      const billsRef = collection(firestore, `legislatures/${state}/legislation`);
       const q = query(billsRef, orderBy('id')); // Sort alphabetically by bill number
 
       const snapshot = await getDocs(q);
