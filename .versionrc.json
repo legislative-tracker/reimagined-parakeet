@@ -12,5 +12,51 @@
       "filename": "frontend/package.json",
       "type": "json"
     }
+  ],
+  "types": [
+    {
+      "type": "build",
+      "section": "Build Artifacts"
+    },
+    {
+      "type": "chore",
+      "section": "Chores & Maintenance"
+    },
+    {
+      "type": "ci",
+      "section": "CI/CD & Build System"
+    },
+    {
+      "type": "docs",
+      "section": "Documentation"
+    },
+    {
+      "type": "feat",
+      "section": "Features"
+    },
+    {
+      "type": "fix",
+      "section": "Bug Fixes"
+    },
+    {
+      "type": "perf",
+      "section": "Performance Improvements"
+    },
+    {
+      "type": "refactor",
+      "section": "Code Refactoring"
+    },
+    {
+      "type": "revert",
+      "hidden": true
+    },
+    {
+      "type": "style",
+      "hidden": true
+    },
+    {
+      "type": "test",
+      "hidden": true
+    }
   ]
 }
