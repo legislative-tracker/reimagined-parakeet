@@ -2,9 +2,9 @@ import { Component, signal, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 // App imports
-import pkg from '../../../../package.json';
-import { buildDate } from '../../build-info';
-import { UiService } from '../ui-service';
+import pkg from '@project-root/package.json';
+import { buildDate } from '@app-root/build-info';
+import { UiService } from '@app-core/services/ui.service';
 
 @Component({
   selector: 'app-footer',

@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { UserManagementService } from '../../user-management.service';
+import { UserManagementService } from '@app-admin/user-management.service';
 
 @Component({
   selector: 'app-admin-panel',

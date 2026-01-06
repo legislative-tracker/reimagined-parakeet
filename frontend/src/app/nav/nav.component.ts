@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
 // App imports
-import { AuthService } from '../core/auth-service';
-import { ConfigService } from '../core/config-service';
+import { AuthService } from '../core/services/auth.service';
+import { ConfigService } from '../core/services/config.service';
 import { Footer } from '../core/footer/footer';
 
 @Component({

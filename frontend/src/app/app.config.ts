@@ -16,8 +16,8 @@ import {
   UserTrackingService,
 } from '@angular/fire/analytics';
 
-import { APP_CONFIG } from './core/app-config-token';
-import { ConfigService } from './core/config-service';
+import { APP_CONFIG } from './core/app-config/app-config-token';
+import { ConfigService } from './core/services/config.service';
 import { routes } from './app.routes';
 import { env } from '../environments/prod';
 
