@@ -1,9 +1,11 @@
-import { Component, Injectable, inject, signal, computed, Signal } from '@angular/core';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Component, inject } from '@angular/core';
+import { FirebaseApp } from '@angular/fire/app'; // Lightweight import
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DatePipe } from '@angular/common';
+
+// App imports
 import { AuthService } from 'src/app/core/auth-service';
 import { AddressForm } from 'src/app/shared/address-form/address-form.component';
 import { TableComponent } from 'src/app/shared/table/table.component';
@@ -18,9 +20,9 @@ import { SearchAddress } from '@models/address';
 })
 export class Profile {
   private auth = inject(AuthService);
-  private functions = inject(Functions);
-  user = this.auth.userProfile;
+  private app = inject(FirebaseApp);
 
+  user = this.auth.userProfile;
   legislatorCols = LEGISLATOR_COLS;
 
   searchAddress = async (e: SearchAddress) => {
@@ -28,9 +30,11 @@ export class Profile {
     if (e.address2) addressStr += `, ${e.address2}`;
     addressStr += `, ${e.city}, ${e.state} ${e.postalCode}`;
 
-    const fetchUserReps = httpsCallable(this.functions, 'fetchUserReps');
-
     try {
+      const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
+
+      const functions = getFunctions(this.app);
+      const fetchUserReps = httpsCallable(functions, 'fetchUserReps');
       const result = await fetchUserReps({ address: addressStr });
       alert('Success!');
     } catch (error) {
