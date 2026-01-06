@@ -14,7 +14,7 @@
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumns()"
-      (click)="testClick(row)"
+      (click)="onRowClick(row)"
       [routerLink]="['/', stateCd(), routeType(), row.id ? row.id : row.identifier]"
       class="clickable-row"
     ></tr>
