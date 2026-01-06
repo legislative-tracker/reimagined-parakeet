@@ -6,10 +6,16 @@ import { of } from 'rxjs';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-// Project Imports
+// App Imports
 import { LegislatureService } from 'src/app/core/services/legislature.service';
 import { TableComponent } from 'src/app/shared/table/table.component';
 import { BILL_COLS, MEMBER_COLS } from '@app-models/column-config';
+
+enum DashboardTab {
+  Bills = 0,
+  Senate = 1,
+  Assembly = 2,
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -21,18 +27,24 @@ export class Dashboard {
   stateCd = input.required<string>();
   private legislatureService = inject(LegislatureService);
 
-  selectedTabIndex = signal(0);
+  selectedTabIndex = signal<DashboardTab>(DashboardTab.Bills);
+
+  Tab = DashboardTab;
   billCols = BILL_COLS;
   memberCols = MEMBER_COLS;
 
   // --- Request Signals (Triggers) ---
 
   // Computes the active state for bills, or null if inactive
-  private billsRequest = computed(() => (this.selectedTabIndex() === 0 ? this.stateCd() : null));
+  private billsRequest = computed(() =>
+    this.selectedTabIndex() === DashboardTab.Bills ? this.stateCd() : null
+  );
 
   // Computes the active state for members, or null if inactive
   private membersRequest = computed(() =>
-    [1, 2].includes(this.selectedTabIndex()) ? this.stateCd() : null
+    [DashboardTab.Senate, DashboardTab.Assembly].includes(this.selectedTabIndex())
+      ? this.stateCd()
+      : null
   );
 
   // --- Resources ---
@@ -55,14 +67,16 @@ export class Dashboard {
   });
 
   // --- Derived State ---
-
   bills = computed(() => this.billsResource.value() ?? []);
   members = computed(() => this.membersResource.value() ?? []);
+
+  isLoading = computed(() => this.billsResource.isLoading() || this.membersResource.isLoading());
+  error = computed(() => this.billsResource.error() || this.membersResource.error());
 
   senateMembers = computed(() => this.members().filter((m) => m.chamber === 'SENATE'));
   assemblyMembers = computed(() => this.members().filter((m) => m.chamber === 'ASSEMBLY'));
 
   onTabChange(index: number) {
-    this.selectedTabIndex.set(index);
+    this.selectedTabIndex.set(index as DashboardTab);
   }
 }

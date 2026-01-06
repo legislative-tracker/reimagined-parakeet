@@ -1,59 +1,56 @@
-<mat-tab-group [selectedIndex]="selectedTabIndex()" (selectedIndexChange)="onTabChange($event)">
-  <mat-tab label="Bills">
-    <ng-template matTabContent>
-      @if (billsResource.isLoading()) {
-      <div class="loading-container">
-        <mat-spinner diameter="40"></mat-spinner>
-      </div>
-      } @else if (billsResource.error()) {
-      <div class="error">Failed to load bills</div>
-      }@else if (selectedTabIndex() === 0) {
-      <app-table
-        [dataSource]="bills()"
-        [columnSource]="billCols"
-        [stateCd]="stateCd()"
-        routeType="bill"
-      >
-      </app-table>
-      }
-    </ng-template>
-  </mat-tab>
+<div class="dashboard-container">
+  @if (isLoading()) {
+  <div class="loading-shade">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+  } @if (error()) {
+  <div class="error-container">
+    <p>Unable to load legislative data.</p>
+  </div>
+  }
 
-  <mat-tab label="Assembly Members">
-    <ng-template matTabContent>
-      @if (membersResource.isLoading()) {
-      <div class="loading-container">
-        <mat-spinner diameter="40"></mat-spinner>
+  <mat-tab-group
+    [selectedIndex]="selectedTabIndex()"
+    (selectedIndexChange)="onTabChange($event)"
+    mat-stretch-tabs="true"
+    animationDuration="0ms"
+  >
+    <mat-tab label="Bills">
+      <div class="tab-content">
+        <app-table
+          [dataSource]="bills()"
+          [columnSource]="billCols"
+          routeType="bill"
+          [stateCd]="stateCd()"
+        >
+        </app-table>
       </div>
-      } @else if (membersResource.error()) {
-      <div class="error">Failed to load members</div>
-      } @else if (selectedTabIndex() === 1) {
-      <app-table
-        [dataSource]="assemblyMembers()"
-        [columnSource]="memberCols"
-        [stateCd]="stateCd()"
-        routeType="member"
-      ></app-table>
-      }
-    </ng-template>
-  </mat-tab>
+    </mat-tab>
 
-  <mat-tab label="Senators">
-    <ng-template matTabContent>
-      @if (membersResource.isLoading()) {
-      <div class="loading-container">
-        <mat-spinner diameter="40"></mat-spinner>
+    <mat-tab label="Senate">
+      <div class="tab-content">
+        <app-table
+          [dataSource]="senateMembers()"
+          [columnSource]="memberCols"
+          routeType="member"
+          chamber="SENATE"
+          [stateCd]="stateCd()"
+        >
+        </app-table>
       </div>
-      } @else if (membersResource.error()) {
-      <div class="error">Failed to load members</div>
-      } @else if (selectedTabIndex() === 2) {
-      <app-table
-        [dataSource]="senateMembers()"
-        [columnSource]="memberCols"
-        [stateCd]="stateCd()"
-        routeType="member"
-      ></app-table>
-      }
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+    </mat-tab>
+
+    <mat-tab label="Assembly">
+      <div class="tab-content">
+        <app-table
+          [dataSource]="assemblyMembers()"
+          [columnSource]="memberCols"
+          routeType="member"
+          chamber="ASSEMBLY"
+          [stateCd]="stateCd()"
+        >
+        </app-table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
