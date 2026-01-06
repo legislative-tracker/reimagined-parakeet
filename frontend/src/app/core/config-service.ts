@@ -1,14 +1,8 @@
-import { Injectable, inject, signal, effect } from '@angular/core';
+import { Injectable, inject, signal, effect, Injector } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { Firestore, doc, docData } from '@angular/fire/firestore';
-import {
-  argbFromHex,
-  themeFromSourceColor,
-  hexFromArgb,
-  Scheme,
-} from '@material/material-color-utilities';
 import { timeout, catchError, map, take } from 'rxjs/operators';
 import { firstValueFrom, of } from 'rxjs';
+import { FirebaseApp } from '@angular/fire/app';
 
 export interface RuntimeConfig {
   branding: {
@@ -28,79 +22,95 @@ const DEFAULT_CONFIG: RuntimeConfig = {
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-  private readonly firestore = inject(Firestore);
   private readonly document = inject(DOCUMENT);
+  private readonly app = inject(FirebaseApp);
 
   readonly config = signal<RuntimeConfig>(DEFAULT_CONFIG);
 
   constructor() {
-    // AUTOMATIC: Whenever Firestore updates, this Effect runs
     effect(() => {
       const branding = this.config().branding;
 
-      // 1. Update Colors
-      this.applyAngularMaterialTheme(branding.primaryColor);
-
-      // 2. Update Favicon (Only if a URL is provided)
+      // Update Favicon
       if (branding.faviconUrl) {
         this.updateFavicon(branding.faviconUrl);
       }
+
+      // Update Theme (Async, heavy dependencies)
+      this.applyAngularMaterialTheme(branding.primaryColor);
     });
   }
 
-  /**
-   * Called by APP_INITIALIZER in app.config.ts
-   */
   async load(): Promise<void> {
-    const configDoc = doc(this.firestore, 'configurations/global');
+    try {
+      // Destructure 'Firestore' (the Class/Token) alongside the functions
+      const { getFirestore, doc, docData } = await import('@angular/fire/firestore');
 
-    const data$ = docData(configDoc).pipe(
-      map((data) => data as RuntimeConfig),
-      timeout(3000),
-      catchError((err) => {
-        console.warn('Config fetch failed, using defaults.', err);
-        return of(null);
-      })
-    );
+      const firestore = getFirestore(this.app);
+      const configDoc = doc(firestore, 'configurations/global');
 
-    // Subscribe for real-time updates
-    data$.subscribe((remoteConfig) => {
-      if (remoteConfig) {
-        this.config.update((current) => ({
-          ...current,
-          branding: { ...current.branding, ...remoteConfig.branding },
-        }));
-      }
-    });
+      const data$ = docData(configDoc).pipe(
+        map((data) => data as RuntimeConfig),
+        timeout(3000),
+        catchError((err) => {
+          console.warn('Config fetch failed, using defaults.', err);
+          return of(null);
+        })
+      );
 
-    // Block app boot until we have the first value
-    await firstValueFrom(data$.pipe(take(1)));
+      data$.subscribe((remoteConfig) => {
+        if (remoteConfig) {
+          this.config.update((current) => ({
+            ...current,
+            branding: { ...current.branding, ...remoteConfig.branding },
+          }));
+        }
+      });
+
+      await firstValueFrom(data$.pipe(take(1)));
+    } catch (e) {
+      console.error('Error loading config', e);
+      // Ensure app doesn't crash if Firestore fails to load
+      return Promise.resolve();
+    }
   }
-
-  // --- PRIVATE DOM HELPERS ---
 
   private updateFavicon(url: string) {
-    // Find the existing <link rel="icon">
     let link: HTMLLinkElement | null = this.document.querySelector("link[rel*='icon']");
-
-    // If missing, create it
     if (!link) {
       link = this.document.createElement('link');
       link.type = 'image/x-icon';
       link.rel = 'icon';
       this.document.head.appendChild(link);
     }
-
-    // Point it to the Firestore URL
     link.href = url;
   }
 
-  private applyAngularMaterialTheme(hexColor: string) {
+  private async applyAngularMaterialTheme(hexColor: string) {
     try {
+      // Dynamic import for Material Color Utilities
+      const { argbFromHex, themeFromSourceColor, hexFromArgb } = await import(
+        '@material/material-color-utilities'
+      );
+
+      // Scoped helper to flatten the scheme
+      const flattenSchemeToCssVars = (scheme: any): Record<string, string> => {
+        const mapping: Record<string, string> = {};
+        const toHex = (argb: number) => hexFromArgb(argb);
+
+        for (const [key, value] of Object.entries(scheme.toJSON())) {
+          if (typeof value !== 'number') continue;
+          const kebabKey = key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
+          mapping[`--mat-sys-color-${kebabKey}`] = toHex(value);
+          mapping[`--mat-sys-${kebabKey}`] = toHex(value);
+        }
+        return mapping;
+      };
+
       const sourceColor = argbFromHex(hexColor);
       const theme = themeFromSourceColor(sourceColor);
       const scheme = theme.schemes.light;
-      const properties = this.flattenSchemeToCssVars(scheme);
+      const properties = flattenSchemeToCssVars(scheme);
 
       const root = this.document.documentElement;
       for (const [key, value] of Object.entries(properties)) {
@@ -109,18 +119,5 @@ export class ConfigService {
     } catch (e) {
       console.error('Failed to generate dynamic theme', e);
     }
-  }
-
-  private flattenSchemeToCssVars(scheme: Scheme): Record<string, string> {
-    const mapping: Record<string, string> = {};
-    const toHex = (argb: number) => hexFromArgb(argb);
-
-    for (const [key, value] of Object.entries(scheme.toJSON())) {
-      if (typeof value !== 'number') continue;
-      const kebabKey = key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
-      mapping[`--mat-sys-color-${kebabKey}`] = toHex(value);
-      mapping[`--mat-sys-${kebabKey}`] = toHex(value);
-    }
-    return mapping;
   }
 }

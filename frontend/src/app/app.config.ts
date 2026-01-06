@@ -15,8 +15,6 @@ import {
   ScreenTrackingService,
   UserTrackingService,
 } from '@angular/fire/analytics';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getFunctions, provideFunctions } from '@angular/fire/functions';
 
 import { APP_CONFIG } from './core/app-config-token';
 import { ConfigService } from './core/config-service';
@@ -34,14 +32,12 @@ export const appConfig: ApplicationConfig = {
       withRouterConfig({ paramsInheritanceStrategy: 'always' })
     ),
     provideFirebaseApp(() => initializeApp(inject(APP_CONFIG).firebase)),
+
     provideAuth(() => getAuth()),
     provideAnalytics(() => getAnalytics()),
     ScreenTrackingService,
     UserTrackingService,
-    provideFirestore(() => getFirestore()),
-    provideFunctions(() => getFunctions()),
 
-    // Block bootstrap until config is loaded
     provideAppInitializer(() => inject(ConfigService).load()),
   ],
 };

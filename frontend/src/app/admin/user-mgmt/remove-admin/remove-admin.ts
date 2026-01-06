@@ -6,7 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService } from 'src/app/core/auth-service';
+
+import { UserManagementService } from '../../user-management.service';
 
 @Component({
   selector: 'app-admin-panel',
@@ -24,7 +25,7 @@ import { AuthService } from 'src/app/core/auth-service';
   styleUrl: './remove-admin.scss',
 })
 export class RemoveAdmin {
-  private auth = inject(AuthService);
+  private userMgmt = inject(UserManagementService);
   private snackBar = inject(MatSnackBar);
 
   email = signal('');
@@ -37,7 +38,7 @@ export class RemoveAdmin {
 
     try {
       // Call the function we added to AuthService
-      await this.auth.revokeAdminPrivileges(this.email());
+      await this.userMgmt.revokeAdminPrivileges(this.email());
 
       this.snackBar.open(`Success! ${this.email()} is no longer an Admin.`, 'Close', {
         duration: 5000,
