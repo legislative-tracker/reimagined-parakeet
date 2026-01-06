@@ -1,7 +1,10 @@
-import { Injectable, inject, signal, computed, Injector } from '@angular/core';
-import { Auth, user, User } from '@angular/fire/auth';
+import { Injectable, inject, signal, computed, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Auth, user } from '@angular/fire/auth';
 import { FirebaseApp } from '@angular/fire/app';
 import { Router } from '@angular/router';
+
+// App imports
 import { AppUser } from '@app-models/user';
 
 @Injectable({
@@ -13,29 +16,29 @@ export class AuthService {
   private app = inject(FirebaseApp);
 
   // Signals
-  userSig = signal<User | null>(null);
-  userProfile = signal<AppUser | null>(null);
+  readonly userSig = toSignal(user(this.auth), { initialValue: null });
 
-  // Computed Signals
-  isLoggedIn = computed(() => !!this.userSig());
+  // Derived state
+  readonly isLoggedIn = computed(() => !!this.userSig());
 
-  // Secure Admin Check (Initialized to false)
-  isAdmin = signal<boolean>(false);
+  // State Signals
+  readonly userProfile = signal<AppUser | null>(null);
+  readonly isAdmin = signal<boolean>(false);
 
   constructor() {
     // Subscribe to the lightweight Auth State (Core Auth SDK only)
-    user(this.auth).subscribe(async (user) => {
-      this.userSig.set(user);
+    effect(async () => {
+      const currentUser = this.userSig();
 
-      if (user) {
-        // Secure Admin Check (Auth SDK only, no Firestore needed)
-        // We use the ID Token because it is cryptographically signed and secure.
-        const token = await user.getIdTokenResult();
+      if (currentUser) {
+        // Check for Admin User Token
+        const token = await currentUser.getIdTokenResult();
         this.isAdmin.set(!!token.claims['admin']);
 
-        // Lazy Load User Profile (Firestore SDK)
-        this.fetchUserProfile(user.uid);
+        // Load user profile
+        this.fetchUserProfile(currentUser.uid);
       } else {
+        // Reset State on Logout
         this.userProfile.set(null);
         this.isAdmin.set(false);
       }
@@ -90,18 +93,13 @@ export class AuthService {
   }
 
   /**
-   * Logs the user out and clears state.
+   * Logs the user out.
    */
   async logout() {
     // Lazy Load SignOut Logic
     const { signOut } = await import('@angular/fire/auth');
 
     await signOut(this.auth);
-
-    // Explicitly clear signals (optional, as the user subscription will also fire null)
-    this.userSig.set(null);
-    this.userProfile.set(null);
-    this.isAdmin.set(false);
 
     this.router.navigate(['/']);
   }
