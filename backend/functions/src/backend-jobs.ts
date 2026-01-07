@@ -23,7 +23,7 @@ export const nightlyUpdate = onSchedule(
     performLegislationUpdate();
     performSponsorshipUpdate();
 
-    logger.info("✅ Nightly update finished.");
+    logger.info(" Nightly update finished.");
   }
 );
 
@@ -33,10 +33,10 @@ export const nightlyUpdate = onSchedule(
 export const updateLegislationOnRequest = onRequest(
   async (request, response) => {
     try {
-      // 1. Call the shared logic
+      // Call the shared logic
       const data = await performLegislationUpdate();
 
-      // 2. Send the result to the user (great for debugging!)
+      // Send the result to the user (great for debugging!)
       response.send({
         status: "success",
         timestamp: new Date().toISOString(),

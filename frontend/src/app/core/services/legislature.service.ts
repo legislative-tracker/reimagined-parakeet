@@ -20,13 +20,13 @@ export class LegislatureService {
 
   // This method fetches all state legislation
   getBillsByState(stateCode: string): Observable<Legislation[]> {
-    // 1. Lazy load the Firestore SDK
+    // Lazy load the Firestore SDK
     return from(import('@angular/fire/firestore')).pipe(
       switchMap((firestoreLib) => {
-        // 2. Instantiate Firestore manually
+        // Instantiate Firestore manually
         const firestore = firestoreLib.getFirestore(this.app);
 
-        // 3. Create Reference and Data Stream
+        // Create Reference and Data Stream
         const billsRef = firestoreLib.collection(firestore, this.getPaths(stateCode).bills);
         return firestoreLib.collectionData(billsRef, { idField: 'id' }) as Observable<
           Legislation[]
