@@ -43,7 +43,7 @@ jobs:
         working-directory: frontend
         run: |
           # Standard Angular v20 testing patterns with code coverage enabled
-          npm test -- --watch=false --browsers=ChromeHeadless
+          npm test -- --watch=false
           npm run test:coverage
 
       - name: Build Angular Application
