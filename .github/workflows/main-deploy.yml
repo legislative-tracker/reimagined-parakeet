@@ -77,14 +77,14 @@ jobs:
   release:
     needs: [calculate-version, deploy-production, check-changes]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Verify Deployment Status
-        if: |
-          needs.deploy-production.result == 'failure' || 
-          needs.deploy-production.result == 'cancelled'
-        run: exit 1
 
+    if: |
+      always() &&
+      needs.calculate-version.result == 'success' &&
+      (needs.deploy-production.result == 'success' || needs.deploy-production.result == 'skipped') &&
+      github.ref == 'refs/heads/main'
+
+    steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
