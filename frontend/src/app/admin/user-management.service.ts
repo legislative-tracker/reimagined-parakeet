@@ -11,7 +11,7 @@ export class UserManagementService {
     const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
 
     const functions = getFunctions(this.app);
-    const addAdminRole = httpsCallable(functions, 'addAdminRole');
+    const addAdminRole = httpsCallable(functions, 'admin-addAdminRole');
     try {
       const result = await addAdminRole({ email });
       console.log('Promotion successful:', result.data);
@@ -26,7 +26,7 @@ export class UserManagementService {
     const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
 
     const functions = getFunctions(this.app);
-    const removeAdminRole = httpsCallable(functions, 'removeAdminRole');
+    const removeAdminRole = httpsCallable(functions, 'admin-removeAdminRole');
     try {
       const result = await removeAdminRole({ email });
       console.log('Demotion successful:', result.data);

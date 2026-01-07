@@ -78,7 +78,7 @@ export class LegislatureService {
     const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
     const functions = getFunctions(this.app);
 
-    const addBillFn = httpsCallable(functions, 'addBill');
+    const addBillFn = httpsCallable(functions, 'legislation-addBill');
 
     try {
       const result = await addBillFn({ state, bill: billData });
@@ -94,7 +94,7 @@ export class LegislatureService {
     const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
     const functions = getFunctions(this.app);
 
-    const removeBillFn = httpsCallable(functions, 'removeBill');
+    const removeBillFn = httpsCallable(functions, 'legislation-removeBill');
 
     try {
       const result = await removeBillFn({ state, billId });

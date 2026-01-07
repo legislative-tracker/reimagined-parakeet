@@ -34,7 +34,7 @@ export class Profile {
       const { getFunctions, httpsCallable } = await import('@angular/fire/functions');
 
       const functions = getFunctions(this.app);
-      const fetchUserReps = httpsCallable(functions, 'fetchUserReps');
+      const fetchUserReps = httpsCallable(functions, 'users-fetchUserReps');
       const result = await fetchUserReps({ address: addressStr });
       alert('Success!');
     } catch (error) {

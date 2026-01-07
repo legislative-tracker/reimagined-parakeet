@@ -116,7 +116,7 @@ describe('Profile', () => {
       await component.searchAddress(searchData);
 
       expect(mockGetFunctions).toHaveBeenCalledWith(mockFirebaseApp);
-      expect(mockHttpsCallable).toHaveBeenCalledWith(expect.anything(), 'fetchUserReps');
+      expect(mockHttpsCallable).toHaveBeenCalledWith(expect.anything(), 'users-fetchUserReps');
 
       expect(mockCallableFunction).toHaveBeenCalledWith({
         address: '123 Main St, Apt 4B, Albany, NY 12201',

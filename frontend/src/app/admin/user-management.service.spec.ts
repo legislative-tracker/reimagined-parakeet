@@ -57,7 +57,7 @@ describe('UserManagementService', () => {
 
       // Verify Lazy Loading & Setup
       expect(mockGetFunctions).toHaveBeenCalledWith(mockFirebaseApp);
-      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'addAdminRole');
+      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'admin-addAdminRole');
 
       // Verify Execution
       expect(callableFn).toHaveBeenCalledWith({ email });
@@ -93,7 +93,7 @@ describe('UserManagementService', () => {
       const result = await service.revokeAdminPrivileges(email);
 
       // Verify Setup
-      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'removeAdminRole');
+      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'admin-removeAdminRole');
 
       // Verify Execution
       expect(callableFn).toHaveBeenCalledWith({ email });
