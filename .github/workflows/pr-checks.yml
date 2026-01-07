@@ -1,0 +1,39 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  frontend:
+    uses: ./.github/workflows/workflow-build-frontend.yml
+    with:
+      node-version: 24
+    secrets: inherit
+
+  backend:
+    uses: ./.github/workflows/workflow-build-backend.yml
+
+  preview-deploy:
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: backend-dist
+          path: backend/functions/lib
+
+      - name: Deploy to Preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}"
+          projectId: tracker-cwapolitical-org
+          channelId: "pr-${{ github.event.number }}"
