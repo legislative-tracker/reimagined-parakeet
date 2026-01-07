@@ -2,7 +2,7 @@ name: Sync Main to Dev
 
 on:
   workflow_run:
-    workflows: ["Deploy to Firebase Hosting on merge"]
+    workflows: ["Main Deploy & Release"]
     types:
       - completed
 
