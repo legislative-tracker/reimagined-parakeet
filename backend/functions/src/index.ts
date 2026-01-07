@@ -1,3 +1,5 @@
-// Re-export everything so Firebase can deploy them
-export * from "./frontend-callable";
-export * from "./backend-jobs";
+export * as admin from "./admin/functions";
+export * as users from "./users/functions";
+export * as legislation from "./legislation/functions";
+export * as legislators from "./legislators/functions";
+export * as system from "./system/functions";
