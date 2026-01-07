@@ -1,65 +1,63 @@
-<div class="container">
-  <h1>Privacy Policy</h1>
-  <p class="last-updated">Last Updated: January 4, 2026</p>
+<div class="container privacy-wrapper">
+  <header>
+    <h1>Privacy Policy</h1>
+    <p class="last-updated">Last Updated: {{ lastUpdated() | date : 'longDate' }}</p>
+  </header>
 
   <section>
     <h2>1. Introduction</h2>
     <p>
       Welcome to the Legislative Tracker. We respect your privacy and are committed to protecting
-      your personal data. This privacy policy will inform you as to how we look after your personal
-      data when you visit our application.
+      your personal data.
     </p>
   </section>
 
   <section>
     <h2>2. Data We Collect & How We Use It</h2>
-    <p>We collect and process the following types of data:</p>
-    <ul>
-      <li>
-        <strong>Identity Data:</strong> If you sign in, we store your email address and basic
-        profile information provided by Google Authentication to create your account.
-      </li>
-      <li>
-        <strong>Usage Data:</strong> We store the lists of bills you mark as "Favorites" to provide
-        dashboard functionality.
-      </li>
-      <li>
-        <strong>Address & Location Data (Transient):</strong>
-        You may optionally provide your address to identify your specific legislative districts &
-        representatives. <strong>We do not store this data.</strong> Your address is sent to our
-        geocoding service solely to retrieve your district information and is
-        <strong>discarded immediately</strong> thereafter. Neither your street address nor your
-        geographic coordinates are saved in our database.
-      </li>
-    </ul>
+    <mat-card appearance="outlined" class="data-card">
+      <mat-list>
+        @for (item of dataCategories(); track item.title; let last = $last) {
+
+        <mat-list-item lines="3">
+          <mat-icon matListItemIcon class="category-icon">{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.title }}</span>
+          <p matListItemLine class="category-desc">
+            {{ item.description }}
+            @if (item.importantNote) {
+            <span class="highlight-note">{{ item.importantNote }}</span>
+            }
+          </p>
+        </mat-list-item>
+
+        @if (!last) { <mat-divider></mat-divider> } }
+      </mat-list>
+    </mat-card>
   </section>
 
   <section>
     <h2>3. Data Retention</h2>
     <p>
-      We only retain your personal data (Identity and Favorites) for as long as necessary to fulfil
-      the purposes we collected it for, including for the purposes of satisfying any legal,
-      accounting, or reporting requirements. As stated above, address data is never retained.
+      We only retain your personal data for as long as is necessary to provide the intended
+      functionality of this app. If you would like your personal data removed from our database
+      entirely, please click the "Report Bug" link in the footer to submit the request.
     </p>
   </section>
 
   <section>
     <h2>4. Third-Party Services</h2>
-    <p>
-      This app uses <strong>Google Firebase</strong> for authentication and hosting, and
-      <strong>OpenStates</strong> for legislative data. Please review the
-      <a href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy</a>
-      and the
-      <a href="https://open.pluralpolicy.com/tos/">OpenStates Terms of Service & Privacy Policy</a>
-      to understand how they handle data.
-    </p>
+    <p>This app uses secure third-party services:</p>
+    <div class="policy-links">
+      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+        <mat-icon inline>open_in_new</mat-icon> Google Privacy Policy
+      </a>
+      <a href="https://open.pluralpolicy.com/tos/" target="_blank" rel="noopener noreferrer">
+        <mat-icon inline>open_in_new</mat-icon> OpenStates Terms of Service
+      </a>
+    </div>
   </section>
 
   <section>
     <h2>5. Contact Us</h2>
-    <p>
-      If you have any questions about this privacy policy, please contact us via the "Report a Bug"
-      link in the footer.
-    </p>
+    <p>If you have questions, please contact us via the "Report Bug" link.</p>
   </section>
 </div>
