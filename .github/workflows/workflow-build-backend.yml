@@ -2,6 +2,12 @@ name: Reusable - Build Functions
 
 on:
   workflow_call:
+    inputs:
+      node-version:
+        required: false
+        type: number
+        default: 24
+        description: "The version of Node.js to use for the build."
 
 jobs:
   build:
@@ -10,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: ${{ inputs.node-version }}
           cache: "npm"
           cache-dependency-path: backend/functions/package-lock.json
 

@@ -11,15 +11,32 @@ permissions:
   pull-requests: write
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app_changed: ${{ steps.filter.outputs.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            app:
+              - 'frontend/**'
+              - 'backend/**'
+              - 'firebase.json'
+              - '.firebaserc'
+              - 'package.json'
+              - 'package-lock.json'
+
   calculate-version:
     runs-on: ubuntu-latest
     outputs:
-      new_version: ${{ steps.version_calc.outputs.new_tag }}
+      new_tag: ${{ steps.version_calc.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Calculate Next Version
         id: version_calc
         uses: anothrNick/github-tag-action@1.67.0
@@ -30,20 +47,26 @@ jobs:
           DRY_RUN: true
 
   build-frontend:
-    needs: calculate-version
+    needs: [calculate-version, check-changes]
+
+    if: needs.check-changes.outputs.app_changed == 'true'
     uses: ./.github/workflows/workflow-build-frontend.yml
     with:
       node-version: 24
-
-      app-version: ${{ needs.calculate-version.outputs.new_version }}
+      app-version: ${{ needs.calculate-version.outputs.new_tag }}
     secrets: inherit
 
   build-backend:
+    needs: [check-changes]
+
+    if: needs.check-changes.outputs.app_changed == 'true'
     uses: ./.github/workflows/workflow-build-backend.yml
     secrets: inherit
 
   deploy-production:
-    needs: [build-frontend, build-backend]
+    needs: [build-frontend, build-backend, check-changes]
+
+    if: needs.check-changes.outputs.app_changed == 'true'
     uses: ./.github/workflows/workflow-deploy.yml
     with:
       environmentId: live
@@ -52,17 +75,45 @@ jobs:
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}
 
   release:
-    needs: [calculate-version, deploy-production]
+    needs: [calculate-version, deploy-production, check-changes]
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     steps:
+      - name: Verify Deployment Status
+        if: |
+          needs.deploy-production.result == 'failure' || 
+          needs.deploy-production.result == 'cancelled'
+        run: exit 1
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push New Tag
-        uses: anothrNick/github-tag-action@1.67.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Configure Git User
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Run Standard Version
+        run: |
+          npm run release -- --release-as ${{ needs.calculate-version.outputs.new_tag }} --message "chore(release): %s [skip ci]"
+
+      - name: Push Updates and Tags
+        run: |
+          git push --follow-tags origin main
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.calculate-version.outputs.new_tag }}
+          name: Release ${{ needs.calculate-version.outputs.new_tag }}
+          body_path: CHANGELOG.md
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          DEFAULT_BUMP: patch
-          DRY_RUN: false
