@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 import { NotFound } from './not-found';
 
@@ -8,9 +9,8 @@ describe('NotFound', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotFound]
-    })
-    .compileComponents();
+      imports: [NotFound], // Standalone component
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NotFound);
     component = fixture.componentInstance;
@@ -19,5 +19,10 @@ describe('NotFound', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled).toBeTruthy();
   });
 });

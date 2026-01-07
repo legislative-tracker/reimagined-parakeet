@@ -6,16 +6,16 @@ import { authGuard } from './auth.guard';
 import { AuthService } from '../services/auth.service';
 
 describe('authGuard', () => {
-  // 1. Helper to execute the functional guard in context
+  // Helper to execute the functional guard in context
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => authGuard(...guardParameters));
 
-  // 2. Define mocks
+  // Define mocks
   let authServiceSpy: { isLoggedIn: ReturnType<typeof vi.fn> };
   let routerSpy: { parseUrl: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
-    // 3. Setup spy objects
+    // Setup spy objects
     authServiceSpy = { isLoggedIn: vi.fn() };
     routerSpy = { parseUrl: vi.fn() };
 

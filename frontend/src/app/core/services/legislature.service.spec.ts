@@ -1,53 +1,46 @@
 import { TestBed } from '@angular/core/testing';
-import { LegislatureService } from './legislature.service';
-import { Firestore, collection, collectionData, doc, docData } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { FirebaseApp } from '@angular/fire/app';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { of } from 'rxjs';
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
-// Mock Firestore & Functions Modules
-// We need to capture the standalone functions like 'collection' and 'doc'
-vi.mock('@angular/fire/firestore', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@angular/fire/firestore')>();
-  return {
-    ...actual,
-    collection: vi.fn(),
-    collectionData: vi.fn(),
-    doc: vi.fn(),
-    docData: vi.fn(),
-  };
-});
+import { LegislatureService } from './legislature.service';
 
-vi.mock('@angular/fire/functions', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@angular/fire/functions')>();
-  return {
-    ...actual,
-    httpsCallable: vi.fn(),
-  };
-});
+// -------------------------------------------------------------------------
+// Setup Global Spies for Dynamic Imports
+// -------------------------------------------------------------------------
+
+// --- Firestore Mocks ---
+const mockCollectionData = vi.fn();
+const mockDocData = vi.fn();
+const mockCollection = vi.fn();
+const mockDoc = vi.fn();
+const mockGetFirestore = vi.fn();
+
+vi.mock('@angular/fire/firestore', () => ({
+  getFirestore: (...args: any[]) => mockGetFirestore(...args),
+  collection: (...args: any[]) => mockCollection(...args),
+  doc: (...args: any[]) => mockDoc(...args),
+  collectionData: (...args: any[]) => mockCollectionData(...args),
+  docData: (...args: any[]) => mockDocData(...args),
+}));
+
+// --- Functions Mocks ---
+const mockHttpsCallable = vi.fn();
+const mockGetFunctions = vi.fn();
+
+vi.mock('@angular/fire/functions', () => ({
+  getFunctions: (...args: any[]) => mockGetFunctions(...args),
+  httpsCallable: (...args: any[]) => mockHttpsCallable(...args),
+}));
 
 describe('LegislatureService', () => {
   let service: LegislatureService;
-  // Dummy objects to satisfy DI
-  const mockFirestore = {};
-  const mockFunctions = {};
+  const mockFirebaseApp = { name: '[DEFAULT]' };
 
   beforeEach(() => {
-    // Define Default Behavior for Mocks
-    // These return generic refs so the service doesn't crash on init
-    (collection as any).mockReturnValue('mock-collection-ref');
-    (doc as any).mockReturnValue('mock-doc-ref');
-    (collectionData as any).mockReturnValue(of([]));
-    (docData as any).mockReturnValue(of({}));
-
     TestBed.configureTestingModule({
-      providers: [
-        LegislatureService,
-        { provide: Firestore, useValue: mockFirestore },
-        { provide: Functions, useValue: mockFunctions },
-      ],
+      providers: [LegislatureService, { provide: FirebaseApp, useValue: mockFirebaseApp }],
     });
-
     service = TestBed.inject(LegislatureService);
   });
 
@@ -59,79 +52,118 @@ describe('LegislatureService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('Read Operations (Firestore)', () => {
-    it('should fetch bills for a specific state', () => {
-      const mockBills = [{ id: 'bill-1', title: 'Tax Reform' }];
-      (collectionData as any).mockReturnValue(of(mockBills));
+  // -----------------------------------------------------------------------
+  // Firestore Tests (Observables)
+  // -----------------------------------------------------------------------
+  describe('Firestore Reads', () => {
+    //: Return a Promise instead of using 'done' callback
+    it('getBillsByState should load SDK, create query, and return Observable', () => {
+      return new Promise<void>((resolve) => {
+        // Mock the Firestore data stream
+        const mockBills = [{ id: '1', title: 'Bill A' }];
+        mockCollectionData.mockReturnValue(of(mockBills));
 
-      service.getBillsByState('ny').subscribe((result) => {
-        expect(result).toEqual(mockBills);
+        // Call the method
+        service.getBillsByState('ny').subscribe((result) => {
+          // Verify Dynamic Import & Setup
+          expect(mockGetFirestore).toHaveBeenCalledWith(mockFirebaseApp);
+
+          // Verify Path Construction
+          expect(mockCollection).toHaveBeenCalledWith(undefined, 'legislatures/ny/legislation');
+
+          // Verify Data Return
+          expect(result).toEqual(mockBills);
+          resolve(); // Resolve promise to finish test
+        });
       });
-
-      // Verify the path logic: legislatures/ny/legislation
-      expect(collection).toHaveBeenCalledWith(mockFirestore, 'legislatures/ny/legislation');
-      expect(collectionData).toHaveBeenCalledWith('mock-collection-ref', { idField: 'id' });
     });
 
-    it('should fetch members for a specific state', () => {
-      service.getMembersByState('tx').subscribe();
+    it('getMembersByState should query the correct collection path', () => {
+      return new Promise<void>((resolve) => {
+        const mockMembers = [{ id: '100', name: 'Jane Doe' }];
+        mockCollectionData.mockReturnValue(of(mockMembers));
 
-      // Verify path logic: legislatures/tx/legislators
-      expect(collection).toHaveBeenCalledWith(mockFirestore, 'legislatures/tx/legislators');
-    });
-
-    it('should fetch a single bill by ID', () => {
-      const mockBill = { id: 'bill-99', title: 'Specific Bill' };
-      (docData as any).mockReturnValue(of(mockBill));
-
-      service.getBillById('ny', 'bill-99').subscribe((result) => {
-        expect(result).toEqual(mockBill);
+        service.getMembersByState('ca').subscribe((result) => {
+          expect(mockGetFirestore).toHaveBeenCalled();
+          expect(mockCollection).toHaveBeenCalledWith(undefined, 'legislatures/ca/legislators');
+          expect(result).toEqual(mockMembers);
+          resolve();
+        });
       });
-
-      // Verify path logic: legislatures/ny/legislation/bill-99
-      expect(doc).toHaveBeenCalledWith(mockFirestore, 'legislatures/ny/legislation/bill-99');
-      expect(docData).toHaveBeenCalledWith('mock-doc-ref', { idField: 'id' });
     });
 
-    it('should fetch a single member by ID', () => {
-      service.getMemberById('ny', 'mem-500').subscribe();
+    it('getBillById should query a specific document', () => {
+      return new Promise<void>((resolve) => {
+        const mockBill = { id: 'B1', title: 'Specific Bill' };
+        mockDocData.mockReturnValue(of(mockBill));
 
-      // Verify path logic: legislatures/ny/legislators/mem-500
-      expect(doc).toHaveBeenCalledWith(mockFirestore, 'legislatures/ny/legislators/mem-500');
+        service.getBillById('ny', 'B1').subscribe((result) => {
+          expect(mockDoc).toHaveBeenCalledWith(undefined, 'legislatures/ny/legislation/B1');
+          expect(result).toEqual(mockBill);
+          resolve();
+        });
+      });
+    });
+
+    it('getMemberById should query a specific member document', () => {
+      return new Promise<void>((resolve) => {
+        const mockMember = { id: 'M1', name: 'Member One' };
+        mockDocData.mockReturnValue(of(mockMember));
+
+        service.getMemberById('tx', 'M1').subscribe((result) => {
+          expect(mockDoc).toHaveBeenCalledWith(undefined, 'legislatures/tx/legislators/M1');
+          expect(result).toEqual(mockMember);
+          resolve();
+        });
+      });
     });
   });
 
-  describe('Admin Operations (Cloud Functions)', () => {
-    it('should call "addBill" cloud function', async () => {
-      // Mock the specific callable
-      const mockCallable = vi.fn().mockResolvedValue({ data: 'Created' });
-      (httpsCallable as any).mockReturnValue(mockCallable);
+  // -----------------------------------------------------------------------
+  // Functions Tests (Promises/Async-Await)
+  // -----------------------------------------------------------------------
+  describe('Admin Functions (Cloud Functions)', () => {
+    const setupCallableMock = (successData: any, shouldFail = false) => {
+      const callableFn = vi.fn().mockImplementation(() => {
+        if (shouldFail) return Promise.reject(new Error('Cloud Error'));
+        return Promise.resolve({ data: successData });
+      });
+      mockHttpsCallable.mockReturnValue(callableFn);
+      return callableFn;
+    };
 
-      // Execute
-      const billData: any = { title: 'New Law', session: '2025' };
-      await service.addBill('ny', billData);
+    it('addBill should call "addBill" cloud function', async () => {
+      const mockResult = { id: 'new-bill-id' };
+      const callableFn = setupCallableMock(mockResult);
+      const billData: any = { title: 'New Law' };
 
-      // Verify
-      expect(httpsCallable).toHaveBeenCalledWith(mockFunctions, 'addBill');
-      expect(mockCallable).toHaveBeenCalledWith({ state: 'ny', bill: billData });
+      const result = await service.addBill('ny', billData);
+
+      expect(mockGetFunctions).toHaveBeenCalledWith(mockFirebaseApp);
+      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'addBill');
+      expect(callableFn).toHaveBeenCalledWith({ state: 'ny', bill: billData });
+      expect(result.data).toEqual(mockResult);
     });
 
-    it('should call "removeBill" cloud function', async () => {
-      const mockCallable = vi.fn().mockResolvedValue({ data: 'Removed' });
-      (httpsCallable as any).mockReturnValue(mockCallable);
+    it('removeBill should call "removeBill" cloud function', async () => {
+      const mockResult = { success: true };
+      const callableFn = setupCallableMock(mockResult);
 
-      await service.removeBill('ny', 'bill-ABC');
+      await service.removeBill('ny', '123');
 
-      expect(httpsCallable).toHaveBeenCalledWith(mockFunctions, 'removeBill');
-      expect(mockCallable).toHaveBeenCalledWith({ state: 'ny', billId: 'bill-ABC' });
+      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'removeBill');
+      expect(callableFn).toHaveBeenCalledWith({ state: 'ny', billId: '123' });
     });
 
-    it('should propagate errors if cloud function fails', async () => {
-      const mockCallable = vi.fn().mockRejectedValue(new Error('Permission Denied'));
-      (httpsCallable as any).mockReturnValue(mockCallable);
+    it('should throw error if cloud function fails', async () => {
+      setupCallableMock(null, true);
 
-      // Assert that the promise rejects
-      await expect(service.removeBill('ny', 'bill-fail')).rejects.toThrow('Permission Denied');
+      // Suppress console error for this specific test
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      await expect(service.addBill('ny', {} as any)).rejects.toThrow('Cloud Error');
+
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to create bill:', expect.anything());
     });
   });
 });

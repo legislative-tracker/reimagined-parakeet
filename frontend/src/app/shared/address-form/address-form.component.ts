@@ -26,26 +26,26 @@ export class AddressForm {
   formSubmit = output<any>();
 
   searchAddress = this.fb.group({
-    address: [null, Validators.required],
-    address2: null,
-    city: [null, Validators.required],
-    state: [null, Validators.required],
+    address: ['', Validators.required],
+    address2: '',
+    city: ['', Validators.required],
+    state: ['', Validators.required],
     postalCode: [
-      null,
+      '',
       Validators.compose([Validators.required, Validators.minLength(5), Validators.maxLength(5)]),
     ],
   });
 
   shippingAddress = this.fb.group({
-    company: null,
-    firstName: [null, Validators.required],
-    lastName: [null, Validators.required],
-    address: [null, Validators.required],
-    address2: null,
-    city: [null, Validators.required],
-    state: [null, Validators.required],
+    company: '',
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    address: ['', Validators.required],
+    address2: '',
+    city: ['', Validators.required],
+    state: ['', Validators.required],
     postalCode: [
-      null,
+      '',
       Validators.compose([Validators.required, Validators.minLength(5), Validators.maxLength(5)]),
     ],
     shipping: ['free', Validators.required],
