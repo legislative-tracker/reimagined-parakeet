@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.13](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.12...v0.7.13) (2026-01-06)
+
+
+### Documentation
+
+* **repo:** added general repo documentation ([ccf8bc2](https://github.com/legislative-tracker/reimagined-parakeet/commit/ccf8bc290080f8892d17f2af1dd52290b4bab808))
+
 ### [0.7.12](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.11...v0.7.12) (2026-01-06)
 
 
