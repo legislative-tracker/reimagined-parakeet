@@ -14,5 +14,11 @@ export default defineConfig({
         inline: [/@angular\//, /rxfire/],
       },
     },
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.spec.ts', 'src/main.ts', 'src/**/*.d.ts'],
+    },
   },
 });

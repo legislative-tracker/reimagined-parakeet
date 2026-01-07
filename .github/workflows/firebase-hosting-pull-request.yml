@@ -17,14 +17,23 @@ jobs:
         with:
           node-version: 24
 
-      # 1. Install and Build Angular (Frontend)
+      # Install and Build Angular (Frontend)
       - name: Install and Build
         run: |
           cd frontend
           npm ci
+          npm test
           npm run build
 
-      # 2. Deploy to Preview Channel
+      # Update Code Coverage of Tests
+      - name: Update Code Coverage
+        run: npm run test:coverage
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+      # Deploy to Preview Channel
       - name: Deploy to Firebase Hosting Preview
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
