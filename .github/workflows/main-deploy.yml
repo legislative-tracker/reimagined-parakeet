@@ -77,13 +77,11 @@ jobs:
   release:
     needs: [calculate-version, deploy-production, check-changes]
     runs-on: ubuntu-latest
-
     if: |
       always() &&
       needs.calculate-version.result == 'success' &&
       (needs.deploy-production.result == 'success' || needs.deploy-production.result == 'skipped') &&
       github.ref == 'refs/heads/main'
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -94,6 +92,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: "npm"
+
+      - name: Install Dependencies
+        run: npm ci
 
       - name: Configure Git User
         run: |
