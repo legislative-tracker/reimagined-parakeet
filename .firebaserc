@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "tracker-cwapolitical-org"
-  }
+  },
+  "targets": {
+    "tracker-cwapolitical-org": {
+      "hosting": {
+        "hosting": [
+          "tracker-cwapolitical-org"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
