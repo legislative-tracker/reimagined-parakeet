@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 import { Admin } from './admin';
 
@@ -8,9 +10,12 @@ describe('Admin', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Admin]
-    })
-    .compileComponents();
+      imports: [Admin], // Standalone component
+      providers: [
+        // Prevents animation-related errors for MatButtonModule
+        provideNoopAnimations(),
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Admin);
     component = fixture.componentInstance;

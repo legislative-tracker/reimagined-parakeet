@@ -168,7 +168,7 @@ export const fetchUserReps = onCall(
     const userId = request.auth?.uid;
     if (!userId) throw new HttpsError("invalid-argument", "User ID required.");
 
-    // 1. Helpers are now imported from helpers.ts
+    // Helpers are now imported from helpers.ts
     const geocoding = await getGeocode(address, googleMapsKey.value());
     if (!geocoding) throw new HttpsError("not-found", "Geocoding failed");
 

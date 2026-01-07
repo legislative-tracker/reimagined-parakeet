@@ -1,0 +1,68 @@
+name: Main Deploy & Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  calculate-version:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version_calc.outputs.new_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate Next Version
+        id: version_calc
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+          DRY_RUN: true
+
+  build-frontend:
+    needs: calculate-version
+    uses: ./.github/workflows/workflow-build-frontend.yml
+    with:
+      node-version: 24
+
+      app-version: ${{ needs.calculate-version.outputs.new_version }}
+    secrets: inherit
+
+  build-backend:
+    uses: ./.github/workflows/workflow-build-backend.yml
+    secrets: inherit
+
+  deploy-production:
+    needs: [build-frontend, build-backend]
+    uses: ./.github/workflows/workflow-deploy.yml
+    with:
+      environmentId: live
+      projectId: tracker-cwapolitical-org
+    secrets:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}
+
+  release:
+    needs: [calculate-version, deploy-production]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push New Tag
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DEFAULT_BUMP: patch
+          DRY_RUN: false

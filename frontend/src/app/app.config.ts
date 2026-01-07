@@ -15,7 +15,9 @@ import {
   ScreenTrackingService,
   UserTrackingService,
 } from '@angular/fire/analytics';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
+// App imports
 import { APP_CONFIG } from './core/app-config/app-config-token';
 import { ConfigService } from './core/services/config.service';
 import { routes } from './app.routes';
@@ -26,6 +28,7 @@ export const appConfig: ApplicationConfig = {
     { provide: APP_CONFIG, useValue: env },
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
+    provideAnimationsAsync(),
     provideRouter(
       routes,
       withComponentInputBinding(),

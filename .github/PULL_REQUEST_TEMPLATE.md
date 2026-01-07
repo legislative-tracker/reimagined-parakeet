@@ -15,7 +15,7 @@
 - [ ] **Frontend**: Angular v20 (Zoneless)
 - [ ] **Backend**: Firebase Functions (Node 24)
 
-## ✅ Checklist
+## Checklist
 
 ### General
 
