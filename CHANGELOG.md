@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.18](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.17...v0.7.18) (2026-01-07)
+
+
+### Chores & Maintenance
+
+* **git:** auto-sync main to dev [skip ci] ([6ba96e2](https://github.com/legislative-tracker/reimagined-parakeet/commit/6ba96e2af9c56bf99193cbd1023de8db2ce6ba17))
+* **git:** auto-sync main to dev [skip ci] ([5f25b11](https://github.com/legislative-tracker/reimagined-parakeet/commit/5f25b113e62241d0cdd4882569585e4a589a777c))
+
+
+### CI/CD & Build System
+
+* **project:** adding dep install to release step ([99c004e](https://github.com/legislative-tracker/reimagined-parakeet/commit/99c004e5691a2060e7d39d294bbdea30c4a00458))
+* **project:** changes to GitHub Actions workflows ([f435855](https://github.com/legislative-tracker/reimagined-parakeet/commit/f4358557ef73eca39589979a472b65074df26b82))
+* **project:** release step should still happen if deploy is skipped ([9213246](https://github.com/legislative-tracker/reimagined-parakeet/commit/92132465683e2577f6f57a156220dc64f0a069d2))
+
 ### [0.7.13](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.12...v0.7.13) (2026-01-06)
 
 

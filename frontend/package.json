@@ -1,6 +1,6 @@
 {
   "name": "legislative-tracker",
-  "version": "0.7.13",
+  "version": "0.7.18",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
