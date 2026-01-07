@@ -140,7 +140,7 @@ describe('LegislatureService', () => {
       const result = await service.addBill('ny', billData);
 
       expect(mockGetFunctions).toHaveBeenCalledWith(mockFirebaseApp);
-      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'addBill');
+      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'legislation-addBill');
       expect(callableFn).toHaveBeenCalledWith({ state: 'ny', bill: billData });
       expect(result.data).toEqual(mockResult);
     });
@@ -151,7 +151,7 @@ describe('LegislatureService', () => {
 
       await service.removeBill('ny', '123');
 
-      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'removeBill');
+      expect(mockHttpsCallable).toHaveBeenCalledWith(undefined, 'legislation-removeBill');
       expect(callableFn).toHaveBeenCalledWith({ state: 'ny', billId: '123' });
     });
 
