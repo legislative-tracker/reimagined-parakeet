@@ -5,17 +5,46 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+              - 'firebase.json'
+              - '.firebaserc'
+              - 'package.json'
+              - 'package-lock.json'
+            backend:
+              - 'backend/**'
+              - 'firebase.json'
+              - '.firebaserc'
+              - 'package.json'
+              - 'package-lock.json'
+
   frontend:
+    needs: check-changes
+    if: needs.check-changes.outputs.frontend == 'true'
     uses: ./.github/workflows/workflow-build-frontend.yml
-    with:
-      node-version: 24
     secrets: inherit
 
   backend:
+    needs: check-changes
+    if: needs.check-changes.outputs.backend == 'true'
     uses: ./.github/workflows/workflow-build-backend.yml
+    secrets: inherit
 
   preview-deploy:
-    needs: [frontend, backend]
+    needs: [frontend, backend, check-changes]
+
+    if: needs.check-changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +55,7 @@ jobs:
           path: frontend/dist
 
       - uses: actions/download-artifact@v4
+        if: needs.check-changes.outputs.backend == 'true'
         with:
           name: backend-dist
           path: backend/functions/lib
@@ -40,9 +70,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-
           directory: frontend/coverage
-
           flags: frontend
           fail_ci_if_error: true
           verbose: true
