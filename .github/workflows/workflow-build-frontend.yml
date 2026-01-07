@@ -42,9 +42,14 @@ jobs:
       - name: Run Tests & Coverage
         working-directory: frontend
         run: |
-          # Standard Angular v20 testing patterns with code coverage enabled
-          npm test -- --watch=false
           npm run test:coverage
+
+      - name: Archive Coverage Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage
+          retention-days: 1
 
       - name: Build Angular Application
         working-directory: frontend
