@@ -1,6 +1,7 @@
 import got from "got";
 import { openStatesKey } from "../../config";
-import { OSPerson, OSResponse } from "./types";
+import { Person } from "@jpstroud/opencivicdata-types";
+import { OSResponse } from "./types";
 
 const BASE_URL = "https://v3.openstates.org";
 
@@ -12,55 +13,52 @@ const BASE_URL = "https://v3.openstates.org";
 export async function getOpenStatesData(
   jurisdiction: string,
   targetEndpoint: string
-): Promise<OSPerson[]> {
+): Promise<Person[]> {
   // Construct the full URL (e.g., https://v3.openstates.org/people)
   const url = `${BASE_URL}/${targetEndpoint}`;
 
   console.log(`Fetching ${targetEndpoint} for ${jurisdiction}...`);
 
   try {
-    // We pass our interfaces <OSPerson, OpenStatesResponse> to .all()
-    const results = await got.paginate.all<OSPerson, OSResponse<OSPerson>>(
-      url,
-      {
-        responseType: "json",
-        searchParams: {
-          jurisdiction: jurisdiction,
-          page: 1,
-          per_page: 50,
-          apikey: openStatesKey.value(),
+    // We pass our interfaces <Person, OpenStatesResponse> to .all()
+    const results = await got.paginate.all<Person, OSResponse<Person>>(url, {
+      responseType: "json",
+      searchParams: {
+        jurisdiction: jurisdiction,
+        page: 1,
+        per_page: 50,
+        apikey: openStatesKey.value(),
+      },
+      pagination: {
+        // Transform the response to extract the array of items
+        transform: (response) => {
+          return response.body.results;
         },
-        pagination: {
-          // Transform the response to extract the array of items
-          transform: (response) => {
-            return response.body.results;
-          },
 
-          // Calculate the next page options
-          paginate: ({ response }) => {
-            const { pagination } = response.body;
+        // Calculate the next page options
+        paginate: ({ response }) => {
+          const { pagination } = response.body;
 
-            // Type assertion for safety
-            const previousParams = response.request.options
-              .searchParams as URLSearchParams;
+          // Type assertion for safety
+          const previousParams = response.request.options
+            .searchParams as URLSearchParams;
 
-            const currentPage = Number(previousParams.get("page") || 1);
-            const lastPage = pagination.max_page;
+          const currentPage = Number(previousParams.get("page") || 1);
+          const lastPage = pagination.max_page;
 
-            if (currentPage >= lastPage) {
-              return false;
-            }
+          if (currentPage >= lastPage) {
+            return false;
+          }
 
-            return {
-              searchParams: {
-                ...Object.fromEntries(previousParams),
-                page: currentPage + 1,
-              },
-            };
-          },
+          return {
+            searchParams: {
+              ...Object.fromEntries(previousParams),
+              page: currentPage + 1,
+            },
+          };
         },
-      }
-    );
+      },
+    });
 
     return results;
   } catch (error: any) {

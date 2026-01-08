@@ -1,11 +1,13 @@
-import { Person, Motion } from "popolo-types";
+import { Person, Bill } from "@jpstroud/opencivicdata-types";
 
 export interface Legislator extends Person {
-  id: string;
   honorific_prefix: string;
-  party?: string;
+  honorific_suffix: string;
   chamber: string;
   district: string;
+  additional_name: string;
+  sort_name: string;
+
   sponsorships?: {
     id: string;
     version: string;
@@ -13,10 +15,9 @@ export interface Legislator extends Person {
   }[];
 }
 
-export interface Legislation extends Motion {
-  id: string;
-  title?: string;
-  version?: string;
+export interface Legislation extends Bill {
+  current_version: string;
+  text: string;
   cosponsors?: {
     [key: string]: Cosponsor[];
   };

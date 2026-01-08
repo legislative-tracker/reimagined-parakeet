@@ -2,7 +2,7 @@ import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import { db, openStatesKey } from "../config";
 import { getOpenStatesData } from "../apis/open-states/functions";
-import { OSPerson } from "../apis/open-states/types";
+import { Person } from "@jpstroud/opencivicdata-types";
 import { isEmail, isImageLink } from "../common/helpers";
 
 export const manualUpdate = onRequest(
@@ -22,7 +22,7 @@ export const manualUpdate = onRequest(
       snapshot.docs.forEach((doc) => {
         const currentData = doc.data();
         const member = openStatesMembers.find(
-          (m: OSPerson) =>
+          (m: Person) =>
             m.current_role.title === currentData.honorific_prefix &&
             m.current_role.district === currentData.district
         );

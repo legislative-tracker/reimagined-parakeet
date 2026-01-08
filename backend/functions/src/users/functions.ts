@@ -2,7 +2,7 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import got from "got";
 import { db, openStatesKey, googleMapsKey } from "../config";
 import { getGeocode } from "../apis/google-geocoder/functions";
-import { OSPerson } from "../apis/open-states/types";
+import { Person } from "@jpstroud/opencivicdata-types";
 import { isSuccess, mapPersonToLegislator } from "../common/helpers";
 
 // Helper specific to this domain
@@ -37,7 +37,7 @@ export const fetchUserReps = onCall(
     try {
       const res = await instance("people.geo");
 
-      if (isSuccess<OSPerson[]>(res)) {
+      if (isSuccess<Person[]>(res)) {
         const people = {
           federal: res.results
             .filter((p) => p.jurisdiction.classification === "country")
