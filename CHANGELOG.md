@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.20](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.19...v0.7.20) (2026-01-08)
+
+
+### Features
+
+* **admin:** added App Config & Styling ([c7640ed](https://github.com/legislative-tracker/reimagined-parakeet/commit/c7640ed8dc683529e28a167967047751b596cd87))
+
+
+### Chores & Maintenance
+
+* **git:** auto-sync main to dev [skip ci] ([742a693](https://github.com/legislative-tracker/reimagined-parakeet/commit/742a69338e9281e1e80e10a38eec5e95bf0e8bdf))
+
 ### [0.7.19](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.18...v0.7.19) (2026-01-07)
 
 
