@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.24](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.23...v0.7.24) (2026-01-08)
+
+
+### Features
+
+* **types:** migrating from popolo-types to @jpstroud/opencivicdata-types ([69be894](https://github.com/legislative-tracker/reimagined-parakeet/commit/69be8940c2493dcc92b283ff903a64b37744c67c))
+
+
+### Bug Fixes
+
+* **api:** fixed typo ([4305b39](https://github.com/legislative-tracker/reimagined-parakeet/commit/4305b3984f15bae524a1d10b076517d1a3a6b51e))
+* **api:** fleshed out member updates to include additional OpenStates data ([bbce738](https://github.com/legislative-tracker/reimagined-parakeet/commit/bbce738fc799c1bf84fcaebc8b3cbd39d033885d))
+
 ### [0.7.23](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.22...v0.7.23) (2026-01-08)
 
 
