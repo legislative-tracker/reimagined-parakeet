@@ -160,7 +160,7 @@ const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
     district: `${m.districtCode}`,
     additional_name: m.person.middleName,
 
-    other_idenifiers: [
+    other_identifiers: [
       { identifier: m.shortName, scheme: "session short name" },
       { identifier: `${m.person.personId}`, scheme: "person id" },
       { identifier: `${m.memberId}`, scheme: "member id" },
