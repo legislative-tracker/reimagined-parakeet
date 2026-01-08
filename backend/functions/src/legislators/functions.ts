@@ -30,17 +30,25 @@ export const manualUpdate = onRequest(
         if (member) {
           const updates = {
             party: member.party,
+            current_role: member.current_role,
+            jurisdiction: member.jurisdiction,
             image: isImageLink(currentData.image)
               ? currentData.image
               : member.image,
-            gender: member.gender,
-            birth_date: member.birth_date,
             email: isEmail(currentData.email)
               ? currentData.email
               : isEmail(member.email)
                 ? member.email
                 : null,
+            gender: member.gender,
+            birth_date: member.birth_date,
             updated_at: new Date().toISOString(),
+            openstates_url: member.openstates_url,
+            other_identifiers: member.other_identifiers,
+            other_names: member.other_names,
+            links: member.links,
+            sources: member.sources,
+            offices: member.offices,
           };
           bulkWriter.set(doc.ref, updates, { merge: true });
         } else {
