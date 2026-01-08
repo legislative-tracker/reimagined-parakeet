@@ -10,10 +10,10 @@ const BASE_URL = "https://v3.openstates.org";
  * @param {string} jurisdiction - The state/jurisdiction name (e.g., "New York", "California")
  * @param {string} targetEndpoint - The API endpoint suffix (e.g., "people", "committees")
  */
-export async function getOpenStatesData(
+export const getOpenStatesData = async (
   jurisdiction: string,
   targetEndpoint: string
-): Promise<Person[]> {
+): Promise<Person[]> => {
   // Construct the full URL (e.g., https://v3.openstates.org/people)
   const url = `${BASE_URL}/${targetEndpoint}`;
 
@@ -66,4 +66,4 @@ export async function getOpenStatesData(
     // Rethrow or return empty array depending on your error handling strategy
     throw error;
   }
-}
+};
