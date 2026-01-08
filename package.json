@@ -1,7 +1,7 @@
 {
   "name": "legislative-tracker",
   "version": "0.7.22",
-  "description": "Fresh Start for the Legislative Tracker PWA",
+  "description": "A modern Progressive Web App for tracking legislative activity, built on Angular v20 and Firebase.",
   "homepage": "https://github.com/legislative-tracker/reimagined-parakeet#readme",
   "bugs": {
     "url": "https://github.com/legislative-tracker/reimagined-parakeet/issues"

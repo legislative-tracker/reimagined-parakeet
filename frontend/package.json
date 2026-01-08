@@ -1,6 +1,7 @@
 {
   "name": "legislative-tracker",
   "version": "0.7.22",
+  "description": "Angular frontend for the Legislative Tracker PWA",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
