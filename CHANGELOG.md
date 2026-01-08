@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.22](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.21...v0.7.22) (2026-01-08)
+
+
+### CI/CD & Build System
+
+* **app:** fixed condition where a pr changes frontend but not backend failing to deploy preview ([03e8c10](https://github.com/legislative-tracker/reimagined-parakeet/commit/03e8c102cc7e92ee10276d38dc1db28fdd298c32))
+
 ### [0.7.21](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.20...v0.7.21) (2026-01-08)
 
 
