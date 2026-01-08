@@ -1,6 +1,6 @@
 {
   "name": "legislative-tracker-functions",
-  "version": "0.7.19",
+  "version": "0.7.20",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
