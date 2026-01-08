@@ -43,8 +43,11 @@ jobs:
 
   preview-deploy:
     needs: [frontend, backend, check-changes]
-
-    if: needs.check-changes.outputs.frontend == 'true'
+    if: |
+      always() &&
+      needs.check-changes.outputs.frontend == 'true' &&
+      needs.frontend.result == 'success' &&
+      (needs.backend.result == 'success' || needs.backend.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
