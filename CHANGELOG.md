@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.23](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.22...v0.7.23) (2026-01-08)
+
+
+### Features
+
+* **addBill:** now grabs bill info from state legislature on add ([06ea908](https://github.com/legislative-tracker/reimagined-parakeet/commit/06ea90883cc45ec73275cec127fbbd0ad5157a53))
+
+
+### Bug Fixes
+
+* **api:** switched to secret defined in config ([5465724](https://github.com/legislative-tracker/reimagined-parakeet/commit/5465724d80cca937421f533492ebc74e933d3af9))
+* **backend:** added bindings to secrets for fns that require them ([de06832](https://github.com/legislative-tracker/reimagined-parakeet/commit/de068328a4c5439cf208620fc27ae3d97b0fc9e8))
+* **legislation:** added necessary secrets ([03db031](https://github.com/legislative-tracker/reimagined-parakeet/commit/03db031abf6dcb06d0672ac3770648ccc7ecfd2b))
+* **ny-api:** export apikey secret so it can be used by other functions ([f2cf764](https://github.com/legislative-tracker/reimagined-parakeet/commit/f2cf7643d7ef4fa21c48e4776e4923d5facaa6d1))
+
 ### [0.7.22](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.21...v0.7.22) (2026-01-08)
 
 
