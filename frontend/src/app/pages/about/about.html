@@ -2,9 +2,9 @@
   <header class="about-header">
     <h1 class="mat-headline-large">About the Legislative Tracker</h1>
     <p class="mat-body-large subtitle">
-      The Legislative Tracker assists in tracking sponsorship for bills supported by the
-      <a class="inline-link" href="https://cwa-union.org" target="_blank" rel="noopener noreferrer">
-        Communications Workers of America </a
+      The Legislative Tracker assists in tracking sponsorship for bills supported by
+      <a class="inline-link" [href]="orgUrl()" target="_blank" rel="noopener noreferrer">
+        {{ orgName() }} </a
       >.
     </p>
   </header>

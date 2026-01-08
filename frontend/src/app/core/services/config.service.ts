@@ -5,7 +5,16 @@ import { firstValueFrom, of } from 'rxjs';
 import { FirebaseApp } from '@angular/fire/app';
 
 // App imports
-import { RuntimeConfig, DEFAULT_CONFIG } from '@app-models/runtime-config';
+import { RuntimeConfig, ResourceLink, DEFAULT_CONFIG } from '@app-models/runtime-config';
+
+// Due to licensing, the GitHub repo must ALWAYS be included
+const GITHUB_RESOURCE: ResourceLink = {
+  title: 'GitHub Repository',
+  description: 'Access the source code under GNU AGPL v3.0.',
+  url: 'https://github.com/legislative-tracker/reimagined-parakeet/',
+  icon: 'code',
+  actionLabel: 'View Code',
+};
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
@@ -63,11 +72,23 @@ export class ConfigService {
 
       data$.subscribe((remoteConfig) => {
         if (remoteConfig) {
-          this.config.update((current) => ({
-            ...current,
-            organization: { ...current.organization, ...remoteConfig.organization },
-            branding: { ...current.branding, ...remoteConfig.branding },
-          }));
+          this.config.update((current) => {
+            // Get dynamic resources from Firestore (or empty array if none)
+            const dynamicResources = remoteConfig.resources || [];
+
+            // Filter out duplicates to be safe
+            // (Prevents admin from accidentally adding GitHub again)
+            const uniqueDynamic = dynamicResources.filter((r) => r.url !== GITHUB_RESOURCE.url);
+
+            return {
+              ...current,
+              organization: { ...current.organization, ...remoteConfig.organization },
+              branding: { ...current.branding, ...remoteConfig.branding },
+
+              // MERGE: Hardcoded First + Dynamic Second
+              resources: [GITHUB_RESOURCE, ...uniqueDynamic],
+            };
+          });
         }
       });
 
