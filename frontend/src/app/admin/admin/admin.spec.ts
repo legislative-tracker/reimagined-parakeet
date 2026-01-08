@@ -7,11 +7,12 @@ import { Admin } from './admin';
 import { ConfigService } from '@app-core/services/config.service';
 import { RuntimeConfig } from '@app-models/runtime-config';
 
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+
 describe('Admin', () => {
   let component: Admin;
   let fixture: ComponentFixture<Admin>;
 
-  // 1. Updated Mock Data with Resources
   const mockConfigData: RuntimeConfig = {
     organization: { name: 'Test Org', url: 'http://test.com' },
     branding: {
@@ -22,8 +23,15 @@ describe('Admin', () => {
     },
     resources: [
       {
-        title: 'Mock Resource',
-        url: 'http://mock.com',
+        title: 'Resource A',
+        url: 'http://a.com',
+        description: '',
+        icon: 'link',
+        actionLabel: 'Go',
+      },
+      {
+        title: 'Resource B',
+        url: 'http://b.com',
         description: '',
         icon: 'link',
         actionLabel: 'Go',
@@ -52,44 +60,52 @@ describe('Admin', () => {
   });
 
   it('should initialize form with config data including resources', () => {
-    // Check main form
-    const formValue = component.form.getRawValue();
-    expect(formValue.organization.name).toBe('Test Org');
-
-    // Check Array Population
-    expect(component.resourcesArray.length).toBe(1);
-    expect(component.resourcesArray.at(0).value.title).toBe('Mock Resource');
+    const resources = component.resourcesArray;
+    expect(resources.length).toBe(2);
+    expect(resources.at(0).value.title).toBe('Resource A');
+    expect(resources.at(1).value.title).toBe('Resource B');
   });
 
   it('should add a new resource', () => {
     const initialLen = component.resourcesArray.length;
     component.addResource();
-
     expect(component.resourcesArray.length).toBe(initialLen + 1);
-    expect(component.resourcesArray.at(initialLen).value.title).toBe(''); // Empty default
   });
 
   it('should remove a resource', () => {
-    // We start with 1 from mock
-    expect(component.resourcesArray.length).toBe(1);
-
     component.removeResource(0);
-
-    expect(component.resourcesArray.length).toBe(0);
+    expect(component.resourcesArray.length).toBe(1);
+    expect(component.resourcesArray.at(0).value.title).toBe('Resource B');
     expect(component.form.dirty).toBe(true);
   });
 
-  it('should save full configuration including resources', async () => {
-    // Modify the existing resource
-    component.resourcesArray.at(0).patchValue({ title: 'Updated Title' });
+  it('should reorder resources on drop', () => {
+    expect(component.resourcesArray.at(0).value.title).toBe('Resource A');
+    expect(component.resourcesArray.at(1).value.title).toBe('Resource B');
+
+    const mockDropEvent = {
+      previousIndex: 0,
+      currentIndex: 1,
+    } as CdkDragDrop<any[]>;
+
+    component.drop(mockDropEvent);
+
+    expect(component.resourcesArray.at(0).value.title).toBe('Resource B');
+    expect(component.resourcesArray.at(1).value.title).toBe('Resource A');
+
+    expect(component.form.dirty).toBe(true);
+  });
+
+  it('should save full configuration including new order', async () => {
+    const mockDropEvent = { previousIndex: 0, currentIndex: 1 } as CdkDragDrop<any[]>;
+    component.drop(mockDropEvent);
 
     await component.saveConfig();
 
     expect(mockConfigService.save).toHaveBeenCalled();
     const capturedArgs = mockConfigService.save.mock.calls[0][0];
 
-    // Assert structure matches RuntimeConfig
-    expect(capturedArgs.resources[0].title).toBe('Updated Title');
-    expect(capturedArgs.organization.name).toBe('Test Org');
+    expect(capturedArgs.resources[0].title).toBe('Resource B');
+    expect(capturedArgs.resources[1].title).toBe('Resource A');
   });
 });

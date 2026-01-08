@@ -1,8 +1,8 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormArray, FormGroup } from '@angular/forms';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
-// Material Imports
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -11,10 +11,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatCardModule } from '@angular/material/card'; // <--- Required for UI cards
+import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-// App imports
 import { RuntimeConfig, ResourceLink } from '@app-models/runtime-config';
 import { ConfigService } from '@app-core/services/config.service';
 
@@ -24,6 +23,7 @@ import { ConfigService } from '@app-core/services/config.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    DragDropModule,
     MatExpansionModule,
     MatButtonModule,
     MatInputModule,
@@ -57,21 +57,17 @@ export class Admin {
       faviconUrl: ['favicon.ico'],
       darkMode: [false],
     }),
-    // NEW: Dynamic Array
     resources: this.fb.array([]),
   });
 
-  // Helper Getter
   get resourcesArray() {
     return this.form.get('resources') as FormArray;
   }
 
   constructor() {
-    // SYNC: Service -> Form
     effect(() => {
       const config = this.configService.config();
       if (config) {
-        // 1. Patch static groups
         this.form.patchValue(
           {
             organization: config.organization,
@@ -80,9 +76,7 @@ export class Admin {
           { emitEvent: false }
         );
 
-        // 2. Handle FormArray (Must clear and rebuild)
         this.resourcesArray.clear({ emitEvent: false });
-
         const resources = config.resources || [];
         resources.forEach((res) => {
           this.resourcesArray.push(this.createResourceGroup(res), { emitEvent: false });
@@ -91,7 +85,6 @@ export class Admin {
     });
   }
 
-  // Create a row with defaults
   private createResourceGroup(data?: ResourceLink): FormGroup {
     return this.fb.group({
       title: [data?.title || '', Validators.required],
@@ -102,7 +95,6 @@ export class Admin {
     });
   }
 
-  // Actions
   addResource() {
     this.resourcesArray.push(this.createResourceGroup());
     this.form.markAsDirty();
@@ -110,6 +102,18 @@ export class Admin {
 
   removeResource(index: number) {
     this.resourcesArray.removeAt(index);
+    this.form.markAsDirty();
+  }
+
+  drop(event: CdkDragDrop<any[]>) {
+    if (event.previousIndex === event.currentIndex) return;
+
+    const movedControl = this.resourcesArray.at(event.previousIndex);
+
+    this.resourcesArray.removeAt(event.previousIndex);
+
+    this.resourcesArray.insert(event.currentIndex, movedControl);
+
     this.form.markAsDirty();
   }
 
@@ -121,7 +125,6 @@ export class Admin {
     }
 
     this.isSaving.set(true);
-    // getRawValue() includes the array data correctly
     const formValue = this.form.getRawValue() as RuntimeConfig;
 
     try {
@@ -139,10 +142,8 @@ export class Admin {
   }
 
   resetForm() {
-    // Re-trigger the effect logic manually or just let the signal update handle it
     const config = this.configService.config();
     this.form.patchValue(config);
-
     this.resourcesArray.clear();
     (config.resources || []).forEach((res) =>
       this.resourcesArray.push(this.createResourceGroup(res))

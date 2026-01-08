@@ -108,10 +108,22 @@
           </button>
         </div>
 
-        <div formArrayName="resources">
+        <div formArrayName="resources" cdkDropList (cdkDropListDropped)="drop($event)">
           @for (control of resourcesArray.controls; track control; let i = $index) {
 
-          <mat-card appearance="outlined" class="resource-card" [formGroupName]="i">
+          <mat-card appearance="outlined" class="resource-card" [formGroupName]="i" cdkDrag>
+            <div class="resource-card-placeholder" *cdkDragPlaceholder></div>
+
+            <button
+              mat-icon-button
+              type="button"
+              class="resource-drag-handle"
+              cdkDragHandle
+              matTooltip="Drag to reorder"
+            >
+              <mat-icon>drag_indicator</mat-icon>
+            </button>
+
             <button
               mat-icon-button
               color="warn"
@@ -124,7 +136,7 @@
             </button>
 
             <mat-card-header>
-              <mat-card-title>Resource #{{ i + 1 }}</mat-card-title>
+              <mat-card-title style="margin-left: 24px">Resource #{{ i + 1 }}</mat-card-title>
             </mat-card-header>
 
             <mat-card-content>
