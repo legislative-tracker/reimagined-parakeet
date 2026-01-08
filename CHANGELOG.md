@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.25](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.24...v0.7.25) (2026-01-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* **version:** migrating from popolo to open civic data types
+
+* **version:** bump version for breaking change in v0.7.24 ([d6394c0](https://github.com/legislative-tracker/reimagined-parakeet/commit/d6394c080810213492ed79c107c032e2caa348d6))
+
 ### [0.7.24](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.23...v0.7.24) (2026-01-08)
 
 
