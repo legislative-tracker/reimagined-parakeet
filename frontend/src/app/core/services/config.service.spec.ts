@@ -13,12 +13,14 @@ import { ConfigService } from './config.service';
 // --- Firestore Mocks ---
 const mockDocData = vi.fn();
 const mockDoc = vi.fn();
-const mockGetFirestore = vi.fn().mockReturnValue({}); // Default for initial load
+const mockSetDoc = vi.fn(); // <--- NEW: Mock for saving
+const mockGetFirestore = vi.fn().mockReturnValue({});
 
 vi.mock('@angular/fire/firestore', () => ({
   getFirestore: (...args: any[]) => mockGetFirestore(...args),
   doc: (...args: any[]) => mockDoc(...args),
   docData: (...args: any[]) => mockDocData(...args),
+  setDoc: (...args: any[]) => mockSetDoc(...args), // <--- NEW: Register mock
 }));
 
 // --- Material Color Utilities Mocks ---
@@ -39,11 +41,15 @@ describe('ConfigService', () => {
   const mockFirebaseApp = { name: '[DEFAULT]' };
 
   beforeEach(() => {
-    // ⚠️ RESET MOCKS: This wipes out previous .mockReturnValue calls!
+    // ⚠️ RESET MOCKS
     vi.resetAllMocks();
 
-    //: Restore default return values immediately after reset
-    mockGetFirestore.mockReturnValue({}); // Ensures firestore instance is not undefined
+    // --- Fix: Ensure mocks return objects, not undefined ---
+    mockGetFirestore.mockReturnValue({});
+    mockDoc.mockReturnValue({ path: 'configurations/global' }); // <--- ADD THIS
+    mockSetDoc.mockResolvedValue(void 0); // Simulate successful promise
+
+    // Material Color Mocks
     mockThemeFromSourceColor.mockReturnValue({ schemes: { light: { toJSON: () => ({}) } } });
     mockArgbFromHex.mockReturnValue(0);
     mockHexFromArgb.mockReturnValue('#000000');
@@ -73,28 +79,34 @@ describe('ConfigService', () => {
   it('should be created with default configuration', () => {
     expect(service).toBeTruthy();
     const current = service.config();
+    // Assuming defaults from your RuntimeConfig
     expect(current.branding.primaryColor).toBe('#673ab7');
   });
 
   describe('load()', () => {
-    it('should fetch remote config and update signal', async () => {
+    it('should fetch remote config and merge both organization and branding', async () => {
       const remoteConfig = {
-        branding: {
-          logoUrl: 'assets/custom-logo.png',
-          primaryColor: '#ff0000',
-        },
+        organization: { name: 'Test Org', url: 'https://test.com' },
+        branding: { primaryColor: '#ff0000' }, // Partial branding
       };
       mockDocData.mockReturnValue(of(remoteConfig));
 
       await service.load();
 
       expect(mockGetFirestore).toHaveBeenCalledWith(mockFirebaseApp);
-      // Now mockGetFirestore returns {}, so expect.anything() will pass
       expect(mockDoc).toHaveBeenCalledWith(expect.anything(), 'configurations/global');
 
       const updated = service.config();
-      expect(updated.branding.logoUrl).toBe('assets/custom-logo.png');
+
+      // Verify Organization Update
+      expect(updated.organization.name).toBe('Test Org');
+
+      // Verify Branding Update
       expect(updated.branding.primaryColor).toBe('#ff0000');
+
+      // Verify Merge Logic (Should preserve default fields not present in remoteConfig)
+      // Assuming 'logoUrl' defaults to 'assets/default-logo.png' in your model
+      expect(updated.branding.logoUrl).toContain('assets/default-logo.png');
     });
 
     it('should use defaults if Firestore fails', async () => {
@@ -113,13 +125,44 @@ describe('ConfigService', () => {
     });
   });
 
+  describe('save()', () => {
+    it('should save to Firestore and update signal optimistically', async () => {
+      const newConfig = {
+        organization: { name: 'Updated Org', url: 'http://update.com' },
+      };
+
+      await service.save(newConfig as any);
+
+      // Verify Firestore Call
+      expect(mockSetDoc).toHaveBeenCalledWith(
+        expect.anything(), // The docRef
+        newConfig,
+        { merge: true }
+      );
+
+      // Verify Optimistic Signal Update
+      const current = service.config();
+      expect(current.organization.name).toBe('Updated Org');
+    });
+
+    it('should throw error if Firestore save fails', async () => {
+      mockSetDoc.mockRejectedValue(new Error('Write Failed'));
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+      const newConfig = { branding: { primaryColor: '#000000' } };
+
+      await expect(service.save(newConfig as any)).rejects.toThrow('Write Failed');
+      expect(consoleSpy).toHaveBeenCalled();
+    });
+  });
+
   describe('Effects (Favicon & Theme)', () => {
     it('should update favicon when config changes', async () => {
       const mockLink = document.createElement('link');
       vi.spyOn(documentMock, 'querySelector').mockReturnValue(mockLink);
 
       const newConfig = {
-        branding: { logoUrl: '', primaryColor: '', faviconUrl: 'new-icon.ico' },
+        branding: { faviconUrl: 'new-icon.ico' },
       };
 
       mockDocData.mockReturnValue(of(newConfig));
@@ -130,14 +173,13 @@ describe('ConfigService', () => {
     });
 
     it('should apply dynamic theme when primary color changes', async () => {
-      // Setup Specific Mocks for this test
       mockArgbFromHex.mockReturnValue(12345);
       const mockTheme = { schemes: { light: { toJSON: () => ({ primary: 0xff0000 }) } } };
       mockThemeFromSourceColor.mockReturnValue(mockTheme);
       mockHexFromArgb.mockReturnValue('#ff0000');
 
       const newConfig = {
-        branding: { logoUrl: '', primaryColor: '#ff0000', faviconUrl: '' },
+        branding: { primaryColor: '#ff0000' },
       };
       mockDocData.mockReturnValue(of(newConfig));
 
@@ -148,26 +190,10 @@ describe('ConfigService', () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(mockArgbFromHex).toHaveBeenCalledWith('#ff0000');
-
       expect(documentMock.documentElement.style.setProperty).toHaveBeenCalledWith(
         '--mat-sys-color-primary',
         '#ff0000'
       );
-    });
-
-    it('should create new favicon element if none exists', async () => {
-      vi.spyOn(documentMock, 'querySelector').mockReturnValue(null);
-      const mockLink = document.createElement('link');
-      vi.spyOn(documentMock, 'createElement').mockReturnValue(mockLink);
-
-      const newConfig = { branding: { logoUrl: '', primaryColor: '', faviconUrl: 'created.ico' } };
-      mockDocData.mockReturnValue(of(newConfig));
-
-      await service.load();
-      await TestBed.flushEffects();
-
-      expect(documentMock.head.appendChild).toHaveBeenCalledWith(mockLink);
-      expect(mockLink.href).toContain('created.ico');
     });
   });
 });

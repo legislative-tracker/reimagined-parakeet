@@ -4,21 +4,8 @@ import { timeout, catchError, map, take } from 'rxjs/operators';
 import { firstValueFrom, of } from 'rxjs';
 import { FirebaseApp } from '@angular/fire/app';
 
-export interface RuntimeConfig {
-  branding: {
-    logoUrl: string;
-    primaryColor: string;
-    faviconUrl?: string;
-  };
-}
-
-const DEFAULT_CONFIG: RuntimeConfig = {
-  branding: {
-    logoUrl: 'assets/default-logo.png',
-    primaryColor: '#673ab7',
-    faviconUrl: 'favicon.ico',
-  },
-};
+// App imports
+import { RuntimeConfig, DEFAULT_CONFIG } from '@app-models/runtime-config';
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
@@ -39,6 +26,22 @@ export class ConfigService {
       // Update Theme (Async, heavy dependencies)
       this.applyAngularMaterialTheme(branding.primaryColor);
     });
+  }
+
+  async save(newConfig: Partial<RuntimeConfig>): Promise<void> {
+    try {
+      const { getFirestore, doc, setDoc } = await import('@angular/fire/firestore');
+
+      const firestore = getFirestore(this.app);
+      const configDoc = doc(firestore, 'configurations/global');
+
+      await setDoc(configDoc, newConfig, { merge: true });
+
+      this.config.update((current) => ({ ...current, ...newConfig }));
+    } catch (e) {
+      console.error('Failed to save configuration', e);
+      throw e;
+    }
   }
 
   async load(): Promise<void> {
@@ -62,6 +65,7 @@ export class ConfigService {
         if (remoteConfig) {
           this.config.update((current) => ({
             ...current,
+            organization: { ...current.organization, ...remoteConfig.organization },
             branding: { ...current.branding, ...remoteConfig.branding },
           }));
         }

@@ -1,10 +1,117 @@
+<mat-accordion>
+  <!-- Bill Mgmt Section -->
+  <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+      <mat-panel-title> Bill Mgmt </mat-panel-title>
+      <mat-panel-description> Add or Remove a Bill from the Tracker </mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-action-row>
+      <a mat-button href="admin/removeBill">Remove a Bill</a>
+      <a mat-button href="admin/addBill">Add a Bill</a>
+    </mat-action-row>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+      <mat-panel-title> Admin Mgmt </mat-panel-title>
+      <mat-panel-description> Add or Remove Admin Privileges </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>
+      To modify a user's Admin privileges, you will need the email address with which they
+      registered their account.
+    </p>
+    <mat-action-row>
+      <a mat-button href="admin/removeAdmin">Remove Admin Privileges</a>
+      <a mat-button href="admin/addAdmin">Add Admin Privileges</a>
+    </mat-action-row>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+      <mat-panel-title> App Config </mat-panel-title>
+      <mat-panel-description> Manage Branding & Organization </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <ng-template matExpansionPanelContent>
+      <form [formGroup]="form" class="config-form-container pt-3">
+        <h3 class="mat-h3 text-secondary">Organization</h3>
+        <div class="row" formGroupName="organization">
+          <mat-form-field appearance="outline" class="col-12 col-md-6">
+            <mat-label>Organization Name</mat-label>
+            <input matInput formControlName="name" placeholder="Acme Corp" />
+            <mat-error *ngIf="form.get('organization.name')?.hasError('required')">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="col-12 col-md-6">
+            <mat-label>Website URL</mat-label>
+            <input matInput formControlName="url" placeholder="https://acme.com" />
+          </mat-form-field>
+        </div>
+
+        <mat-divider class="my-3"></mat-divider>
+
+        <h3 class="mat-h3 text-secondary">Branding & Theme</h3>
+        <div class="row" formGroupName="branding">
+          <div class="col-12 mb-3">
+            <mat-label class="d-block mb-1 text-muted small">Primary Color</mat-label>
+            <div class="d-flex align-items-center gap-2">
+              <input
+                type="color"
+                formControlName="primaryColor"
+                style="height: 56px; width: 56px; cursor: pointer; border: none; background: none"
+              />
+
+              <mat-form-field appearance="outline" class="flex-grow-1">
+                <mat-label>Hex Code</mat-label>
+                <input matInput formControlName="primaryColor" placeholder="#673ab7" />
+                <mat-error *ngIf="form.get('branding.primaryColor')?.invalid">
+                  Invalid Hex Color
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-form-field appearance="outline" class="col-12">
+            <mat-label>Logo Asset Path</mat-label>
+            <input matInput formControlName="logoUrl" placeholder="assets/logo.png" />
+            <mat-icon matSuffix>image</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="col-12">
+            <mat-label>Favicon Path</mat-label>
+            <input matInput formControlName="faviconUrl" placeholder="favicon.ico" />
+            <mat-icon matSuffix>public</mat-icon>
+          </mat-form-field>
+
+          <div
+            class="col-12 d-flex justify-content-between align-items-center p-2 border rounded mt-2"
+          >
+            <div>
+              <strong>Force Dark Mode</strong>
+              <div class="small text-muted">Set default theme to dark</div>
+            </div>
+            <mat-slide-toggle formControlName="darkMode" color="primary"></mat-slide-toggle>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <mat-action-row>
+      <button mat-button (click)="resetForm()" [disabled]="isSaving()">Reset</button>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="saveConfig()"
+        [disabled]="form.invalid || isSaving()"
+      >
+        {{ isSaving() ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
+
 <div class="action-bar">
-  <div class="bill-fn-btn">
-    <a mat-button href="admin/addBill">Add Bill</a>
-    <a mat-button href="admin/removeBill">Remove Bill</a>
-  </div>
-  <div class="admin-fn-btn">
-    <a mat-button href="admin/removeAdmin">Demote Admin to User</a>
-    <a mat-button href="admin/addAdmin">Promote User to Admin</a>
-  </div>
+  <div class="bill-fn-btn"></div>
 </div>
