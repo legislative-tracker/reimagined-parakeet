@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.19](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.18...v0.7.19) (2026-01-07)
+
+
+### Chores & Maintenance
+
+* **git:** auto-sync main to dev [skip ci] ([ae8c8e8](https://github.com/legislative-tracker/reimagined-parakeet/commit/ae8c8e87dbec1a19a3ecf11ef1f2da9509dddaa4))
+
+
+### Documentation
+
+* **pages:** updated formatting and language ([b78553b](https://github.com/legislative-tracker/reimagined-parakeet/commit/b78553b903970537fc1be8a9bf497e6f135dfbbe))
+
 ### [0.7.18](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.17...v0.7.18) (2026-01-07)
 
 
