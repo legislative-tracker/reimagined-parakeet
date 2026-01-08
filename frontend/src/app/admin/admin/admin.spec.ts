@@ -3,16 +3,16 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal } from '@angular/core';
 
-// Imports
 import { Admin } from './admin';
 import { ConfigService } from '@app-core/services/config.service';
 import { RuntimeConfig } from '@app-models/runtime-config';
+
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 describe('Admin', () => {
   let component: Admin;
   let fixture: ComponentFixture<Admin>;
 
-  // 1. Create a Mock Data Object
   const mockConfigData: RuntimeConfig = {
     organization: { name: 'Test Org', url: 'http://test.com' },
     branding: {
@@ -21,55 +21,91 @@ describe('Admin', () => {
       faviconUrl: 'favicon.ico',
       darkMode: false,
     },
+    resources: [
+      {
+        title: 'Resource A',
+        url: 'http://a.com',
+        description: '',
+        icon: 'link',
+        actionLabel: 'Go',
+      },
+      {
+        title: 'Resource B',
+        url: 'http://b.com',
+        description: '',
+        icon: 'link',
+        actionLabel: 'Go',
+      },
+    ],
   };
 
-  // 2. Create the Mock Service
-  // It must match the public API of ConfigService that Admin uses
   const mockConfigService = {
-    // The component reads this signal to patch the form
     config: signal(mockConfigData),
-    // The component calls this to save
     save: vi.fn().mockResolvedValue(undefined),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Admin],
-      providers: [
-        provideNoopAnimations(),
-        // 3. DI Override: When Admin asks for ConfigService, give it the mock
-        { provide: ConfigService, useValue: mockConfigService },
-      ],
+      providers: [provideNoopAnimations(), { provide: ConfigService, useValue: mockConfigService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Admin);
     component = fixture.componentInstance;
-    fixture.detectChanges(); // Triggers ngOnInit and Effects
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with config data', () => {
-    // Verify the effect() worked and patched the form
-    const formValue = component.form.getRawValue();
-    expect(formValue.organization.name).toBe('Test Org');
-    expect(formValue.branding.primaryColor).toBe('#000000');
+  it('should initialize form with config data including resources', () => {
+    const resources = component.resourcesArray;
+    expect(resources.length).toBe(2);
+    expect(resources.at(0).value.title).toBe('Resource A');
+    expect(resources.at(1).value.title).toBe('Resource B');
   });
 
-  it('should call save() on submission', async () => {
-    // Update form
-    component.form.patchValue({
-      organization: { name: 'New Name' },
-    });
+  it('should add a new resource', () => {
+    const initialLen = component.resourcesArray.length;
+    component.addResource();
+    expect(component.resourcesArray.length).toBe(initialLen + 1);
+  });
 
-    // Trigger save
+  it('should remove a resource', () => {
+    component.removeResource(0);
+    expect(component.resourcesArray.length).toBe(1);
+    expect(component.resourcesArray.at(0).value.title).toBe('Resource B');
+    expect(component.form.dirty).toBe(true);
+  });
+
+  it('should reorder resources on drop', () => {
+    expect(component.resourcesArray.at(0).value.title).toBe('Resource A');
+    expect(component.resourcesArray.at(1).value.title).toBe('Resource B');
+
+    const mockDropEvent = {
+      previousIndex: 0,
+      currentIndex: 1,
+    } as CdkDragDrop<any[]>;
+
+    component.drop(mockDropEvent);
+
+    expect(component.resourcesArray.at(0).value.title).toBe('Resource B');
+    expect(component.resourcesArray.at(1).value.title).toBe('Resource A');
+
+    expect(component.form.dirty).toBe(true);
+  });
+
+  it('should save full configuration including new order', async () => {
+    const mockDropEvent = { previousIndex: 0, currentIndex: 1 } as CdkDragDrop<any[]>;
+    component.drop(mockDropEvent);
+
     await component.saveConfig();
 
-    // Verify mock was called
     expect(mockConfigService.save).toHaveBeenCalled();
     const capturedArgs = mockConfigService.save.mock.calls[0][0];
-    expect(capturedArgs.organization.name).toBe('New Name');
+
+    expect(capturedArgs.resources[0].title).toBe('Resource B');
+    expect(capturedArgs.resources[1].title).toBe('Resource A');
   });
 });

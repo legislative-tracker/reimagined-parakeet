@@ -1,50 +1,39 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject, computed } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 
-interface ResourceLink {
-  title: string;
-  description: string;
-  url: string;
-  icon: string;
-  actionLabel: string;
-}
+// App Imports
+import { ConfigService } from '@app-core/services/config.service';
+import { ResourceLink } from '@app-models/runtime-config';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-
   imports: [MatCardModule, MatButtonModule, MatListModule, MatIconModule],
   templateUrl: './about.html',
   styleUrls: ['../pages.scss', './about.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class About {
-  readonly resources = signal<ResourceLink[]>([
-    {
-      title: 'GitHub Repository',
-      description: 'Access the source code under GNU AGPL v3.0.',
-      url: 'https://github.com/legislative-tracker/reimagined-parakeet/',
-      icon: 'code',
-      actionLabel: 'View Code',
-    },
-    {
-      title: 'CWA Political',
-      description: "Learn more about the CWA's political work.",
-      url: 'https://cwapolitical.org',
-      icon: 'public',
-      actionLabel: 'Visit Site',
-    },
-  ]);
+  private configService = inject(ConfigService);
+
+  // Computed Signals for Template Binding
+  // If config is not yet loaded, these fall back to safe empty strings or defaults
+  readonly orgName = computed(() => this.configService.config().organization.name);
+  readonly orgUrl = computed(() => this.configService.config().organization.url);
+
+  readonly resources = computed<ResourceLink[]>(() => {
+    return this.configService.config().resources;
+  });
 
   readonly details = signal([
     {
       title: 'Data Sources',
       icon: 'dns',
       content:
-        "We aggregate data via OpenStates & the NY Legislature's APIs, syncing nightly to capture the latest bill sponsorships and legislator movements.",
+        'We aggregate data via OpenStates & State Legislature APIs, syncing nightly to capture the latest bill sponsorships and legislator movements.',
     },
     {
       title: 'Open Source',

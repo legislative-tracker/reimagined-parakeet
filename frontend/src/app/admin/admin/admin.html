@@ -1,5 +1,4 @@
 <mat-accordion>
-  <!-- Bill Mgmt Section -->
   <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
     <mat-expansion-panel-header>
       <mat-panel-title> Bill Mgmt </mat-panel-title>
@@ -33,37 +32,37 @@
     </mat-expansion-panel-header>
 
     <ng-template matExpansionPanelContent>
-      <form [formGroup]="form" class="config-form-container pt-3">
-        <h3 class="mat-h3 text-secondary">Organization</h3>
-        <div class="row" formGroupName="organization">
-          <mat-form-field appearance="outline" class="col-12 col-md-6">
-            <mat-label>Organization Name</mat-label>
-            <input matInput formControlName="name" placeholder="Acme Corp" />
-            <mat-error *ngIf="form.get('organization.name')?.hasError('required')">
-              Name is required
-            </mat-error>
-          </mat-form-field>
+      <form [formGroup]="form" class="config-form-container">
+        <h3 class="section-title">Organization</h3>
+        <div class="form-grid-2-col" formGroupName="organization">
+          <div class="form-grid-item">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Organization Name</mat-label>
+              <input matInput formControlName="name" placeholder="Acme Corp" />
+              <mat-error *ngIf="form.get('organization.name')?.hasError('required')">
+                Name is required
+              </mat-error>
+            </mat-form-field>
+          </div>
 
-          <mat-form-field appearance="outline" class="col-12 col-md-6">
-            <mat-label>Website URL</mat-label>
-            <input matInput formControlName="url" placeholder="https://acme.com" />
-          </mat-form-field>
+          <div class="form-grid-item">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Website URL</mat-label>
+              <input matInput formControlName="url" placeholder="https://acme.com" />
+            </mat-form-field>
+          </div>
         </div>
 
-        <mat-divider class="my-3"></mat-divider>
+        <mat-divider class="section-divider"></mat-divider>
 
-        <h3 class="mat-h3 text-secondary">Branding & Theme</h3>
-        <div class="row" formGroupName="branding">
-          <div class="col-12 mb-3">
-            <mat-label class="d-block mb-1 text-muted small">Primary Color</mat-label>
-            <div class="d-flex align-items-center gap-2">
-              <input
-                type="color"
-                formControlName="primaryColor"
-                style="height: 56px; width: 56px; cursor: pointer; border: none; background: none"
-              />
+        <h3 class="section-title">Branding & Theme</h3>
+        <div class="form-stack" formGroupName="branding">
+          <div class="form-stack-item">
+            <label class="field-label">Primary Color</label>
+            <div class="color-picker-row">
+              <input type="color" formControlName="primaryColor" class="color-input" />
 
-              <mat-form-field appearance="outline" class="flex-grow-1">
+              <mat-form-field appearance="outline" class="flex-grow">
                 <mat-label>Hex Code</mat-label>
                 <input matInput formControlName="primaryColor" placeholder="#673ab7" />
                 <mat-error *ngIf="form.get('branding.primaryColor')?.invalid">
@@ -73,27 +72,118 @@
             </div>
           </div>
 
-          <mat-form-field appearance="outline" class="col-12">
-            <mat-label>Logo Asset Path</mat-label>
-            <input matInput formControlName="logoUrl" placeholder="assets/logo.png" />
-            <mat-icon matSuffix>image</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="col-12">
-            <mat-label>Favicon Path</mat-label>
-            <input matInput formControlName="faviconUrl" placeholder="favicon.ico" />
-            <mat-icon matSuffix>public</mat-icon>
-          </mat-form-field>
-
-          <div
-            class="col-12 d-flex justify-content-between align-items-center p-2 border rounded mt-2"
-          >
-            <div>
-              <strong>Force Dark Mode</strong>
-              <div class="small text-muted">Set default theme to dark</div>
-            </div>
-            <mat-slide-toggle formControlName="darkMode" color="primary"></mat-slide-toggle>
+          <div class="form-stack-item">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Logo Asset Path</mat-label>
+              <input matInput formControlName="logoUrl" placeholder="assets/logo.png" />
+              <mat-icon matSuffix>image</mat-icon>
+            </mat-form-field>
           </div>
+
+          <div class="form-stack-item">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Favicon Path</mat-label>
+              <input matInput formControlName="faviconUrl" placeholder="favicon.ico" />
+              <mat-icon matSuffix>public</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <div class="form-stack-item">
+            <div class="toggle-card">
+              <div>
+                <strong>Force Dark Mode</strong>
+                <div class="text-hint">Set default theme to dark</div>
+              </div>
+              <mat-slide-toggle formControlName="darkMode" color="primary"></mat-slide-toggle>
+            </div>
+          </div>
+        </div>
+
+        <mat-divider class="section-divider"></mat-divider>
+
+        <div class="section-header">
+          <h3 class="section-title no-margin">Resources & Links</h3>
+          <button mat-stroked-button color="primary" type="button" (click)="addResource()">
+            <mat-icon>add</mat-icon> Add Resource
+          </button>
+        </div>
+
+        <div formArrayName="resources" cdkDropList (cdkDropListDropped)="drop($event)">
+          @for (control of resourcesArray.controls; track control; let i = $index) {
+
+          <mat-card appearance="outlined" class="resource-card" [formGroupName]="i" cdkDrag>
+            <div class="resource-card-placeholder" *cdkDragPlaceholder></div>
+
+            <button
+              mat-icon-button
+              type="button"
+              class="resource-drag-handle"
+              cdkDragHandle
+              matTooltip="Drag to reorder"
+            >
+              <mat-icon>drag_indicator</mat-icon>
+            </button>
+
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              class="resource-delete-btn"
+              (click)="removeResource(i)"
+              matTooltip="Remove this resource"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+
+            <mat-card-header>
+              <mat-card-title style="margin-left: 24px">Resource #{{ i + 1 }}</mat-card-title>
+            </mat-card-header>
+
+            <mat-card-content>
+              <div class="resource-flex-container">
+                <div class="field-two-thirds">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="title" placeholder="GitHub Repo" />
+                  </mat-form-field>
+                </div>
+
+                <div class="field-one-third">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Icon Name</mat-label>
+                    <input matInput formControlName="icon" placeholder="code" />
+                    <mat-icon matSuffix>{{ control.get('icon')?.value || 'link' }}</mat-icon>
+                  </mat-form-field>
+                </div>
+
+                <div class="field-two-thirds">
+                  <mat-form-field appearance="outline">
+                    <mat-label>URL</mat-label>
+                    <input matInput formControlName="url" placeholder="https://..." />
+                  </mat-form-field>
+                </div>
+
+                <div class="field-one-third">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Button Label</mat-label>
+                    <input matInput formControlName="actionLabel" placeholder="View" />
+                  </mat-form-field>
+                </div>
+
+                <div class="field-full">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+                    <textarea matInput formControlName="description" rows="2"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          } @if (resourcesArray.controls.length === 0) {
+          <div class="empty-state">
+            No resources configured. Click "Add Resource" to create one.
+          </div>
+          }
         </div>
       </form>
     </ng-template>

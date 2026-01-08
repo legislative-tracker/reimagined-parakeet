@@ -16,11 +16,11 @@
   "types": [
     {
       "type": "build",
-      "section": "Build Artifacts"
+      "hidden": true
     },
     {
       "type": "chore",
-      "section": "Chores & Maintenance"
+      "hidden": true
     },
     {
       "type": "ci",
