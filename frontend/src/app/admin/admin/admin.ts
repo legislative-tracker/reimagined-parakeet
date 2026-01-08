@@ -1,6 +1,6 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, FormArray, FormGroup } from '@angular/forms';
 
 // Material Imports
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -11,9 +11,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card'; // <--- Required for UI cards
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // App imports
-import { RuntimeConfig } from '@app-models/runtime-config'; // Updated import
+import { RuntimeConfig, ResourceLink } from '@app-models/runtime-config';
 import { ConfigService } from '@app-core/services/config.service';
 
 @Component({
@@ -26,10 +28,12 @@ import { ConfigService } from '@app-core/services/config.service';
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatSlideToggleModule, // Used for darkMode
+    MatSlideToggleModule,
     MatIconModule,
     MatSnackBarModule,
     MatDividerModule,
+    MatCardModule,
+    MatTooltipModule,
   ],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
@@ -42,11 +46,10 @@ export class Admin {
   readonly panelOpenState = signal(false);
   readonly isSaving = signal(false);
 
-  // Strictly typed form matching RuntimeConfig
   form = this.fb.group({
     organization: this.fb.group({
       name: ['', Validators.required],
-      url: ['', Validators.required], // You might add a URL validator regex here
+      url: ['', Validators.required],
     }),
     branding: this.fb.group({
       primaryColor: ['#673ab7', [Validators.required, Validators.pattern(/^#[0-9A-F]{6}$/i)]],
@@ -54,17 +57,60 @@ export class Admin {
       faviconUrl: ['favicon.ico'],
       darkMode: [false],
     }),
+    // NEW: Dynamic Array
+    resources: this.fb.array([]),
   });
+
+  // Helper Getter
+  get resourcesArray() {
+    return this.form.get('resources') as FormArray;
+  }
 
   constructor() {
     // SYNC: Service -> Form
     effect(() => {
-      const currentConfig = this.configService.config();
-      // 'emitEvent: false' prevents infinite loops
-      if (currentConfig) {
-        this.form.patchValue(currentConfig, { emitEvent: false });
+      const config = this.configService.config();
+      if (config) {
+        // 1. Patch static groups
+        this.form.patchValue(
+          {
+            organization: config.organization,
+            branding: config.branding,
+          },
+          { emitEvent: false }
+        );
+
+        // 2. Handle FormArray (Must clear and rebuild)
+        this.resourcesArray.clear({ emitEvent: false });
+
+        const resources = config.resources || [];
+        resources.forEach((res) => {
+          this.resourcesArray.push(this.createResourceGroup(res), { emitEvent: false });
+        });
       }
     });
+  }
+
+  // Create a row with defaults
+  private createResourceGroup(data?: ResourceLink): FormGroup {
+    return this.fb.group({
+      title: [data?.title || '', Validators.required],
+      url: [data?.url || '', Validators.required],
+      description: [data?.description || ''],
+      icon: [data?.icon || 'link'],
+      actionLabel: [data?.actionLabel || 'Open'],
+    });
+  }
+
+  // Actions
+  addResource() {
+    this.resourcesArray.push(this.createResourceGroup());
+    this.form.markAsDirty();
+  }
+
+  removeResource(index: number) {
+    this.resourcesArray.removeAt(index);
+    this.form.markAsDirty();
   }
 
   async saveConfig() {
@@ -75,6 +121,7 @@ export class Admin {
     }
 
     this.isSaving.set(true);
+    // getRawValue() includes the array data correctly
     const formValue = this.form.getRawValue() as RuntimeConfig;
 
     try {
@@ -92,6 +139,13 @@ export class Admin {
   }
 
   resetForm() {
-    this.form.patchValue(this.configService.config());
+    // Re-trigger the effect logic manually or just let the signal update handle it
+    const config = this.configService.config();
+    this.form.patchValue(config);
+
+    this.resourcesArray.clear();
+    (config.resources || []).forEach((res) =>
+      this.resourcesArray.push(this.createResourceGroup(res))
+    );
   }
 }

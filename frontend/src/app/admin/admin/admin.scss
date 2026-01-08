@@ -1,36 +1,179 @@
+/* --- Shared Utilities --- */
+.full-width {
+  width: 100%;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.no-margin {
+  margin: 0;
+}
+
 .config-form-container {
   padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Section Styling --- */
+.section-title {
+  color: gray; /* Replaces text-secondary */
+  font-size: 1.17em; /* Approximate h3 size */
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.section-divider {
+  margin: 1.5rem 0; /* Replaces my-3 / my-4 */
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* --- Form Grids (Replacing Bootstrap Rows/Cols) --- */
+
+/* 2-Column Grid (Organization) */
+.form-grid-2-col {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .form-grid-item {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 300px; /* Responsive wrapping */
+
+    /* Ensure internal MatFormField fills the flex item */
+    mat-form-field {
+      width: 100%;
+    }
+  }
+}
+
+/* Vertical Stack (Branding) */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .form-stack-item {
+    width: 100%;
+  }
+}
+
+/* --- Branding Specifics --- */
+.field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: gray;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .color-input {
   border: none;
-  width: 32px;
-  height: 32px;
+  width: 56px;
+  height: 56px;
   cursor: pointer;
   background: none;
   padding: 0;
+  display: block;
 
   &::-webkit-color-swatch-wrapper {
     padding: 0;
   }
   &::-webkit-color-swatch {
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 4px;
   }
 }
 
-.feature-toggles {
+.toggle-card {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem; /* Replaces p-3 */
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
 
-  .toggle-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
+  .text-hint {
+    font-size: 0.875rem;
+    color: gray;
+  }
+}
+
+/* --- Resources Section --- */
+
+.resource-card {
+  position: relative;
+  /* This creates the 1rem buffer you requested */
+  margin-bottom: 1rem;
+}
+
+.resource-delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: #f8f9fa; /* Light gray */
+  border-radius: 4px;
+  color: gray;
+}
+
+/* Custom Flex Grid for Resource Content */
+.resource-flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 0.5rem;
+
+  /* Force all inputs to fill their container */
+  mat-form-field {
+    width: 100%;
+    display: block;
+  }
+
+  .field-half {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 200px;
+  }
+
+  .field-two-thirds {
+    flex: 2 1 calc(66.66% - 0.5rem);
+    min-width: 250px;
+  }
+
+  .field-one-third {
+    flex: 1 1 calc(33.33% - 0.5rem);
+    min-width: 120px;
+  }
+
+  .field-full {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+}
+
+/* --- Other Layout --- */
+.action-bar {
+  display: flex;
+  .bill-fn-btn {
+    margin-left: auto;
   }
 }
