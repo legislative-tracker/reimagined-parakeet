@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.21](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.20...v0.7.21) (2026-01-08)
+
+
+### Features
+
+* **admin:** added app config for modifying ResourceLinks ([477f8a7](https://github.com/legislative-tracker/reimagined-parakeet/commit/477f8a786ed4865b93fbcabbb88d3bcdb96a385a))
+* **admin:** added drag-n-drop to the ResourceLinks ([bd517a0](https://github.com/legislative-tracker/reimagined-parakeet/commit/bd517a0c6323716ed97385b99208a0aa453a6c39))
+* **app-config:** now loads more info from global config doc ([47ebc86](https://github.com/legislative-tracker/reimagined-parakeet/commit/47ebc86a788ef4e11c1cfe138a31b44af378e894))
+
 ### [0.7.20](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.19...v0.7.20) (2026-01-08)
 
 
