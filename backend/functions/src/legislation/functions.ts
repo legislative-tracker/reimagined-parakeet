@@ -3,6 +3,7 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
 import { db } from "../config";
 import { performLegislationUpdate } from "./service";
+import { nySenateKey } from "../apis/ny/functions";
 
 /**
  * Adds or Updates a Bill (Callable)
@@ -62,6 +63,7 @@ export const nightlyUpdate = onSchedule(
     schedule: "0 5 * * *",
     timeZone: "America/New_York",
     retryCount: 3,
+    secrets: [nySenateKey],
   },
   async () => {
     logger.info("🌙 Starting nightly legislation update...");
@@ -73,16 +75,19 @@ export const nightlyUpdate = onSchedule(
 /**
  * Manual Trigger for Debugging (HTTPS)
  */
-export const manualUpdate = onRequest(async (request, response) => {
-  try {
-    const data = await performLegislationUpdate();
-    response.send({
-      status: "success",
-      timestamp: new Date().toISOString(),
-      data: data,
-    });
-  } catch (error: unknown) {
-    logger.error("HTTP Update Failed", error);
-    response.status(500).send({ error: error });
+export const manualUpdate = onRequest(
+  { secrets: [nySenateKey] },
+  async (request, response) => {
+    try {
+      const data = await performLegislationUpdate();
+      response.send({
+        status: "success",
+        timestamp: new Date().toISOString(),
+        data: data,
+      });
+    } catch (error: unknown) {
+      logger.error("HTTP Update Failed", error);
+      response.status(500).send({ error: error });
+    }
   }
-});
+);
