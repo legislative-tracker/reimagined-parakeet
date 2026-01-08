@@ -3,7 +3,7 @@ import {
   Legislation,
   LegislatureUpdateFnMap,
 } from "../models/legislature";
-import { OSPerson } from "../apis/open-states/types";
+import { Person } from "@jpstroud/opencivicdata-types";
 import { Success, ChamberMapping } from "../models/assorted";
 
 import * as ny from "../apis/ny/functions";
@@ -29,7 +29,7 @@ const chamberMapper = (jurisdiction: string, org: string): string => {
   return chamberMapping[jurisdiction][org];
 };
 
-export const mapPersonToLegislator = (person: OSPerson): Legislator => {
+export const mapPersonToLegislator = (person: Person): Partial<Legislator> => {
   const chamber: string = chamberMapper(
     person.jurisdiction.classification,
     person.current_role.org_classification

@@ -1,9 +1,32 @@
 import got from "got";
-import api from "nys-openlegislation-types";
+import api from "@jpstroud/nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
+
 import { Legislator, Legislation, Cosponsor } from "../../models/legislature";
+import {
+  JurisdictionStub,
+  OrganizationStub,
+} from "@jpstroud/opencivicdata-types";
 
 export const nySenateKey = defineSecret("NY_SENATE_KEY");
+
+const NY_JURISDICTION: JurisdictionStub = {
+  id: "ocd-jurisdiction/country:us/state:ny/government",
+  name: "New York",
+  classification: "state",
+};
+
+const NY_SENATE_ORG: OrganizationStub = {
+  id: "ocd-organization/country:us/state:ny/senate",
+  name: "New York State Senate",
+  classification: "upper",
+};
+
+const NY_ASSEMBLY_ORG: OrganizationStub = {
+  id: "ocd-organization/country:us/state:ny/assembly",
+  name: "New York State Assembly",
+  classification: "lower",
+};
 
 const isSuccess = <T>(v: unknown): v is api.APIResponseSuccess<T> => {
   if ((v as api.APIResponseSuccess<T>).success === true) return true;
@@ -34,7 +57,7 @@ export const updateMembers = async (): Promise<Legislator[]> => {
   try {
     const res = await instance("members/" + year);
     if (isSuccess<api.FullMember[]>(res)) {
-      if (isItemsResponse<api.FullMember[]>(res.result)) {
+      if (isItemsResponse<api.FullMember>(res.result)) {
         const legislators: Legislator[] = res.result.items.map(
           (m: api.FullMember) => mapAPIMemberToLegislator(m)
         );
@@ -94,74 +117,120 @@ export const updateBills = async (billList: string[]) => {
 
 const generateSortName = (p: api.FullMember["person"]): string => {
   let sortName = p.lastName;
-
   if (p.suffix != "") sortName += ` ${p.suffix}`;
-
   sortName += `, ${p.firstName}`;
-
   if (p.middleName != "") sortName += ` ${p.middleName}`;
-
   return sortName;
 };
 
 const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
+  const now = new Date().toISOString();
+
   const legislator: Legislator = {
     id: m.fullName.replaceAll(".", "").replaceAll(" ", "-"),
     name: m.fullName,
+    jurisdiction: NY_JURISDICTION,
     given_name: m.person.firstName,
     family_name: m.person.lastName,
-    additional_name: m.person.middleName,
+    image: m.imgName,
+    email: m.person.email,
+    gender: "",
+    birth_date: "",
+    death_date: "",
+    created_at: now,
+    updated_at: now,
+    openstates_url: "",
+    extras: {
+      memberId: `${m.memberId}`,
+      sessionMemberId: `${m.sessionMemberId}`,
+    },
+
+    party: "",
+    current_role: {
+      title: m.chamber === "SENATE" ? "Senator" : "Assembly Member",
+      org_classification: m.chamber === "SENATE" ? "upper" : "lower",
+      district: `${m.districtCode}`,
+      division_id: "",
+    },
+
     honorific_prefix: m.person.prefix,
     honorific_suffix: m.person.suffix,
     sort_name: generateSortName(m.person),
-    email: m.person.email,
-    image: m.imgName,
     chamber: m.chamber,
     district: `${m.districtCode}`,
-    identifiers: [
+    additional_name: m.person.middleName,
+
+    other_identifiers: [
+      { identifier: m.shortName, scheme: "session short name" },
+      { identifier: `${m.person.personId}`, scheme: "person id" },
+      { identifier: `${m.memberId}`, scheme: "member id" },
+      { identifier: `${m.sessionMemberId}`, scheme: "session member id" },
+    ],
+
+    offices: [
       {
-        identifier: m.shortName,
-        scheme: "session short name",
-      },
-      {
-        identifier: `${m.person.personId}`,
-        scheme: "person id",
-      },
-      {
-        identifier: `${m.memberId}`,
-        scheme: "member id",
-      },
-      {
-        identifier: `${m.sessionMemberId}`,
-        scheme: "session member id",
+        name: "District Office",
+        classification: "district",
+        address: "",
+        voice: "",
+        fax: "",
       },
     ],
-    memberships: [
-      {
-        id: m.chamber,
-        label: "chamber & district",
-        area_id: `${m.districtCode}`,
-      },
-    ],
-    updated_at: new Date().toISOString(),
   };
   return legislator;
 };
 
 const mapAPIBillToLegislation = (b: api.Bill): Legislation => {
+  const now = new Date().toISOString();
+
+  const fromOrg =
+    b.billType.chamber === "SENATE" ? NY_SENATE_ORG : NY_ASSEMBLY_ORG;
+
   const legislation: Legislation = {
     id: b.basePrintNoStr,
-    version: b.activeVersion,
-    legislative_session_id: `${b.session}`,
-    organization_id: b.billType.chamber,
+    session: `${b.session}`,
+    identifier: b.printNo,
     title: b.title,
-    date: b.publishedDateTime,
+    jurisdiction: NY_JURISDICTION,
+    from_organization: fromOrg,
+    classification: ["bill"],
+    subject: [],
+    extras: {},
+    created_at: b.publishedDateTime,
+    updated_at: now,
+    openstates_url: "",
+    first_action_date: b.publishedDateTime,
+    latest_action_date: b.status.actionDate,
+    latest_action_description: b.status.statusDesc,
+    latest_passage_date: "",
+
+    actions: [],
+    versions: [],
+    documents: [],
+
+    sponsorships: mapCosponsorsToSponsorships(b),
+
+    current_version: b.activeVersion,
     text: b.summary,
     cosponsors: getCosponsors(b),
-    updated_at: new Date().toISOString(),
   };
 
   return legislation;
+};
+
+const mapCosponsorsToSponsorships = (b: api.Bill) => {
+  const activeVer = b.activeVersion;
+  if (!b.amendments.items[activeVer]) return [];
+
+  return b.amendments.items[activeVer].coSponsors.items.map(
+    (c: api.Member) => ({
+      id: c.fullName.replaceAll(".", "").replaceAll(" ", "-"),
+      name: c.fullName,
+      entity_type: "person" as const,
+      primary: false,
+      classification: "cosponsor",
+    })
+  );
 };
 
 const getCosponsors = (b: api.Bill): { [key: string]: Cosponsor[] } => {
@@ -170,14 +239,17 @@ const getCosponsors = (b: api.Bill): { [key: string]: Cosponsor[] } => {
 
   amendmentVersions.forEach((v: string) => {
     const cosponsors: Cosponsor[] = [];
-    b.amendments.items[v].coSponsors.items.forEach((c: api.Member) =>
-      cosponsors.push({
-        id: c.fullName.replaceAll(".", "").replaceAll(" ", "-"),
-        name: c.fullName,
-        chamber: c.chamber,
-        district: `${c.districtCode}`,
-      })
-    );
+
+    if (b.amendments.items[v] && b.amendments.items[v].coSponsors) {
+      b.amendments.items[v].coSponsors.items.forEach((c: api.Member) =>
+        cosponsors.push({
+          id: c.fullName.replaceAll(".", "").replaceAll(" ", "-"),
+          name: c.fullName,
+          chamber: c.chamber,
+          district: `${c.districtCode}`,
+        })
+      );
+    }
     cosponsorsByVersion[v === "" ? "Original" : v] = cosponsors;
   });
 
