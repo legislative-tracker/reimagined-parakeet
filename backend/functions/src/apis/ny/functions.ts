@@ -3,7 +3,7 @@ import api from "nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
 import { Legislator, Legislation, Cosponsor } from "../../models/legislature";
 
-const nySenateKey = defineSecret("NY_SENATE_KEY");
+export const nySenateKey = defineSecret("NY_SENATE_KEY");
 
 const isSuccess = <T>(v: unknown): v is api.APIResponseSuccess<T> => {
   if ((v as api.APIResponseSuccess<T>).success === true) return true;
