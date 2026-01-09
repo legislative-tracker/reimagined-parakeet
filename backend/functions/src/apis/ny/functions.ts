@@ -37,7 +37,7 @@ const isItemsResponse = <T>(v: unknown): v is api.Items<T> => {
   return false;
 };
 
-export const updateMembers = async (): Promise<Legislator[]> => {
+export const updateMembers = async (): Promise<Partial<Legislator>[]> => {
   const options = {
     prefixUrl: "https://legislation.nysenate.gov/api/3/",
     responseType: "json" as const,
@@ -58,7 +58,7 @@ export const updateMembers = async (): Promise<Legislator[]> => {
     const res = await instance("members/" + year);
     if (isSuccess<api.FullMember[]>(res)) {
       if (isItemsResponse<api.FullMember>(res.result)) {
-        const legislators: Legislator[] = res.result.items.map(
+        const legislators: Partial<Legislator>[] = res.result.items.map(
           (m: api.FullMember) => mapAPIMemberToLegislator(m)
         );
         return legislators;
@@ -123,10 +123,10 @@ const generateSortName = (p: api.FullMember["person"]): string => {
   return sortName;
 };
 
-const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
+const mapAPIMemberToLegislator = (m: api.FullMember): Partial<Legislator> => {
   const now = new Date().toISOString();
 
-  const legislator: Legislator = {
+  const legislator: Partial<Legislator> = {
     id: m.fullName.replaceAll(".", "").replaceAll(" ", "-"),
     name: m.fullName,
     jurisdiction: NY_JURISDICTION,
@@ -134,18 +134,8 @@ const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
     family_name: m.person.lastName,
     image: m.imgName,
     email: m.person.email,
-    gender: "",
-    birth_date: "",
-    death_date: "",
-    created_at: now,
     updated_at: now,
-    openstates_url: "",
-    extras: {
-      memberId: `${m.memberId}`,
-      sessionMemberId: `${m.sessionMemberId}`,
-    },
 
-    party: "",
     current_role: {
       title: m.chamber === "SENATE" ? "Senator" : "Assembly Member",
       org_classification: m.chamber === "SENATE" ? "upper" : "lower",
@@ -165,16 +155,6 @@ const mapAPIMemberToLegislator = (m: api.FullMember): Legislator => {
       { identifier: `${m.person.personId}`, scheme: "person id" },
       { identifier: `${m.memberId}`, scheme: "member id" },
       { identifier: `${m.sessionMemberId}`, scheme: "session member id" },
-    ],
-
-    offices: [
-      {
-        name: "District Office",
-        classification: "district",
-        address: "",
-        voice: "",
-        fax: "",
-      },
     ],
   };
   return legislator;

@@ -72,7 +72,9 @@ export const mapPersonToLegislator = (person: Person): Partial<Legislator> => {
 /**
  * Mapping object that returns the specific "updater" function for a given jurisdiction
  */
-const updateFnMap: LegislatureUpdateFnMap<Legislation[] | Legislator[]> = {
+const updateFnMap: LegislatureUpdateFnMap<
+  Partial<Legislation>[] | Partial<Legislator>[]
+> = {
   ny: {
     bills: ny.updateBills,
     members: ny.updateMembers,
