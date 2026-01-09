@@ -21,15 +21,16 @@ export const performLegislationUpdate = async () => {
     billListByLegislature.map((o) => getBillUpdates(o))
   );
 
-  const writePromises: Promise<any>[] = [];
+  const bulkWriter = db.bulkWriter();
 
   updates.forEach((u) => {
     const cRef = db.collection(`legislatures/${u.id}/legislation`);
     u.bills.forEach((bill) => {
-      writePromises.push(cRef.doc(bill.id).set(bill, { merge: true }));
+      const docRef = cRef.doc(bill.id);
+      bulkWriter.set(docRef, bill, { merge: true });
     });
   });
 
-  await Promise.all(writePromises);
+  await bulkWriter.close();
   return updates;
 };
