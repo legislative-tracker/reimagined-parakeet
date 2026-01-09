@@ -10,10 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/legislative-tracker/reimagined-parakeet.git"
   },
-  "license": "GPL-3.0-or-later",
+  "license": "AGPL-3.0-only",
   "author": "jpelton-stroud",
   "type": "module",
   "scripts": {
+    "postinstall": "npm install --prefix frontend && npm install --prefix backend/functions",
     "build:backend": "npm run build --prefix backend/functions",
     "build:frontend": "npm run build --prefix frontend",
     "build": "npm run build:backend && npm run build:frontend",
