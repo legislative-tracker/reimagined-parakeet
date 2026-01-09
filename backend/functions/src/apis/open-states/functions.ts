@@ -14,13 +14,10 @@ export const getOpenStatesData = async (
   jurisdiction: string,
   targetEndpoint: string
 ): Promise<Person[]> => {
-  // Construct the full URL (e.g., https://v3.openstates.org/people)
   const url = `${BASE_URL}/${targetEndpoint}`;
-
   console.log(`Fetching ${targetEndpoint} for ${jurisdiction}...`);
 
   try {
-    // We pass our interfaces <Person, OpenStatesResponse> to .all()
     const results = await got.paginate.all<Person, OSResponse<Person>>(url, {
       responseType: "json",
       searchParams: {
@@ -30,16 +27,11 @@ export const getOpenStatesData = async (
         apikey: openStatesKey.value(),
       },
       pagination: {
-        // Transform the response to extract the array of items
         transform: (response) => {
           return response.body.results;
         },
-
-        // Calculate the next page options
         paginate: ({ response }) => {
           const { pagination } = response.body;
-
-          // Type assertion for safety
           const previousParams = response.request.options
             .searchParams as URLSearchParams;
 
@@ -52,7 +44,9 @@ export const getOpenStatesData = async (
 
           return {
             searchParams: {
-              ...Object.fromEntries(previousParams),
+              apikey: openStatesKey.value(),
+              jurisdiction: jurisdiction,
+              per_page: 50,
               page: currentPage + 1,
             },
           };
@@ -63,7 +57,6 @@ export const getOpenStatesData = async (
     return results;
   } catch (error: any) {
     console.error(`Failed to fetch data from ${url}:`, error.message);
-    // Rethrow or return empty array depending on your error handling strategy
     throw error;
   }
 };

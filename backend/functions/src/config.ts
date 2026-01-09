@@ -9,6 +9,8 @@ initializeApp();
 export const db = getFirestore();
 export const auth = getAuth();
 
+db.settings({ ignoreUndefinedProperties: true });
+
 // Define Secrets here so they can be imported by any function
 export const openStatesKey = defineSecret("OPENSTATES_KEY");
 export const googleMapsKey = defineSecret("GOOGLE_MAPS_KEY");
