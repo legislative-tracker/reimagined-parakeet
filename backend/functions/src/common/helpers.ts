@@ -69,15 +69,22 @@ export const getMemberUpdates = async (
   return (await updateFn()) as Legislator[];
 };
 
-export const isImageLink = (link: string | undefined): boolean => {
-  if (!link) return false;
-  if (!link.includes("https://")) return false;
-  if (link?.includes("no_image")) return false;
-  return true;
-};
+export const isImageLink = (urlStr: string | undefined): boolean => {
+  if (!urlStr || typeof urlStr !== "string") return false;
 
+  try {
+    const url = new URL(urlStr);
+    if (!["http:", "https:"].includes(url.protocol)) return false;
+
+    const imageExtensions = /\.(jpg|jpeg|png|webp|avif|gif|svg)$/i;
+    return imageExtensions.test(url.pathname);
+  } catch (e) {
+    return false;
+  }
+};
 export const isEmail = (email: string | undefined): boolean => {
-  if (!email?.trim()) return false;
-  if (email.includes("https://")) return false;
-  return true;
+  if (!email || typeof email !== "string") return false;
+  const cleanEmail = email.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(cleanEmail);
 };
