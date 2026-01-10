@@ -37,14 +37,14 @@ export class Dashboard {
 
   // Computes the active state for bills, or null if inactive
   private billsRequest = computed(() =>
-    this.selectedTabIndex() === DashboardTab.Bills ? this.stateCd() : null
+    this.selectedTabIndex() === DashboardTab.Bills ? this.stateCd() : null,
   );
 
   // Computes the active state for members, or null if inactive
   private membersRequest = computed(() =>
     [DashboardTab.Senate, DashboardTab.Assembly].includes(this.selectedTabIndex())
       ? this.stateCd()
-      : null
+      : null,
   );
 
   // --- Resources ---

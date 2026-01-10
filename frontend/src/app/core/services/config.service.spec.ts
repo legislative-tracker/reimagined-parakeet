@@ -117,7 +117,7 @@ describe('ConfigService', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith(
         'Config fetch failed, using defaults.',
-        expect.anything()
+        expect.anything(),
       );
 
       const current = service.config();
@@ -137,7 +137,7 @@ describe('ConfigService', () => {
       expect(mockSetDoc).toHaveBeenCalledWith(
         expect.anything(), // The docRef
         newConfig,
-        { merge: true }
+        { merge: true },
       );
 
       // Verify Optimistic Signal Update
@@ -192,7 +192,7 @@ describe('ConfigService', () => {
       expect(mockArgbFromHex).toHaveBeenCalledWith('#ff0000');
       expect(documentMock.documentElement.style.setProperty).toHaveBeenCalledWith(
         '--mat-sys-color-primary',
-        '#ff0000'
+        '#ff0000',
       );
     });
   });

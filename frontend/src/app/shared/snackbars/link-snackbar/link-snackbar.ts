@@ -26,6 +26,6 @@ export interface LinkSnackBarData {
 export class LinkSnackBar {
   constructor(
     public snackBarRef: MatSnackBarRef<LinkSnackBar>,
-    @Inject(MAT_SNACK_BAR_DATA) public data: LinkSnackBarData
+    @Inject(MAT_SNACK_BAR_DATA) public data: LinkSnackBarData,
   ) {}
 }

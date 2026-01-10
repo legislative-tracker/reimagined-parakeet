@@ -110,79 +110,79 @@
 
         <div formArrayName="resources" cdkDropList (cdkDropListDropped)="drop($event)">
           @for (control of resourcesArray.controls; track control; let i = $index) {
+            <mat-card appearance="outlined" class="resource-card" [formGroupName]="i" cdkDrag>
+              <div class="resource-card-placeholder" *cdkDragPlaceholder></div>
 
-          <mat-card appearance="outlined" class="resource-card" [formGroupName]="i" cdkDrag>
-            <div class="resource-card-placeholder" *cdkDragPlaceholder></div>
+              <button
+                mat-icon-button
+                type="button"
+                class="resource-drag-handle"
+                cdkDragHandle
+                matTooltip="Drag to reorder"
+              >
+                <mat-icon>drag_indicator</mat-icon>
+              </button>
 
-            <button
-              mat-icon-button
-              type="button"
-              class="resource-drag-handle"
-              cdkDragHandle
-              matTooltip="Drag to reorder"
-            >
-              <mat-icon>drag_indicator</mat-icon>
-            </button>
+              <button
+                mat-icon-button
+                color="warn"
+                type="button"
+                class="resource-delete-btn"
+                (click)="removeResource(i)"
+                matTooltip="Remove this resource"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
 
-            <button
-              mat-icon-button
-              color="warn"
-              type="button"
-              class="resource-delete-btn"
-              (click)="removeResource(i)"
-              matTooltip="Remove this resource"
-            >
-              <mat-icon>delete</mat-icon>
-            </button>
+              <mat-card-header>
+                <mat-card-title style="margin-left: 24px">Resource #{{ i + 1 }}</mat-card-title>
+              </mat-card-header>
 
-            <mat-card-header>
-              <mat-card-title style="margin-left: 24px">Resource #{{ i + 1 }}</mat-card-title>
-            </mat-card-header>
+              <mat-card-content>
+                <div class="resource-flex-container">
+                  <div class="field-two-thirds">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Title</mat-label>
+                      <input matInput formControlName="title" placeholder="GitHub Repo" />
+                    </mat-form-field>
+                  </div>
 
-            <mat-card-content>
-              <div class="resource-flex-container">
-                <div class="field-two-thirds">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Title</mat-label>
-                    <input matInput formControlName="title" placeholder="GitHub Repo" />
-                  </mat-form-field>
+                  <div class="field-one-third">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Icon Name</mat-label>
+                      <input matInput formControlName="icon" placeholder="code" />
+                      <mat-icon matSuffix>{{ control.get('icon')?.value || 'link' }}</mat-icon>
+                    </mat-form-field>
+                  </div>
+
+                  <div class="field-two-thirds">
+                    <mat-form-field appearance="outline">
+                      <mat-label>URL</mat-label>
+                      <input matInput formControlName="url" placeholder="https://..." />
+                    </mat-form-field>
+                  </div>
+
+                  <div class="field-one-third">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Button Label</mat-label>
+                      <input matInput formControlName="actionLabel" placeholder="View" />
+                    </mat-form-field>
+                  </div>
+
+                  <div class="field-full">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Description</mat-label>
+                      <textarea matInput formControlName="description" rows="2"></textarea>
+                    </mat-form-field>
+                  </div>
                 </div>
-
-                <div class="field-one-third">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Icon Name</mat-label>
-                    <input matInput formControlName="icon" placeholder="code" />
-                    <mat-icon matSuffix>{{ control.get('icon')?.value || 'link' }}</mat-icon>
-                  </mat-form-field>
-                </div>
-
-                <div class="field-two-thirds">
-                  <mat-form-field appearance="outline">
-                    <mat-label>URL</mat-label>
-                    <input matInput formControlName="url" placeholder="https://..." />
-                  </mat-form-field>
-                </div>
-
-                <div class="field-one-third">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Button Label</mat-label>
-                    <input matInput formControlName="actionLabel" placeholder="View" />
-                  </mat-form-field>
-                </div>
-
-                <div class="field-full">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Description</mat-label>
-                    <textarea matInput formControlName="description" rows="2"></textarea>
-                  </mat-form-field>
-                </div>
-              </div>
-            </mat-card-content>
-          </mat-card>
-          } @if (resourcesArray.controls.length === 0) {
-          <div class="empty-state">
-            No resources configured. Click "Add Resource" to create one.
-          </div>
+              </mat-card-content>
+            </mat-card>
+          }
+          @if (resourcesArray.controls.length === 0) {
+            <div class="empty-state">
+              No resources configured. Click "Add Resource" to create one.
+            </div>
           }
         </div>
       </form>

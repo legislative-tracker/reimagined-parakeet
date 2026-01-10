@@ -5,30 +5,54 @@ import {
 } from "../models/legislature";
 import { Person } from "@jpstroud/opencivicdata-types";
 import { Success, ChamberMapping } from "../models/assorted";
-
 import * as ny from "../apis/ny/functions";
 
+/**
+ * Determines if 'got' responded with a successful fetch
+ * @param {unknown} res The response object
+ * @return {boolean}
+ */
 export const isSuccess = <T>(res: unknown): res is Success<T> => {
   if ((res as Success<T>).results) return true;
   return false;
 };
 
+/**
+ * Mapping object that returns the name of a given legislative chamber
+ *
+ * TODO: Need to refactor before implementing a state that has different
+ * chamber names
+ */
 const chamberMapping: ChamberMapping = {
   country: {
     upper: "Senate",
     lower: "House",
   },
   state: {
-    // TODO: refactor when implementing a state with different names
     upper: "Senate",
     lower: "Assembly",
   },
 };
 
-const chamberMapper = (jurisdiction: string, org: string): string => {
-  return chamberMapping[jurisdiction][org];
+/**
+ * Returns the name of the chamber in question
+ *
+ * @param {string} jurisdiction Whether the org is state- or country-level
+ * @param {string} chamber Whether the org is the "upper" or "lower" chamber
+ * @return {string} The name of the chamber
+ */
+const chamberMapper = (jurisdiction: string, chamber: string): string => {
+  return chamberMapping[jurisdiction][chamber];
 };
 
+/**
+ * Maps an OpenStates "Person" object to a Partial of our custom "Legislator"
+ *
+ * @param {Person} person An Open Civic Data "Person" object
+ * @return {Partial<Legislator>}
+ *
+ * TODO: Refactor returned object to an OCD "PersonStub"
+ */
 export const mapPersonToLegislator = (person: Person): Partial<Legislator> => {
   const chamber: string = chamberMapper(
     person.jurisdiction.classification,
@@ -45,7 +69,12 @@ export const mapPersonToLegislator = (person: Person): Partial<Legislator> => {
   };
 };
 
-const updateFnMap: LegislatureUpdateFnMap<Legislation[] | Legislator[]> = {
+/**
+ * Mapping object that returns the specific "updater" function for a given jurisdiction
+ */
+const updateFnMap: LegislatureUpdateFnMap<
+  Partial<Legislation>[] | Partial<Legislator>[]
+> = {
   ny: {
     bills: ny.updateBills,
     members: ny.updateMembers,
@@ -61,23 +90,49 @@ export const getBillUpdates = async (o: { id: string; bills: string[] }) => {
   };
 };
 
+/**
+ * Fetches updated Legislator data for a given jurisdiction
+ *
+ * @param {string} legislatureCd The two-digit identifier of the target jurisdiction (e.g. 'ny')
+ * @return {Promise<Legislator>} A promise of an array of Legislators
+ */
 export const getMemberUpdates = async (
-  legislature: string
+  legislatureCd: string
 ): Promise<Legislator[]> => {
-  const updateFn = updateFnMap[legislature].members;
+  const updateFn = updateFnMap[legislatureCd].members;
 
   return (await updateFn()) as Legislator[];
 };
 
-export const isImageLink = (link: string | undefined): boolean => {
-  if (!link) return false;
-  if (!link.includes("https://")) return false;
-  if (link?.includes("no_image")) return false;
-  return true;
+/**
+ * Checks whether the provided string is a valid URI for an image file
+ *
+ * @param {string | undefined} urlStr The string to test
+ * @return {boolean}
+ */
+export const isImageLink = (urlStr: string | undefined): boolean => {
+  if (!urlStr || typeof urlStr !== "string") return false;
+
+  try {
+    const url = new URL(urlStr);
+    if (!["http:", "https:"].includes(url.protocol)) return false;
+
+    const imageExtensions = /\.(jpg|jpeg|png|webp|avif|gif|svg)$/i;
+    return imageExtensions.test(url.pathname);
+  } catch (e) {
+    return false;
+  }
 };
 
+/**
+ * Checks whether the provided string is a valid Email address
+ *
+ * @param {string | undefined} email The string to be tested
+ * @return {boolean}
+ */
 export const isEmail = (email: string | undefined): boolean => {
-  if (!email?.trim()) return false;
-  if (email.includes("https://")) return false;
-  return true;
+  if (!email || typeof email !== "string") return false;
+  const cleanEmail = email.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(cleanEmail);
 };

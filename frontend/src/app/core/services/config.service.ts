@@ -67,7 +67,7 @@ export class ConfigService {
         catchError((err) => {
           console.warn('Config fetch failed, using defaults.', err);
           return of(null);
-        })
+        }),
       );
 
       data$.subscribe((remoteConfig) => {
@@ -114,9 +114,8 @@ export class ConfigService {
   private async applyAngularMaterialTheme(hexColor: string) {
     try {
       // Dynamic import for Material Color Utilities
-      const { argbFromHex, themeFromSourceColor, hexFromArgb } = await import(
-        '@material/material-color-utilities'
-      );
+      const { argbFromHex, themeFromSourceColor, hexFromArgb } =
+        await import('@material/material-color-utilities');
 
       // Scoped helper to flatten the scheme
       const flattenSchemeToCssVars = (scheme: any): Record<string, string> => {

@@ -12,7 +12,7 @@
             <mat-label>State Legislature</mat-label>
             <mat-select [(ngModel)]="state" name="state" [disabled]="isLoading()">
               @for (state of implementedStates; track state.value) {
-              <mat-option [value]="state.value">{{ state.name }}</mat-option>
+                <mat-option [value]="state.value">{{ state.name }}</mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -30,7 +30,11 @@
           class="full-width"
           [disabled]="isLoading() || !billId"
         >
-          @if (isLoading()) { Saving to Firestore... } @else { Add Bill }
+          @if (isLoading()) {
+            Saving to Firestore...
+          } @else {
+            Add Bill
+          }
         </button>
       </form>
     </mat-card-content>

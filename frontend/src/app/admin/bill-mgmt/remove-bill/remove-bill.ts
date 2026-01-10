@@ -70,9 +70,8 @@ export class RemoveBill {
     this.selectedBillId.set(''); // Reset selected bill
 
     try {
-      const { getFirestore, collection, query, orderBy, getDocs } = await import(
-        '@angular/fire/firestore'
-      );
+      const { getFirestore, collection, query, orderBy, getDocs } =
+        await import('@angular/fire/firestore');
 
       const firestore = getFirestore(this.app);
 

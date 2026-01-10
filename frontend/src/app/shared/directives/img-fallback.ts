@@ -8,7 +8,10 @@ export class ImgFallbackDirective {
   private readonly DEFAULT_IMAGE = '/assets/account_circle_40.svg';
   @Input() appFallback = this.DEFAULT_IMAGE;
 
-  constructor(private el: ElementRef<HTMLImageElement>, private renderer: Renderer2) {}
+  constructor(
+    private el: ElementRef<HTMLImageElement>,
+    private renderer: Renderer2,
+  ) {}
 
   @HostListener('error')
   onError() {

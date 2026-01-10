@@ -96,14 +96,14 @@ describe('AddBill', () => {
         expect.objectContaining({
           id: 'S1234',
           updatedAt: expect.any(String), // Verify timestamp was generated
-        })
+        }),
       );
 
       // Verify Success Feedback
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         expect.stringContaining('Success'),
         'Close',
-        expect.objectContaining({ panelClass: ['success-snackbar'] })
+        expect.objectContaining({ panelClass: ['success-snackbar'] }),
       );
 
       // Verify Form Reset
@@ -130,7 +130,7 @@ describe('AddBill', () => {
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         errorMsg,
         'Close',
-        expect.objectContaining({ panelClass: ['error-snackbar'] })
+        expect.objectContaining({ panelClass: ['error-snackbar'] }),
       );
 
       // Verify Form NOT reset (so user can retry)

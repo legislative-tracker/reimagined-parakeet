@@ -1,7 +1,7 @@
 <div class="container privacy-wrapper">
   <header>
     <h1>Privacy Policy</h1>
-    <p class="last-updated">Last Updated: {{ lastUpdated() | date : 'longDate' }}</p>
+    <p class="last-updated">Last Updated: {{ lastUpdated() | date: 'longDate' }}</p>
   </header>
 
   <section>
@@ -17,19 +17,21 @@
     <mat-card appearance="outlined" class="data-card">
       <mat-list>
         @for (item of dataCategories(); track item.title; let last = $last) {
+          <mat-list-item lines="3">
+            <mat-icon matListItemIcon class="category-icon">{{ item.icon }}</mat-icon>
+            <span matListItemTitle>{{ item.title }}</span>
+            <p matListItemLine class="category-desc">
+              {{ item.description }}
+              @if (item.importantNote) {
+                <span class="highlight-note">{{ item.importantNote }}</span>
+              }
+            </p>
+          </mat-list-item>
 
-        <mat-list-item lines="3">
-          <mat-icon matListItemIcon class="category-icon">{{ item.icon }}</mat-icon>
-          <span matListItemTitle>{{ item.title }}</span>
-          <p matListItemLine class="category-desc">
-            {{ item.description }}
-            @if (item.importantNote) {
-            <span class="highlight-note">{{ item.importantNote }}</span>
-            }
-          </p>
-        </mat-list-item>
-
-        @if (!last) { <mat-divider></mat-divider> } }
+          @if (!last) {
+            <mat-divider></mat-divider>
+          }
+        }
       </mat-list>
     </mat-card>
   </section>
