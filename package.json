@@ -15,15 +15,23 @@
   "type": "module",
   "scripts": {
     "postinstall": "npm install --prefix frontend && npm install --prefix backend/functions",
+    "prebuild:backend": "npm run lint --prefix backend/functions",
     "build:backend": "npm run build --prefix backend/functions",
+    "prebuild:frontend": "npm test --prefix frontend",
     "build:frontend": "npm run build --prefix frontend",
     "build": "npm run build:backend && npm run build:frontend",
     "serve:backend": "npm run serve --prefix backend/functions",
     "serve:frontend": "npm run start --prefix frontend",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "format:md": "prettier --write \"**/*.md\"",
+    "lint": "npm run lint --prefix backend/functions",
+    "test": "npm run test --prefix frontend",
     "release:dry": "standard-version --dry-run",
     "release": "standard-version",
     "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.md": "prettier --write",
+    "*.ts": "prettier --write"
   },
   "devDependencies": {
     "@analogjs/vite-plugin-angular": "^2.2.0",
@@ -33,6 +41,8 @@
     "@vitest/ui": "^4.0.16",
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
     "standard-version": "^9.5.0",
     "vite": "^7.3.0",
     "vitest": "^4.0.16"
