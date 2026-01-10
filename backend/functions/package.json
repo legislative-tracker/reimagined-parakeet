@@ -1,6 +1,6 @@
 {
   "name": "legislative-tracker-functions",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Firestore backend for the Legislative Tracker PWA",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
