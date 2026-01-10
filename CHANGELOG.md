@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit
 guidelines.
 
+### [0.8.3](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.2...v0.8.3) (2026-01-10)
+
+### Bug Fixes
+
+- **backend:** updated bad schedule definition for legislators.monthlyUpdate()
+  ([bda2014](https://github.com/legislative-tracker/reimagined-parakeet/commit/bda2014bd48658c5649a6c6ae1569a3354595faf))
+
 ### [0.8.2](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.1...v0.8.2) (2026-01-10)
 
 ### CI/CD & Build System
