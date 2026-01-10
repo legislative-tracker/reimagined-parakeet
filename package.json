@@ -1,6 +1,6 @@
 {
   "name": "legislative-tracker",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A modern Progressive Web App for tracking legislative activity, built on Angular v20 and Firebase.",
   "homepage": "https://github.com/legislative-tracker/reimagined-parakeet#readme",
   "bugs": {

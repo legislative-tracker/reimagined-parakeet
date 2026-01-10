@@ -1,10 +1,42 @@
-<!--markdownlint-disable-file MD024-->
-
 # Changelog
 
 All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit
 guidelines.
+
+### [0.8.1](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.0...v0.8.1) (2026-01-10)
+
+### Bug Fixes
+
+- **api:** legislator update now functions as expected
+  ([8e5a1fc](https://github.com/legislative-tracker/reimagined-parakeet/commit/8e5a1fc0fad759290e2ed861d4c977843c4ffce9))
+- **test:** added additional tests against updated code
+  ([1f19b44](https://github.com/legislative-tracker/reimagined-parakeet/commit/1f19b4424812ecd76b5f92c71e18eb7312ecdd35))
+
+### Code Refactoring
+
+- **backend/legislators:** moved biz logic to service & implemented monthly updates
+  ([6ba8716](https://github.com/legislative-tracker/reimagined-parakeet/commit/6ba87160368043ed69e4293863a15a4f30c03374))
+- **backend:** fns now do a better job of testing for image links & email addresses
+  ([28b6cc4](https://github.com/legislative-tracker/reimagined-parakeet/commit/28b6cc4d8fc239550a098ee5b11406b4a50deb3e))
+- **frontend:** abstracted the firebase env object to json for easier deployment customization
+  ([90bc979](https://github.com/legislative-tracker/reimagined-parakeet/commit/90bc979d6758f2b20b8aafa757c94736855c097b))
+- **performLegislationUpdate:** moved from Promise.all to db.bulkWriter
+  ([2285cd4](https://github.com/legislative-tracker/reimagined-parakeet/commit/2285cd427767c54b41bfcf6b0d2181276c5a59be))
+
+### Documentation
+
+- **backend:** added jsdoc comments
+  ([124d6b5](https://github.com/legislative-tracker/reimagined-parakeet/commit/124d6b505f65542399ae8de411e4f46bd6e5ab52))
+- **project:** added config guide/rearranged & reworded sections
+  ([6029a8f](https://github.com/legislative-tracker/reimagined-parakeet/commit/6029a8faf7fc7e6f9edf2f4aba8b4181f66373e9))
+- **pull_request_template:** updated
+  ([7988a50](https://github.com/legislative-tracker/reimagined-parakeet/commit/7988a501314b0a1c2609557b912f49f942b8e098))
+
+### CI/CD & Build System
+
+- **prettier:** added prettier & markdown linting rules, exclusions, etc
+  ([9a64695](https://github.com/legislative-tracker/reimagined-parakeet/commit/9a64695ba255f34acf8f4d15fe4377a9a6a97a16))
 
 ## [0.8.0](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.25...v0.8.0) (2026-01-08)
 

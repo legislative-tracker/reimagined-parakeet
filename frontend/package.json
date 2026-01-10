@@ -1,6 +1,6 @@
 {
   "name": "legislative-tracker",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Angular frontend for the Legislative Tracker PWA",
   "scripts": {
     "ng": "ng",
