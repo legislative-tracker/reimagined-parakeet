@@ -158,7 +158,7 @@ describe('AuthService', () => {
           displayName: 'Test User',
           lastLogin: expect.any(Date),
         }),
-        { merge: true }
+        { merge: true },
       );
     });
   });
@@ -196,7 +196,7 @@ describe('AuthService', () => {
       expect(mockSetDoc).toHaveBeenCalledWith(
         expect.anything(),
         { favorites: ['BILL_A', 'BILL_B'] },
-        { merge: true }
+        { merge: true },
       );
     });
 
@@ -215,7 +215,7 @@ describe('AuthService', () => {
       expect(mockSetDoc).toHaveBeenCalledWith(
         expect.anything(),
         { favorites: ['BILL_B'] },
-        { merge: true }
+        { merge: true },
       );
     });
 

@@ -86,7 +86,7 @@ export class AuthService {
           phoneNumber: credential.user.phoneNumber,
           lastLogin: new Date(),
         },
-        { merge: true }
+        { merge: true },
       );
     }
     return credential;

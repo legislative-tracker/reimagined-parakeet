@@ -31,7 +31,7 @@ export class LegislatureService {
         return firestoreLib.collectionData(billsRef, { idField: 'id' }) as Observable<
           Legislation[]
         >;
-      })
+      }),
     );
   }
 
@@ -44,7 +44,7 @@ export class LegislatureService {
         return firestoreLib.collectionData(membersRef, { idField: 'id' }) as Observable<
           Legislator[]
         >;
-      })
+      }),
     );
   }
 
@@ -56,7 +56,7 @@ export class LegislatureService {
         const path = this.getPaths(stateCode).bills + `/${id}`;
         const billRef = firestoreLib.doc(firestore, path);
         return firestoreLib.docData(billRef, { idField: 'id' }) as Observable<Legislation>;
-      })
+      }),
     );
   }
 
@@ -68,7 +68,7 @@ export class LegislatureService {
         const path = this.getPaths(stateCode).members + `/${id}`;
         const memberRef = firestoreLib.doc(firestore, path);
         return firestoreLib.docData(memberRef, { idField: 'id' }) as Observable<Legislator>;
-      })
+      }),
     );
   }
 

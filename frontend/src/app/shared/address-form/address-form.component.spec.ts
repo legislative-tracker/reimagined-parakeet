@@ -63,7 +63,7 @@ describe('AddressForm', () => {
           city: 'Albany',
           state: 'NY',
           postalCode: '12203',
-        })
+        }),
       );
     });
 
@@ -122,7 +122,7 @@ describe('AddressForm', () => {
           firstName: 'Jane',
           address: '456 Market St',
           shipping: 'priority',
-        })
+        }),
       );
     });
   });
@@ -135,7 +135,7 @@ describe('AddressForm', () => {
 
       // Search form shouldn't have First/Last Name inputs
       const firstNameInput = fixture.debugElement.query(
-        By.css('input[formControlName="firstName"]')
+        By.css('input[formControlName="firstName"]'),
       );
       expect(firstNameInput).toBeNull();
 
@@ -145,7 +145,7 @@ describe('AddressForm', () => {
 
       // Now First Name should exist
       const shippingNameInput = fixture.debugElement.query(
-        By.css('input[formControlName="firstName"]')
+        By.css('input[formControlName="firstName"]'),
       );
       expect(shippingNameInput).toBeTruthy();
     });

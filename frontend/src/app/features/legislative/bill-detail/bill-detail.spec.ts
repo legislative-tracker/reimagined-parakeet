@@ -112,7 +112,7 @@ describe('BillDetail', () => {
         id: 'BILL-999',
         title: 'Empty Bill',
         cosponsors: null, // or undefined
-      })
+      }),
     );
 
     // Change Input ID to trigger refetch

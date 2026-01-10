@@ -123,7 +123,7 @@ describe('RemoveBill', () => {
       expect(component.availableBills()).toEqual([]);
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         'Could not load bills for this state.',
-        'Close'
+        'Close',
       );
       expect(console.error).toHaveBeenCalled();
 
@@ -161,7 +161,7 @@ describe('RemoveBill', () => {
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         'Bill deleted successfully.',
         'Close',
-        expect.objectContaining({ panelClass: ['success-snackbar'] })
+        expect.objectContaining({ panelClass: ['success-snackbar'] }),
       );
 
       expect(fetchSpy).toHaveBeenCalledWith('ny');
@@ -178,7 +178,7 @@ describe('RemoveBill', () => {
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         errorMsg,
         'Close',
-        expect.objectContaining({ panelClass: ['error-snackbar'] })
+        expect.objectContaining({ panelClass: ['error-snackbar'] }),
       );
 
       expect(component.isDeleting()).toBe(false);

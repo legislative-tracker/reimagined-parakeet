@@ -28,8 +28,8 @@ export const adminGuard: CanActivateFn = (route, state) => {
             // Logged in but not an admin? Send to home
             return router.createUrlTree(['/']);
           }
-        })
+        }),
       );
-    })
+    }),
   );
 };

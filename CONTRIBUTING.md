@@ -1,6 +1,7 @@
 # Contributing to Legislative Tracker
 
-Thank you for your interest in contributing! This document outlines the standards and workflows for development on the Legislative Tracker PWA.
+Thank you for your interest in contributing! This document outlines the standards and workflows for
+development on the Legislative Tracker PWA.
 
 ## 🏗️ Monorepo Structure
 
@@ -22,13 +23,15 @@ Ensure your environment matches our constraints:
 
 ### Setup
 
-See the README for [Installation](./README.md#installation) & [Configuration](./README.md#configuration) instructions.
+See the README for [Installation](./README.md#installation) &
+[Configuration](./README.md#configuration) instructions.
 
 ## 📐 Architectural Standards
 
 ### Frontend (Angular v20)
 
-- **Zoneless Change Detection**: We explicitly use `provideZonelessChangeDetection()`. Do not rely on `Zone.js` patching.
+- **Zoneless Change Detection**: We explicitly use `provideZonelessChangeDetection()`. Do not rely
+  on `Zone.js` patching.
 - **Signals**: Prefer Angular Signals over RxJS for synchronous state management.
 - **Standalone Components**: We do not use NgModules. All components must be `standalone: true`.
 - **Styles**: Use SCSS.
@@ -36,7 +39,8 @@ See the README for [Installation](./README.md#installation) & [Configuration](./
 ### Backend (Firebase)
 
 - **Runtime**: Node.js v24. Ensure you are not using legacy Node APIs.
-- **Type Safety**: Share interfaces between frontend and backend where possible to ensure type safety across the network boundary.
+- **Type Safety**: Share interfaces between frontend and backend where possible to ensure type
+  safety across the network boundary.
 
 ## 🧹 Code Style & Quality
 
@@ -44,7 +48,8 @@ We strictly enforce code style using **Prettier** and **ESLint**.
 
 - **VS Code**: This project is configured with workspace settings.
   - **Format On Save**: Enabled. Please ensure your editor respects the `.prettierrc` configuration.
-  - **Spell Checker**: We use the "Code Spell Checker" extension. Project-specific words are defined in `.vscode/settings.json`.
+  - **Spell Checker**: We use the "Code Spell Checker" extension. Project-specific words are defined
+    in `.vscode/settings.json`.
 - **Linting**:
   - Backend: Run `npm run lint` inside `backend/functions/` to check for issues.
   - Frontend: Standard Angular linting applies.
@@ -53,6 +58,8 @@ We strictly enforce code style using **Prettier** and **ESLint**.
 
 1. Create a feature branch (`git checkout -b feature/my-feature`).
 1. Ensure the code builds cleanly (`npm run build`).  
-   **NOTE**: Running the build script in the root directory will automatically execute backend linting and frontend tests.
-1. Open a Pull Request against the `main` branch and fill out [the PR template](.github/PULL_REQUEST_TEMPLATE.md)
+   **NOTE**: Running the build script in the root directory will automatically execute backend
+   linting and frontend tests.
+1. Open a Pull Request against the `main` branch and fill out
+   [the PR template](.github/PULL_REQUEST_TEMPLATE.md)
 1. Ensure all CI checks pass.

@@ -87,7 +87,7 @@ describe('RemoveAdmin', () => {
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         expect.stringContaining('Success'),
         'Close',
-        expect.objectContaining({ panelClass: ['success-snackbar'] })
+        expect.objectContaining({ panelClass: ['success-snackbar'] }),
       );
 
       expect(component.email()).toBe('');
@@ -108,7 +108,7 @@ describe('RemoveAdmin', () => {
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         errorMsg,
         'Close',
-        expect.objectContaining({ panelClass: ['error-snackbar'] })
+        expect.objectContaining({ panelClass: ['error-snackbar'] }),
       );
 
       // Verify console.error was called (proving we suppressed the log)

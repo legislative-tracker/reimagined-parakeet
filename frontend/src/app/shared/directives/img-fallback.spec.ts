@@ -101,7 +101,7 @@ describe('ImgFallbackDirective', () => {
     // Assert we logged an error and did NOT try to set it again
     expect(consoleSpy).toHaveBeenCalledWith(
       expect.stringContaining('Critical: Fallback image is missing'),
-      expect.anything()
+      expect.anything(),
     );
 
     consoleSpy.mockRestore();

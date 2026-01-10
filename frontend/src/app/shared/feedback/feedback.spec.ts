@@ -92,11 +92,11 @@ describe('Feedback', () => {
       // Expect the body to contain the formatted markdown we constructed in the component
       expect(mockFeedbackService.sendFeedback).toHaveBeenCalledWith(
         'Add Dark Mode',
-        expect.stringContaining('**Type:** FEATURE')
+        expect.stringContaining('**Type:** FEATURE'),
       );
       expect(mockFeedbackService.sendFeedback).toHaveBeenCalledWith(
         'Add Dark Mode',
-        expect.stringContaining('**Context:** `/current/test/route`')
+        expect.stringContaining('**Context:** `/current/test/route`'),
       );
 
       // Assert SnackBar (Success)
@@ -133,7 +133,7 @@ describe('Feedback', () => {
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         expect.stringContaining('Failed to submit'),
         'Close',
-        expect.anything()
+        expect.anything(),
       );
 
       expect(component.isSubmitting()).toBe(false);

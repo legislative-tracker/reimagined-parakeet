@@ -30,7 +30,7 @@ export const getAppConfig = (runtimeConfig: AppConfig): ApplicationConfig => {
       provideRouter(
         routes,
         withComponentInputBinding(),
-        withRouterConfig({ paramsInheritanceStrategy: 'always' })
+        withRouterConfig({ paramsInheritanceStrategy: 'always' }),
       ),
 
       provideFirebaseApp(() => initializeApp(inject(APP_CONFIG).firebase)),

@@ -73,7 +73,7 @@ describe('UserManagementService', () => {
 
       // Execute & Assert
       await expect(service.grantAdminPrivileges('fail@example.com')).rejects.toThrow(
-        'Permission Denied'
+        'Permission Denied',
       );
 
       // Verify Logging
@@ -109,7 +109,7 @@ describe('UserManagementService', () => {
 
       // Execute & Assert
       await expect(service.revokeAdminPrivileges('fail@example.com')).rejects.toThrow(
-        'Network Error'
+        'Network Error',
       );
 
       // Verify Logging

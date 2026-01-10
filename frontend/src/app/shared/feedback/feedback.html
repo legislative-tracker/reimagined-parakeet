@@ -13,9 +13,9 @@
       <mat-label>Feedback Type</mat-label>
       <mat-select formControlName="type">
         @for (type of issueTypes; track type.value) {
-        <mat-option [value]="type.value">
-          <mat-icon>{{ type.icon }}</mat-icon> {{ type.label }}
-        </mat-option>
+          <mat-option [value]="type.value">
+            <mat-icon>{{ type.icon }}</mat-icon> {{ type.label }}
+          </mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -23,13 +23,17 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Title</mat-label>
       <input matInput formControlName="title" placeholder="Summary of the issue" />
-      @if (form.get('title')?.hasError('required')) { <mat-error>Required</mat-error> }
+      @if (form.get('title')?.hasError('required')) {
+        <mat-error>Required</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Description</mat-label>
       <textarea matInput formControlName="description" rows="5"></textarea>
-      @if (form.get('description')?.hasError('required')) { <mat-error>Required</mat-error> }
+      @if (form.get('description')?.hasError('required')) {
+        <mat-error>Required</mat-error>
+      }
     </mat-form-field>
   </form>
 </mat-dialog-content>
@@ -43,6 +47,10 @@
     (click)="onSubmit()"
     [disabled]="form.invalid || isSubmitting()"
   >
-    @if (isSubmitting()) { Sending... } @else { Submit }
+    @if (isSubmitting()) {
+      Sending...
+    } @else {
+      Submit
+    }
   </button>
 </mat-dialog-actions>

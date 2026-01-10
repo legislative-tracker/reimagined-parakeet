@@ -93,7 +93,7 @@ describe('AddAdmin', () => {
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         expect.stringContaining('Success'),
         'Close',
-        expect.objectContaining({ panelClass: ['success-snackbar'] })
+        expect.objectContaining({ panelClass: ['success-snackbar'] }),
       );
 
       // Verify State Updates
@@ -117,7 +117,7 @@ describe('AddAdmin', () => {
       expect(mockSnackBar.open).toHaveBeenCalledWith(
         errorMsg,
         'Close',
-        expect.objectContaining({ panelClass: ['error-snackbar'] })
+        expect.objectContaining({ panelClass: ['error-snackbar'] }),
       );
 
       // Verify Console Error was triggered (and suppressed)

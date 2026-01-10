@@ -73,7 +73,7 @@ export class Admin {
             organization: config.organization,
             branding: config.branding,
           },
-          { emitEvent: false }
+          { emitEvent: false },
         );
 
         this.resourcesArray.clear({ emitEvent: false });
@@ -146,7 +146,7 @@ export class Admin {
     this.form.patchValue(config);
     this.resourcesArray.clear();
     (config.resources || []).forEach((res) =>
-      this.resourcesArray.push(this.createResourceGroup(res))
+      this.resourcesArray.push(this.createResourceGroup(res)),
     );
   }
 }
