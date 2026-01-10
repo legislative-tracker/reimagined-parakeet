@@ -26,7 +26,7 @@ export const manualUpdate = onRequest(
 
 export const monthlyUpdate = onSchedule(
   {
-    schedule: "every 1st monday of month 05:00",
+    schedule: "1st Monday of month 05:00",
     timeZone: "America/New_York",
     secrets: [openStatesKey, nySenateKey],
     retryCount: 3,
