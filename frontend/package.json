@@ -8,9 +8,9 @@
     "prebuild": "echo \"export const buildDate = '$(date -u)';\" > src/app/build-info.ts",
     "build": "npm run prebuild && ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test": "nx test run",
+    "test:watch": "nx test",
+    "test:coverage": "nx test run --coverage"
   },
   "prettier": {
     "printWidth": 100,

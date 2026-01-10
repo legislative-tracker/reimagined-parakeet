@@ -6,7 +6,7 @@
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc --project tsconfig.build.json",
     "build:watch": "tsc --project tsconfig.build.json --watch",
-    "test": "vitest run",
+    "test": "nx test run",
     "serve": "firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
