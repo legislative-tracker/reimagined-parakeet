@@ -32,6 +32,10 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Create Config File
+        run: |
+          echo '${{ secrets.APP_CONFIG_JSON }}' > frontend/public/config.json
+
       - name: Inject Versioning
         working-directory: frontend
         run: |
