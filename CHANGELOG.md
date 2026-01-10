@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit
 guidelines.
 
+### [0.8.2](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.1...v0.8.2) (2026-01-10)
+
+### CI/CD & Build System
+
+- **frontend:** fixed missing config file
+  ([66d52ef](https://github.com/legislative-tracker/reimagined-parakeet/commit/66d52ef6bfbadd9a0a5981b7e3bfce96718cf927))
+
 ### [0.8.1](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.0...v0.8.1) (2026-01-10)
 
 ### Bug Fixes
