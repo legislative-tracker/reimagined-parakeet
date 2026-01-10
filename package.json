@@ -15,7 +15,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "npm install --prefix frontend && npm install --prefix backend/functions",
-    "prebuild:backend": "npm run lint --prefix backend/functions",
+    "prebuild:backend": "npm run lint --prefix backend/functions && npm run test --prefix backend/functions",
     "build:backend": "npm run build --prefix backend/functions",
     "prebuild:frontend": "npm test --prefix frontend",
     "build:frontend": "npm run build --prefix frontend",
@@ -24,7 +24,9 @@
     "serve:frontend": "npm run start --prefix frontend",
     "format:md": "prettier --write \"**/*.md\"",
     "lint": "npm run lint --prefix backend/functions",
-    "test": "npm run test --prefix frontend",
+    "test:backend": "npm run test --prefix backend/functions",
+    "test:frontend": "npm run test --prefix frontend",
+    "test": "npm run test:backend && npm run test:frontend",
     "release:dry": "standard-version --dry-run",
     "release": "standard-version",
     "prepare": "husky"
