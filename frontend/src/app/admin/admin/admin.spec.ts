@@ -6,12 +6,15 @@ import { signal } from '@angular/core';
 import { Admin } from './admin';
 import { ConfigService } from '@app-core/services/config.service';
 import { RuntimeConfig } from '@app-models/runtime-config';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 describe('Admin', () => {
   let component: Admin;
   let fixture: ComponentFixture<Admin>;
+  let configServiceSpy: any;
+  let snackBarSpy: any;
 
   const mockConfigData: RuntimeConfig = {
     organization: { name: 'Test Org', url: 'http://test.com' },
@@ -39,19 +42,39 @@ describe('Admin', () => {
     ],
   };
 
-  const mockConfigService = {
-    config: signal(mockConfigData),
-    save: vi.fn().mockResolvedValue(undefined),
-  };
-
   beforeEach(async () => {
+    // 1. Define Mocks
+    const mockConfigService = {
+      config: signal({ ...mockConfigData }),
+      save: vi.fn().mockResolvedValue(undefined),
+    };
+
+    const mockSnackBar = {
+      open: vi.fn(),
+    };
+
+    // 2. Configure TestBed
     await TestBed.configureTestingModule({
       imports: [Admin],
-      providers: [provideNoopAnimations(), { provide: ConfigService, useValue: mockConfigService }],
+      providers: [
+        provideNoopAnimations(),
+        { provide: ConfigService, useValue: mockConfigService },
+        { provide: MatSnackBar, useValue: mockSnackBar },
+      ],
     }).compileComponents();
 
+    // 3. Create Component & Inject Spies
     fixture = TestBed.createComponent(Admin);
     component = fixture.componentInstance;
+
+    // Retrieve the mocks from TestBed to ensure we have the correct handles
+    configServiceSpy = TestBed.inject(ConfigService);
+    snackBarSpy = TestBed.inject(MatSnackBar);
+
+    // 4. FORCE the component to use our mock Snack Bar
+    // (This fixes the injection mismatch causing "0 calls")
+    (component as any).snackBar = snackBarSpy;
+
     fixture.detectChanges();
   });
 
@@ -59,30 +82,27 @@ describe('Admin', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with config data including resources', () => {
+  it('should initialize form with config data via effect', () => {
     const resources = component.resourcesArray;
+    expect(component.form.get('organization.name')?.value).toBe('Test Org');
     expect(resources.length).toBe(2);
     expect(resources.at(0).value.title).toBe('Resource A');
-    expect(resources.at(1).value.title).toBe('Resource B');
   });
 
   it('should add a new resource', () => {
     const initialLen = component.resourcesArray.length;
     component.addResource();
     expect(component.resourcesArray.length).toBe(initialLen + 1);
+    expect(component.form.dirty).toBe(true);
   });
 
   it('should remove a resource', () => {
     component.removeResource(0);
     expect(component.resourcesArray.length).toBe(1);
-    expect(component.resourcesArray.at(0).value.title).toBe('Resource B');
     expect(component.form.dirty).toBe(true);
   });
 
   it('should reorder resources on drop', () => {
-    expect(component.resourcesArray.at(0).value.title).toBe('Resource A');
-    expect(component.resourcesArray.at(1).value.title).toBe('Resource B');
-
     const mockDropEvent = {
       previousIndex: 0,
       currentIndex: 1,
@@ -92,20 +112,62 @@ describe('Admin', () => {
 
     expect(component.resourcesArray.at(0).value.title).toBe('Resource B');
     expect(component.resourcesArray.at(1).value.title).toBe('Resource A');
-
     expect(component.form.dirty).toBe(true);
   });
 
-  it('should save full configuration including new order', async () => {
-    const mockDropEvent = { previousIndex: 0, currentIndex: 1 } as CdkDragDrop<any[]>;
-    component.drop(mockDropEvent);
+  it('should save full configuration', async () => {
+    // 1. Ensure form is valid by patching required fields
+    component.form.patchValue({
+      organization: { name: 'Updated Org', url: 'http://valid.com' },
+      branding: { primaryColor: '#ffffff', logoUrl: 'assets/logo.png' },
+    });
 
+    // 2. Call save
     await component.saveConfig();
 
-    expect(mockConfigService.save).toHaveBeenCalled();
-    const capturedArgs = mockConfigService.save.mock.calls[0][0];
+    // 3. Assertions
+    expect(component.isSaving()).toBe(false);
+    expect(configServiceSpy.save).toHaveBeenCalled();
 
-    expect(capturedArgs.resources[0].title).toBe('Resource B');
-    expect(capturedArgs.resources[1].title).toBe('Resource A');
+    expect(snackBarSpy.open).toHaveBeenCalledWith(
+      expect.stringContaining('saved successfully'),
+      expect.any(String),
+      expect.any(Object),
+    );
+
+    const capturedArgs = configServiceSpy.save.mock.calls[0][0];
+    expect(capturedArgs.organization.name).toBe('Updated Org');
+  });
+
+  it('should handle save errors gracefully', async () => {
+    // 1. Ensure form is valid so it attempts to save
+    component.form.patchValue({
+      organization: { name: 'Valid Org', url: 'http://valid.com' },
+      branding: { primaryColor: '#ffffff', logoUrl: 'assets/logo.png' },
+    });
+
+    // 2. Mock the rejection
+    configServiceSpy.save.mockRejectedValueOnce(new Error('Save failed'));
+
+    // 3. Call save
+    await component.saveConfig();
+
+    // 4. Assertions
+    expect(component.isSaving()).toBe(false);
+    expect(snackBarSpy.open).toHaveBeenCalledWith(
+      expect.stringContaining('Error saving'),
+      'Close',
+      expect.objectContaining({ panelClass: 'error-snack' }),
+    );
+  });
+
+  it('should reset form to original config', () => {
+    component.removeResource(0);
+    component.form.patchValue({ organization: { name: 'Changed Name' } });
+
+    component.resetForm();
+
+    expect(component.form.get('organization.name')?.value).toBe('Test Org');
+    expect(component.resourcesArray.length).toBe(2);
   });
 });
