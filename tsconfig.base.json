@@ -1,21 +1,19 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "es2022",
-    "module": "esnext",
-    "lib": ["es2022", "dom"],
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "dom"],
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
+    "strict": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@reimagined-parakeet/shared/data-models": ["libs/shared/data-models/src/index.ts"],
-      "@reimagined-parakeet/plugin-leg-us-ny": ["libs/plugins/legislatures/us-ny/src/index.ts"]
+      "@reimagined-parakeet/shared/data-models": ["libs/shared/data-models/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

@@ -1,0 +1,44 @@
+{
+  "name": "portal-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/portal-web/src",
+  "tags": ["type:app", "scope:portal"],
+  "targets": {
+    "build": {
+      "executor": "@nx/angular:browser-esbuild",
+      "options": {
+        "outputPath": "dist/apps/portal-web",
+        "index": "apps/portal-web/src/index.html",
+        "main": "apps/portal-web/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/portal-web/tsconfig.app.json",
+        "assets": ["apps/portal-web/src/favicon.ico", "apps/portal-web/src/assets"],
+        "styles": ["apps/portal-web/src/styles.scss"],
+        "scripts": []
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "config": "apps/portal-web/vitest.config.ts"
+      }
+    },
+    "serve": {
+      "executor": "@nx/angular:dev-server",
+      "options": {
+        "buildTarget": "portal-web:build"
+      }
+    },
+    "lint": {
+  "executor": "@nx/eslint:lint",
+  "outputs": ["{options.outputFile}"],
+  "options": {
+    "eslintConfig": "apps/portal-web/eslint.config.js",
+    "lintFilePatterns": ["apps/portal-web/**/*.ts", "apps/portal-web/**/*.html"]
+  }
+}
+  }
+}

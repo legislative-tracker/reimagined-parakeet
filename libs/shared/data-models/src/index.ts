@@ -1,1 +1,1 @@
-export * from "./lib/legislative.models";
+export * from "./lib/legislative.models.js";

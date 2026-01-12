@@ -1,0 +1,15 @@
+{
+  "name": "shared-data-models",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/data-models/src",
+  "tags": ["type:data-models", "scope:shared"],
+  "targets": {
+    "test": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "config": "libs/shared/data-models/vitest.config.ts"
+      }
+    }
+  }
+}

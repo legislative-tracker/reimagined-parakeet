@@ -1,23 +1,18 @@
-import { mergeConfig } from "vitest/config";
-import { baseConfig } from "../../vitest.base.config";
+import { defineProject, mergeConfig } from "vitest/config";
+import baseConfig from "../../vitest.config.ts";
 
 /**
- * @description Vitest configuration for the Firebase backend.
- * Configured for Node.js to support Firebase Cloud Functions and Admin SDK testing.
+ * @description Vitest project configuration for the server-firebase application.
+ * Configures the Node.js testing environment and links to the global workspace setup.
  */
-export default mergeConfig(baseConfig, {
-  test: {
-    /** Unique identifier for the root workspace runner */
-    name: "server-firebase",
-    /** * Firebase functions run in a Node environment.
-     * Standardizing on 'node' prevents errors with native modules.
-     */
-    environment: "node",
-    /** * Points to the existing backend source and test files.
-     * Respects the original project's file structure.
-     */
-    include: ["src/**/*.spec.ts", "test/**/*.spec.ts"],
-    /** Path to the Firebase test setup file if migration is required */
-    setupFiles: ["./test.setup.ts"],
-  },
-});
+export default mergeConfig(
+  baseConfig,
+  defineProject({
+    test: {
+      name: "server-firebase",
+      environment: "node",
+      setupFiles: ["vitest.setup.ts"],
+      include: ["src/**/*.spec.ts", "test/**/*.spec.ts"],
+    },
+  })
+);

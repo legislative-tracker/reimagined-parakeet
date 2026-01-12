@@ -1,5 +1,6 @@
 {
   "name": "server-firebase",
+  "type": "module",
   "version": "0.8.4",
   "description": "Firestore backend for the Legislative Tracker PWA",
   "scripts": {

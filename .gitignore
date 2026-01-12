@@ -1,5 +1,9 @@
 # custom-ignore-file
-apps/server/lib
+dist/
+cache/
+graph.json
+.nx/cache
+.nx/workspace-data
 
 # Logs
 logs
