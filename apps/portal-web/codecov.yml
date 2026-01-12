@@ -1,0 +1,38 @@
+codecov:
+  require_ci_to_pass: yes
+  notify:
+    wait_for_ci: yes
+
+coverage:
+  precision: 2
+  round: down
+  range: '70...100'
+
+  status:
+    project:
+      default:
+        target: auto # Auto updates the target based on the parent commit's coverage
+        threshold: 1% # Allows coverage to drop by 1% without failing
+    patch:
+      default:
+        target: 80% # Requires 80% coverage on new code (the "patch")
+
+parsers:
+  gcov:
+    branch_detection:
+      conditional: yes
+      loop: yes
+      method: no
+      macro: no
+
+comment:
+  layout: 'reach, diff, flags, files'
+  behavior: default
+  require_changes: false # Post comment even if coverage didn't change
+
+ignore:
+  - 'src/**/*.spec.ts' # Ignore test files
+  - 'src/vitest.setup.ts' # Ignore test setup
+  - 'src/main.ts' # Ignore bootstrap file
+  - '**/*.html' # Ignore templates (if you aren't testing them)
+  - 'src/app/models/**' # Ignore interfaces/models (no logic to test)

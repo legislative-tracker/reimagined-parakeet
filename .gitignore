@@ -1,3 +1,6 @@
+# custom-ignore-file
+apps/server/lib
+
 # Logs
 logs
 *.log
