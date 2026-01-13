@@ -1,10 +1,10 @@
-import baseConfig from '../../eslint.config.js';
-import tseslint from 'typescript-eslint';
+import baseConfig from "../../eslint.config.js";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   ...baseConfig,
   {
-    files: ['**/*.ts'],
+    files: ["**/*.ts"],
     extends: [...tseslint.configs.recommended],
     languageOptions: {
       parserOptions: {
@@ -12,16 +12,15 @@ export default tseslint.config(
       },
     },
     rules: {
-      'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn'],
-      'import/no-unresolved': 0,
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": ["warn"],
+      "import/no-unresolved": 0,
     },
   },
   {
-    
-    files: ['vitest.config.ts', 'vitest.setup.ts'],
+    files: ["vitest.config.ts", "vitest.setup.ts"],
     rules: {
-      '@nx/enforce-module-boundaries': 'off' 
+      "@nx/enforce-module-boundaries": "off",
     },
   }
 );

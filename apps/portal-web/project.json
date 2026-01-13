@@ -33,12 +33,12 @@
       }
     },
     "lint": {
-  "executor": "@nx/eslint:lint",
-  "outputs": ["{options.outputFile}"],
-  "options": {
-    "eslintConfig": "apps/portal-web/eslint.config.js",
-    "lintFilePatterns": ["apps/portal-web/**/*.ts", "apps/portal-web/**/*.html"]
-  }
-}
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "eslintConfig": "apps/portal-web/eslint.config.js",
+        "lintFilePatterns": ["apps/portal-web/**/*.ts", "apps/portal-web/**/*.html"]
+      }
+    }
   }
 }

@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { UserManagementService } from '../../user-management.service';
+import { UserManagementService } from '../../user-management.service.js';
 
 @Component({
   selector: 'app-admin-panel',
@@ -46,12 +46,16 @@ export class AddAdmin {
       });
 
       this.email.set(''); // Clear the form
-    } catch (error: any) {
-      console.error(error);
-      this.snackBar.open(error.message || 'Promotion failed.', 'Close', {
-        duration: 5000,
-        panelClass: ['error-snackbar'],
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message); // This is now safe!
+        this.snackBar.open(error.message || 'Promotion failed.', 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+        });
+      } else {
+        console.error('An unexpected error occurred:', error);
+      }
     } finally {
       this.isLoading.set(false);
     }

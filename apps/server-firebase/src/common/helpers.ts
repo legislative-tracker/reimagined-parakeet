@@ -2,10 +2,10 @@ import {
   Legislator,
   Legislation,
   LegislatureUpdateFnMap,
-} from "../models/legislature";
+} from "../models/legislature.js";
 import { Person } from "@jpstroud/opencivicdata-types";
-import { Success, ChamberMapping } from "../models/assorted";
-import * as ny from "../apis/ny/functions";
+import { Success, ChamberMapping } from "../models/assorted.js";
+import * as ny from "../apis/ny/functions.js";
 
 /**
  * Determines if 'got' responded with a successful fetch
@@ -119,7 +119,8 @@ export const isImageLink = (urlStr: string | undefined): boolean => {
 
     const imageExtensions = /\.(jpg|jpeg|png|webp|avif|gif|svg)$/i;
     return imageExtensions.test(url.pathname);
-  } catch (e) {
+  } catch (error: unknown) {
+    console.error(error);
     return false;
   }
 };

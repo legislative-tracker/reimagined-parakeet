@@ -10,9 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 // App imports
-import { AuthService } from '../../../core/services/auth.service';
-import { ImplementedStatePairs } from '../../../core/app-config/implemented-states';
-import { LegislatureService } from '../../../core/services/legislature.service';
+import { AuthService } from '../../../core/services/auth.service.js';
+import { ImplementedStatePairs } from '../../../core/app-config/implemented-states.js';
+import { LegislatureService } from '../../../core/services/legislature.service.js';
 
 interface SimpleBill {
   id: string;
@@ -122,10 +122,15 @@ export class RemoveBill {
 
       // Refresh list
       this.fetchBillsForState(state);
-    } catch (error: any) {
-      this.snackBar.open(error.message || 'Deletion failed.', 'Close', {
-        panelClass: ['error-snackbar'],
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+        this.snackBar.open(error.message || 'Deletion failed.', 'Close', {
+          panelClass: ['error-snackbar'],
+        });
+      } else {
+        console.error('An unexpected error occurred:', error);
+      }
     } finally {
       this.isDeleting.set(false);
     }

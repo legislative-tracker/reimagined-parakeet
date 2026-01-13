@@ -1,9 +1,10 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import got from "got";
-import { db, openStatesKey, googleMapsKey } from "../config";
-import { getGeocode } from "../apis/google-geocoder/functions";
+import { db, openStatesKey, googleMapsKey } from "../config.js";
+import { getGeocode } from "../apis/google-geocoder/functions.js";
 import { Person } from "@jpstroud/opencivicdata-types";
-import { isSuccess, mapPersonToLegislator } from "../common/helpers";
+import { isSuccess, mapPersonToLegislator } from "../common/helpers.js";
+import { Legislator } from "../models/legislature.js";
 
 // Helper specific to this domain
 const updateUserProfile = async (userId: string, data: object) => {
@@ -40,19 +41,22 @@ export const fetchUserReps = onCall(
       if (isSuccess<Person[]>(res)) {
         const people = {
           federal: res.results
-            .filter((p) => p.jurisdiction.classification === "country")
+            .filter((p: Person) => p.jurisdiction.classification === "country")
             .map(mapPersonToLegislator),
           state: res.results
-            .filter((p) => p.jurisdiction.classification === "state")
+            .filter((p: Person) => p.jurisdiction.classification === "state")
             .map(mapPersonToLegislator),
         };
 
         const districts = {
-          federal: people.federal.find((p) => p.chamber === "House")?.district,
+          federal: people.federal.find((p: Legislator) => p.chamber === "House")
+            ?.district,
           state: {
-            assembly: people.state.find((p) => p.chamber === "Assembly")
+            assembly: people.state.find(
+              (p: Legislator) => p.chamber === "Assembly"
+            )?.district,
+            senate: people.state.find((p: Legislator) => p.chamber === "Senate")
               ?.district,
-            senate: people.state.find((p) => p.chamber === "Senate")?.district,
           },
         };
 
@@ -93,9 +97,9 @@ export const fetchUserReps = onCall(
       } else {
         throw new HttpsError("unavailable", "Failed to parse data.");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Fetch Reps Error: ", error);
-      throw new HttpsError("unknown", "Failed to fetch reps.", error.message);
+      throw new HttpsError("unknown", "Failed to fetch reps.", error);
     }
   }
 );

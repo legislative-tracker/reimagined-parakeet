@@ -1,45 +1,44 @@
-import nx from '@nx/eslint-plugin';
-import tseslint from 'typescript-eslint';
+import nx from "@nx/eslint-plugin";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/generated/**'],
+    ignores: ["**/dist/**", "**/node_modules/**", "**/generated/**"],
   },
   {
     plugins: {
-      '@nx': nx,
+      "@nx": nx,
     },
   },
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     rules: {
-      '@nx/enforce-module-boundaries': [
-        'error',
+      "@nx/enforce-module-boundaries": [
+        "error",
         {
           enforceBuildableLibDependency: true,
           allow: [],
-          depConstraints: [{ sourceTag: '*', onlyDependOnLibsWithTags: ['*'] }],
+          depConstraints: [{ sourceTag: "*", onlyDependOnLibsWithTags: ["*"] }],
         },
       ],
     },
   },
   {
-    
-    files: ['**/*.config.ts', '**/*.setup.ts', '**/eslint.config.js'],
+    files: ["**/*.config.ts", "**/*.setup.ts", "**/eslint.config.js"],
     rules: {
-      '@nx/enforce-module-boundaries': [
-        'error',
+      "@nx/enforce-module-boundaries": [
+        "error",
         {
           enforceBuildableLibDependency: true,
-          
-          allow: ['./**', '../**'], 
-          depConstraints: [{ sourceTag: '*', onlyDependOnLibsWithTags: ['*'] }],
+
+          allow: ["./**", "../**"],
+          depConstraints: [{ sourceTag: "*", onlyDependOnLibsWithTags: ["*"] }],
         },
       ],
     },
   },
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ["**/*.ts", "**/*.tsx"],
     extends: [...tseslint.configs.recommended],
     languageOptions: {
       parserOptions: {

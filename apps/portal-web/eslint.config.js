@@ -25,16 +25,12 @@ export default tseslint.config(
   },
   {
     files: ['**/*.html'],
-    extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
-    ],
+    extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
   },
   {
-    
     files: ['vitest.config.ts', 'vitest.setup.ts'],
     rules: {
-      '@nx/enforce-module-boundaries': 'off'
+      '@nx/enforce-module-boundaries': 'off',
     },
-  }
+  },
 );

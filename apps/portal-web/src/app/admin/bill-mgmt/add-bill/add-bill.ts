@@ -6,9 +6,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService } from '../../../core/services/auth.service';
-import { ImplementedStatePairs } from '../../../core/app-config/implemented-states';
-import { LegislatureService } from '../../../core/services/legislature.service';
+import { AuthService } from '../../../core/services/auth.service.js';
+import { ImplementedStatePairs } from '../../../core/app-config/implemented-states.js';
+import { LegislatureService } from '../../../core/services/legislature.service.js';
 
 @Component({
   selector: 'app-add-bill',
@@ -58,12 +58,16 @@ export class AddBill {
       });
 
       this.resetForm();
-    } catch (error: any) {
-      console.error(error);
-      this.snackBar.open(error.message || 'Failed to add bill.', 'Close', {
-        duration: 5000,
-        panelClass: ['error-snackbar'],
-      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+        this.snackBar.open(error.message || 'Failed to add bill.', 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+        });
+      } else {
+        console.error('An unexpected error occurred:', error);
+      }
     } finally {
       this.isLoading.set(false);
     }

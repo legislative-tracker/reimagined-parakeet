@@ -1,7 +1,7 @@
 import got from "got";
-import { openStatesKey } from "../../config";
+import { openStatesKey } from "../../config.js";
 import { Person } from "@jpstroud/opencivicdata-types";
-import { OSResponse } from "./types";
+import { OSResponse } from "./types.js";
 
 const BASE_URL = "https://v3.openstates.org";
 
@@ -55,8 +55,11 @@ export const getOpenStatesData = async (
     });
 
     return results;
-  } catch (error: any) {
-    console.error(`Failed to fetch data from ${url}:`, error.message);
-    throw error;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("An unexpected error occurred:", error);
+    }
   }
 };

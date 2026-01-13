@@ -1,4 +1,6 @@
-import { Person, Bill } from "@jpstroud/opencivicdata-types";
+import { Person, Bill, JurisdictionStub } from "@jpstroud/opencivicdata-types";
+
+export type { JurisdictionStub } from "@jpstroud/opencivicdata-types";
 
 /**
  * @description Represents a member of a legislative body.
@@ -25,6 +27,7 @@ export interface Legislator extends Person {
     version: string;
     title: string;
   }[];
+  Jurisdiction?: JurisdictionStub;
 }
 
 /**

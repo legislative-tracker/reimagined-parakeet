@@ -1,9 +1,9 @@
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { onRequest } from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
-import { openStatesKey } from "../config";
-import { nySenateKey } from "../apis/ny/functions";
-import { updateLegislators } from "./service";
+import { openStatesKey } from "../config.js";
+import { nySenateKey } from "../apis/ny/functions.js";
+import { updateLegislators } from "./service.js";
 
 export const manualUpdate = onRequest(
   { secrets: [openStatesKey, nySenateKey] },

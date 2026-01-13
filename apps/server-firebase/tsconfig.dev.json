@@ -5,9 +5,5 @@
     "module": "NodeNext",
     "types": ["node"]
   },
-  "include": [
-    ".eslintrc.json",
-    "vitest.config.ts",
-    "vitest.setup.ts"
-  ]
+  "include": [".eslintrc.json", "vitest.config.ts", "vitest.setup.ts"]
 }

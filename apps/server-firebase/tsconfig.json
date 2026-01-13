@@ -4,14 +4,11 @@
     "composite": true,
     "declaration": true,
     "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "rootDir": "../../"
   },
   "files": [],
-  "include": [
-    "vitest.config.ts", 
-    "vitest.setup.ts", 
-    "eslint.config.js"
-  ],
+  "include": ["vitest.config.ts", "vitest.setup.ts", "eslint.config.js"],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.spec.json" }

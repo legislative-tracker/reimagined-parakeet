@@ -3,10 +3,10 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
 
 // App imports
-import { db } from "../config";
-import { performLegislationUpdate } from "./service";
-import { getBillUpdates } from "../common/helpers";
-import { nySenateKey } from "../apis/ny/functions";
+import { db } from "../config.js";
+import { performLegislationUpdate } from "./service.js";
+import { getBillUpdates } from "../common/helpers.js";
+import { nySenateKey } from "../apis/ny/functions.js";
 
 /**
  * Adds a Bill & Pulls Updates (Callable)
@@ -89,8 +89,8 @@ export const removeBill = onCall(async (request) => {
       .doc(billId);
     await billRef.delete();
     return { message: `Success! Bill ${billId} removed.`, id: billId };
-  } catch (error) {
-    throw new HttpsError("internal", "Failed to delete bill.");
+  } catch (error: unknown) {
+    throw new HttpsError("internal", "Failed to delete bill.", error);
   }
 });
 

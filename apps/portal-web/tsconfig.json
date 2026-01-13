@@ -7,13 +7,6 @@
     "moduleResolution": "NodeNext"
   },
   "files": [],
-  "include": [
-    "vitest.config.ts", 
-    "vitest.setup.ts", 
-    "eslint.config.js"
-  ],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.spec.json" }
-  ]
+  "include": ["vitest.config.ts", "vitest.setup.ts", "eslint.config.js"],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.spec.json" }]
 }

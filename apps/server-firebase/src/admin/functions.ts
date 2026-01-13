@@ -1,5 +1,5 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { auth } from "../config";
+import { auth } from "../config.js";
 
 /**
  * Promotes a user to Admin status.
@@ -21,10 +21,12 @@ export const addAdminRole = onCall(async (request) => {
     return {
       message: `Success! ${targetEmail} has been granted admin privileges.`,
     };
-  } catch (error: any) {
-    if (error.code === "auth/user-not-found")
-      throw new HttpsError("not-found", "User not found.");
-    throw new HttpsError("internal", "Error setting admin claim.");
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("An unexpected error occurred:", error);
+    }
   }
 });
 
@@ -47,9 +49,11 @@ export const removeAdminRole = onCall(async (request) => {
     const user = await auth.getUserByEmail(targetEmail);
     await auth.setCustomUserClaims(user.uid, { admin: null });
     return { message: `Success! ${targetEmail} is no longer an admin.` };
-  } catch (error: any) {
-    if (error.code === "auth/user-not-found")
-      throw new HttpsError("not-found", "User not found.");
-    throw new HttpsError("internal", "Error removing admin claim.");
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("An unexpected error occurred:", error);
+    }
   }
 });

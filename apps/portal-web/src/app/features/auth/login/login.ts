@@ -1,7 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/services/auth.service.js';
 import { Router } from '@angular/router';
 
 @Component({
@@ -26,9 +26,12 @@ export class Login {
       } else {
         this.authError.set('Unable to authenticate with Google. Please try again.');
       }
-    } catch (error: any) {
-      console.error('Auth Error Code:', error.code);
-      console.error('Auth Error Message:', error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Auth Error Message:', error.message);
+      } else {
+        console.error('An unexpected error occurred:', error);
+      }
     }
   }
 }

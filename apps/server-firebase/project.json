@@ -39,14 +39,12 @@
       }
     },
     "lint": {
-  "executor": "@nx/eslint:lint",
-  "outputs": ["{options.outputFile}"],
-  "options": {
-    "eslintConfig": "apps/server-firebase/eslint.config.js",
-    "lintFilePatterns": [
-      "apps/server-firebase/**/*.ts"
-    ]
-  }
-}
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "eslintConfig": "apps/server-firebase/eslint.config.js",
+        "lintFilePatterns": ["apps/server-firebase/**/*.ts"]
+      }
+    }
   }
 }

@@ -3,7 +3,15 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "module": "NodeNext",
-    "types": ["vitest/globals", "node"]
+    "types": ["vitest/globals", "node"],
+    "composite": true
   },
-  "include": ["src/**/*.spec.ts", "test/**/*.spec.ts", "src/vitest.setup.ts"]
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "src/**/*.d.ts",
+    "src/**/*.ts",
+    "vitest.setup.ts"
+  ],
+  "references": [{ "path": "../../libs/shared/data-models" }]
 }

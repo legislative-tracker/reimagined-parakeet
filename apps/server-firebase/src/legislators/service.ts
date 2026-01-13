@@ -1,10 +1,13 @@
 import * as logger from "firebase-functions/logger";
-import { db } from "../config";
-import { getOpenStatesData } from "../apis/open-states/functions";
+import { db } from "../config.js";
+import { getOpenStatesData } from "../apis/open-states/functions.js";
 import { Person } from "@jpstroud/opencivicdata-types";
-import { Legislator } from "../models/legislature";
-import { isEmail, isImageLink, getMemberUpdates } from "../common/helpers";
+import { Legislator } from "../models/legislature.js";
+import { isEmail, isImageLink, getMemberUpdates } from "../common/helpers.js";
 
+/**
+ * Represents the structure of the update result for a specific state legislature.
+ */
 export interface UpdateResult {
   state: string;
   matched?: number;
@@ -12,6 +15,33 @@ export interface UpdateResult {
   error?: string;
 }
 
+/**
+ * Partial data structure used for updating a Legislator document in Firestore.
+ */
+export interface LegislatorUpdate {
+  updated_at: string;
+  party?: string;
+  image?: string;
+  email?: string;
+  offices?: Legislator["offices"];
+  links?: Legislator["links"];
+  openstates_url?: string;
+  other_identifiers?: Legislator["other_identifiers"];
+}
+
+/**
+ * Type guard to safely check if an unknown error is an instance of Error.
+ * @param error - The unknown error to check.
+ */
+function isNativeError(error: unknown): error is Error {
+  return error instanceof Error;
+}
+
+/**
+ * Orchestrates the synchronization process between OpenStates/State APIs and Firestore.
+ * @returns A promise resolving to an array of UpdateResults.
+ * @description Uses strict unknown error handling and type guards to ensure application stability.
+ */
 export const updateLegislators = async (): Promise<UpdateResult[]> => {
   const bulkWriter = db.bulkWriter();
   const results: UpdateResult[] = [];
@@ -19,10 +49,10 @@ export const updateLegislators = async (): Promise<UpdateResult[]> => {
   try {
     const legislaturesSnapshot = await db.collection("legislatures").get();
 
-    // Iterate over each state configured in the database
     const updatePromises = legislaturesSnapshot.docs.map(async (doc) => {
       const stateCode = doc.id;
-      const stateName = doc.data().name;
+      const stateData = doc.data();
+      const stateName = stateData?.name;
 
       if (!stateName) {
         logger.warn(`Skipping ${stateCode}: Missing 'name' property.`);
@@ -30,41 +60,39 @@ export const updateLegislators = async (): Promise<UpdateResult[]> => {
       }
 
       try {
-        // Fetch OpenStates Data (Generic)
         const openStatesPromise = getOpenStatesData(stateName, "people");
 
-        // Fetch State-Specific Data (Specific)
-        // gracefully fallback to empty array if no helper exists for this state
-        const stateApiPromise = getMemberUpdates(stateCode).catch(() => {
-          logger.info(
-            `No specific API implementation for ${stateCode}. Using OpenStates only.`
-          );
-          return [] as Legislator[];
-        });
+        const stateApiPromise = getMemberUpdates(stateCode).catch(
+          (err: unknown) => {
+            const message = isNativeError(err)
+              ? err.message
+              : "Unknown API Error";
+            logger.info(
+              `No specific API for ${stateCode}: ${message}. Using OpenStates only.`
+            );
+            return [] as Legislator[];
+          }
+        );
 
         const [openStatesMembers, stateMembers] = await Promise.all([
           openStatesPromise,
           stateApiPromise,
         ]);
 
-        // Create O(1) Lookup Map for State Data
         const stateMemberMap = new Map<string, Legislator>();
         stateMembers.forEach((m) => {
           const key = `${m.chamber.toUpperCase()}-${m.district}`;
           stateMemberMap.set(key, m);
         });
 
-        // Fetch existing Firestore docs to update
         const snapshot = await db
           .collection(`legislatures/${stateCode}/legislators`)
           .get();
 
         const warnings: string[] = [];
 
-        // Merge and Update
         snapshot.docs.forEach((doc) => {
           const currentData = doc.data();
-
           const docChamber =
             currentData.chamber?.toUpperCase() === "SENATE"
               ? "SENATE"
@@ -80,12 +108,16 @@ export const updateLegislators = async (): Promise<UpdateResult[]> => {
           const stateMatch = stateMemberMap.get(lookupKey);
 
           if (osMatch || stateMatch) {
-            const updates: any = {
+            const updates: LegislatorUpdate = {
               updated_at: new Date().toISOString(),
+              party: stateMatch?.party || osMatch?.party,
+              links: osMatch?.links || stateMatch?.links || [],
+              openstates_url: osMatch?.openstates_url || "",
+              other_identifiers: [
+                ...(osMatch?.other_identifiers || []),
+                ...(stateMatch?.other_identifiers || []),
+              ],
             };
-
-            // Merge Strategies
-            updates.party = stateMatch?.party || osMatch?.party;
 
             const newImage = stateMatch?.image || osMatch?.image;
             if (isImageLink(newImage)) updates.image = newImage;
@@ -99,14 +131,6 @@ export const updateLegislators = async (): Promise<UpdateResult[]> => {
               updates.offices = osMatch.offices;
             }
 
-            updates.links = osMatch?.links || stateMatch?.links || [];
-            updates.openstates_url = osMatch?.openstates_url || "";
-
-            updates.other_identifiers = [
-              ...(osMatch?.other_identifiers || []),
-              ...(stateMatch?.other_identifiers || []),
-            ];
-
             bulkWriter.set(doc.ref, updates, { merge: true });
           } else {
             warnings.push(`No match for ${currentData.name} (${lookupKey})`);
@@ -118,11 +142,14 @@ export const updateLegislators = async (): Promise<UpdateResult[]> => {
           matched: snapshot.size - warnings.length,
           warnings: warnings,
         });
-      } catch (err) {
-        logger.error(`Failed to update ${stateName}`, err);
+      } catch (err: unknown) {
+        const errorMessage = isNativeError(err)
+          ? err.message
+          : "An unexpected error occurred";
+        logger.error(`Failed to update ${stateName}`, { error: errorMessage });
         results.push({
           state: stateCode,
-          error: err instanceof Error ? err.message : "Unknown Error",
+          error: errorMessage,
         });
       }
     });
@@ -131,8 +158,11 @@ export const updateLegislators = async (): Promise<UpdateResult[]> => {
     await bulkWriter.close();
 
     return results;
-  } catch (error) {
-    logger.error("Global Update Failed", error);
+  } catch (error: unknown) {
+    const finalErrorMessage = isNativeError(error)
+      ? error.message
+      : "Global sync failure";
+    logger.error("Global Update Failed", { error: finalErrorMessage });
     throw error;
   }
 };

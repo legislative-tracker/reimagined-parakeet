@@ -3,22 +3,13 @@
     {
       "source": "apps/server-firebase",
       "codebase": "default",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log"
-      ]
+      "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log"]
     }
   ],
   "hosting": {
     "target": "hosting",
     "public": "apps/portal-web/dist/portal-web/browser",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",

@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { isSuccess } from "./common/helpers";
-import { Legislation } from "@reimagined-parakeet/shared/data-models";
+import { isSuccess } from "./common/helpers.js";
+import {
+  Legislation,
+  JurisdictionStub,
+} from "@reimagined-parakeet/shared/data-models";
 
 /**
  * @description Infrastructure test suite to verify module resolution and logic execution.
@@ -17,11 +20,12 @@ describe("Backend Infrastructure Validation", () => {
         classification: "state",
         id: "NY",
         name: "New York",
-      } as any,
+      } as JurisdictionStub,
     };
 
-    // Updated to check the specific property within the jurisdiction object
-    expect((mockBill.jurisdiction as any).id).toBe("NY");
+    // Cast to Jurisdiction specifically to access properties safely without 'any'
+    const jurisdiction = mockBill.jurisdiction as JurisdictionStub;
+    expect(jurisdiction.id).toBe("NY");
   });
 
   /**
