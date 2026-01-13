@@ -57,24 +57,19 @@ export class ConfigService {
   }
 
   /**
-   * Persists new configuration partials to Firestore and updates the local state.
-   * @param newConfig - The configuration properties to update.
-   * @returns A promise that resolves when the save operation completes.
+   * Persists new configuration partials to Firestore.
+   * @description Relies on global errorInterceptor for UI error notifications.
    */
   public async save(newConfig: Partial<RuntimeConfig>): Promise<void> {
-    try {
-      const { getFirestore, doc, setDoc } = await import('@angular/fire/firestore');
+    const { getFirestore, doc, setDoc } = await import('@angular/fire/firestore');
 
-      const firestore = getFirestore(this.app);
-      const configDoc = doc(firestore, 'configurations/global');
+    const firestore = getFirestore(this.app);
+    const configDoc = doc(firestore, 'configurations/global');
 
-      await setDoc(configDoc, newConfig, { merge: true });
+    // If this fails, the errorInterceptor will catch it and show the SnackBar
+    await setDoc(configDoc, newConfig, { merge: true });
 
-      this.config.update((current) => ({ ...current, ...newConfig }));
-    } catch (e: unknown) {
-      console.error('Failed to save configuration', e);
-      throw e;
-    }
+    this.config.update((current) => ({ ...current, ...newConfig }));
   }
 
   /**

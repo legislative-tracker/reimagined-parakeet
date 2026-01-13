@@ -2,11 +2,18 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": [],
+    "types": ["node"],
     "composite": true,
-    "declaration": true
+    "declaration": true,
+    "rootDir": "../../",
+    "baseUrl": "../../"
   },
-  "files": ["src/main.ts", "src/polyfills.ts"],
-  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "files": ["src/main.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "package.json",
+    "../../libs/shared/util-ui/src/index.ts"
+  ],
   "exclude": ["node_modules", "test.ts", "**/*.spec.ts"]
 }

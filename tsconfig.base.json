@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
+    "resolveJsonModule": true,
     "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
     "lib": ["ES2022", "dom"],
     "skipLibCheck": true,
     "strict": true,
@@ -13,7 +15,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@reimagined-parakeet/shared/data-models": ["libs/shared/data-models/src/index.ts"]
+      "@reimagined-parakeet/shared/data-models": ["libs/shared/data-models/src/index.ts"],
+      "@reimagined-parakeet/shared/util-ui": ["libs/shared/util-ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

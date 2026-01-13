@@ -14,7 +14,13 @@
         "main": "apps/portal-web/src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "apps/portal-web/tsconfig.app.json",
-        "assets": ["apps/portal-web/src/favicon.ico", "apps/portal-web/src/assets"],
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/portal-web/public",
+            "output": "/"
+          }
+        ],
         "styles": ["apps/portal-web/src/styles.scss"],
         "scripts": []
       }
