@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { SharedUtilUiComponent } from "./shared-util-ui.component";
+import { SharedUtilUiComponent } from "./shared-util-ui.component.js";
 
 describe("SharedUtilUiComponent", () => {
   let component: SharedUtilUiComponent;

@@ -1,8 +1,12 @@
 import got from "got";
-import api from "@jpstroud/nys-openlegislation-types";
+import * as api from "@jpstroud/nys-openlegislation-types";
 import { defineSecret } from "firebase-functions/params";
 
-import { Legislator, Legislation, Cosponsor } from "../../models/legislature";
+import {
+  Legislator,
+  Legislation,
+  Cosponsor,
+} from "@reimagined-parakeet/shared/data-models";
 import {
   JurisdictionStub,
   OrganizationStub,

@@ -57,9 +57,11 @@ export const getOpenStatesData = async (
     return results;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error(error.message);
+      console.error(`Error fetching ${targetEndpoint}: ${error.message}`);
     } else {
       console.error("An unexpected error occurred:", error);
     }
+
+    return [];
   }
 };

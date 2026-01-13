@@ -4,7 +4,7 @@ import { db, openStatesKey, googleMapsKey } from "../config.js";
 import { getGeocode } from "../apis/google-geocoder/functions.js";
 import { Person } from "@jpstroud/opencivicdata-types";
 import { isSuccess, mapPersonToLegislator } from "../common/helpers.js";
-import { Legislator } from "../models/legislature.js";
+import { Legislator } from "@reimagined-parakeet/shared/data-models";
 
 // Helper specific to this domain
 const updateUserProfile = async (userId: string, data: object) => {
@@ -49,14 +49,16 @@ export const fetchUserReps = onCall(
         };
 
         const districts = {
-          federal: people.federal.find((p: Legislator) => p.chamber === "House")
-            ?.district,
+          federal: people.federal.find(
+            (p: Partial<Legislator>) => p.chamber === "House"
+          )?.district,
           state: {
             assembly: people.state.find(
-              (p: Legislator) => p.chamber === "Assembly"
+              (p: Partial<Legislator>) => p.chamber === "Assembly"
             )?.district,
-            senate: people.state.find((p: Legislator) => p.chamber === "Senate")
-              ?.district,
+            senate: people.state.find(
+              (p: Partial<Legislator>) => p.chamber === "Senate"
+            )?.district,
           },
         };
 

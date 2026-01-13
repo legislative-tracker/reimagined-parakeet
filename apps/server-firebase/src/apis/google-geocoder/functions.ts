@@ -1,8 +1,8 @@
 import { HttpsError } from "firebase-functions/v2/https";
 import got from "got";
 
-import { GoogleGeocodingResponse } from "./types";
-import { isSuccess } from "../../common/helpers";
+import { GoogleGeocodingResponse } from "./types.js";
+import { isSuccess } from "../../common/helpers.js";
 
 export const getGeocode = async (address: string, googleMapsKey: string) => {
   const options = {

@@ -1,5 +1,5 @@
-import { db } from "../config";
-import { getBillUpdates } from "../common/helpers";
+import { db } from "../config.js";
+import { getBillUpdates } from "../common/helpers.js";
 
 /**
  * Core business logic for updating legislation from 3rd party APIs

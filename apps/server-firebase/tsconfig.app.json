@@ -4,8 +4,13 @@
     "outDir": "../../dist/out-tsc",
     "module": "NodeNext",
     "composite": true,
-    "declaration": true
+    "declaration": true,
+    "rootDir": "../../"
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "../../libs/shared/data-models/src/**/*.ts"
+  ],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

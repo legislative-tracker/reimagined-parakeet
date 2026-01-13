@@ -1,7 +1,8 @@
 {
   "functions": [
     {
-      "source": "apps/server-firebase",
+      "source": "dist/apps/server-firebase",
+      "runtime": "nodejs24",
       "codebase": "default",
       "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log"]
     }

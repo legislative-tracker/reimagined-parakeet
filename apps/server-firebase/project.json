@@ -17,6 +17,10 @@
         "platform": "node",
         "target": "node24",
         "bundle": true,
+
+        "thirdParty": true,
+        "generatePackageJson": true,
+
         "external": ["firebase-admin", "firebase-functions"]
       }
     },

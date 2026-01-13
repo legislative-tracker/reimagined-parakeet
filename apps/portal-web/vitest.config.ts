@@ -1,11 +1,12 @@
 import { mergeConfig } from 'vitest/config';
-import { baseConfig } from '../../vitest.base.config';
+import { baseConfig } from '../../vitest.base.config.js';
 import angular from '@analogjs/vite-plugin-angular';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default mergeConfig(baseConfig, {
-  plugins: [angular(), tsconfigPaths()],
+  plugins: [angular(), nxViteTsPaths()],
   test: {
+    reporters: ['default', 'verbose'],
     globals: true,
     environment: 'jsdom',
     setupFiles: ['src/vitest.setup.ts'],

@@ -6,7 +6,7 @@ import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
 import { Observable } from "rxjs";
 
 // Ensure this path exactly matches your file name
-import { errorInterceptor } from "./error.interceptor";
+import { errorInterceptor } from "./error-interceptor.js";
 
 describe("errorInterceptor", () => {
   let httpMock: HttpTestingController;
