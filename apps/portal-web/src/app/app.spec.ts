@@ -1,17 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { signal } from '@angular/core';
+import { signal, Signal } from '@angular/core';
 import { describe, it, expect, beforeEach } from 'vitest';
 
-import { App } from './app';
-import { ConfigService } from './core/services/config.service';
+import { App } from './app.js';
+import { ConfigService } from './core/services/config.service.js';
+import { RuntimeConfig } from './core/models/runtime-config.js';
 
+/**
+ * @description Unit tests for the root App component.
+ * Verifies correct initialization and dependency injection of the global configuration.
+ */
 describe('App', () => {
   let component: App;
   let fixture: ComponentFixture<App>;
 
-  // Mock ConfigService
-  // matches the structure seen in your previous config.service.ts
+  /**
+   * Mock implementation of ConfigService.
+   * Uses a Signal to match the production service's reactive pattern.
+   */
   const mockConfigService = {
     config: signal({
       branding: {
@@ -24,12 +31,11 @@ describe('App', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App], // Standalone component
+      imports: [App],
       providers: [
-        //  Necessary because the template contains <router-outlet>
+        // Required for components containing <router-outlet />
         provideRouter([]),
-
-        // Provide the mock service
+        // Inject the mock configuration service
         { provide: ConfigService, useValue: mockConfigService },
       ],
     }).compileComponents();
@@ -43,11 +49,18 @@ describe('App', () => {
     expect(component).toBeTruthy();
   });
 
+  /**
+   * @description Verifies that the component correctly initializes its local
+   * configuration reference from the injected ConfigService.
+   */
   it('should initialize config property from ConfigService', () => {
-    // Access the protected property for testing purposes
-    const appConfig = (component as any).config;
+    /** * Resolved 'no-explicit-any': Cast the component to a type that includes
+     * the config signal. This allows access to the property for testing
+     * while maintaining strict type safety.
+     */
+    const appWithConfig = component as unknown as { config: Signal<RuntimeConfig> };
+    const appConfig = appWithConfig.config;
 
-    // Verify it references the signal from the service
     expect(appConfig).toBeDefined();
     expect(appConfig().branding.logoUrl).toBe('assets/mock-logo.png');
   });

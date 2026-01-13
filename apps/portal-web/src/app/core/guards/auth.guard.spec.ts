@@ -1,54 +1,122 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn, Router, UrlTree } from '@angular/router';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import {
+  CanActivateFn,
+  Router,
+  UrlTree,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from '@angular/router';
+import { Auth, authState, User } from '@angular/fire/auth';
+import { vi, describe, it, expect, beforeEach, afterEach, type Mock } from 'vitest';
+import { of, Observable, lastValueFrom } from 'rxjs';
 
-import { authGuard } from './auth.guard';
-import { AuthService } from '../services/auth.service';
+import { adminGuard } from './admin.guard';
 
-describe('authGuard', () => {
-  // Helper to execute the functional guard in context
+/**
+ * Mocks the specific Firebase Auth functions we rely on.
+ * @description We use a partial mock for @angular/fire/auth to intercept authState.
+ */
+vi.mock('@angular/fire/auth', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@angular/fire/auth')>();
+  return {
+    ...actual,
+    authState: vi.fn(),
+  };
+});
+
+describe('adminGuard', () => {
+  /**
+   * Helper to execute the functional guard within Angular's injection context.
+   */
   const executeGuard: CanActivateFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => authGuard(...guardParameters));
+    TestBed.runInInjectionContext(() => adminGuard(...guardParameters));
 
-  // Define mocks
-  let authServiceSpy: { isLoggedIn: ReturnType<typeof vi.fn> };
-  let routerSpy: { parseUrl: ReturnType<typeof vi.fn> };
+  let routerSpy: { createUrlTree: Mock };
+
+  /** * Resolved 'no-explicit-any': Cast empty object to unknown then Auth
+   * to satisfy the dependency injection token without a full implementation.
+   */
+  const mockAuth = {} as unknown as Auth;
 
   beforeEach(() => {
-    // Setup spy objects
-    authServiceSpy = { isLoggedIn: vi.fn() };
-    routerSpy = { parseUrl: vi.fn() };
+    routerSpy = { createUrlTree: vi.fn() };
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AuthService, useValue: authServiceSpy },
+        { provide: Auth, useValue: mockAuth },
         { provide: Router, useValue: routerSpy },
       ],
     });
   });
 
-  it('should allow navigation (return true) if user is logged in', () => {
-    // Mock the Signal: isLoggedIn() returns true
-    authServiceSpy.isLoggedIn.mockReturnValue(true);
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
-    const result = executeGuard({} as any, {} as any);
+  it('should redirect to /login if user is not authenticated', async () => {
+    // Resolved 'no-explicit-any': Cast authState to Vitest Mock for type safety
+    (authState as Mock).mockReturnValue(of(null));
+
+    const mockUrlTree = {} as UrlTree;
+    routerSpy.createUrlTree.mockReturnValue(mockUrlTree);
+
+    const result = await runGuard();
+
+    expect(routerSpy.createUrlTree).toHaveBeenCalledWith(['/login']);
+    expect(result).toBe(mockUrlTree);
+  });
+
+  it('should redirect to / (Home) if user is logged in but NOT admin', async () => {
+    /** * Mock a standard user.
+     * We cast to unknown then User to provide only the necessary methods for the test.
+     */
+    const mockUser = {
+      getIdTokenResult: vi.fn().mockResolvedValue({
+        claims: { admin: false },
+      }),
+    } as unknown as User;
+
+    (authState as Mock).mockReturnValue(of(mockUser));
+
+    const mockUrlTree = {} as UrlTree;
+    routerSpy.createUrlTree.mockReturnValue(mockUrlTree);
+
+    const result = await runGuard();
+
+    expect(routerSpy.createUrlTree).toHaveBeenCalledWith(['/']);
+    expect(result).toBe(mockUrlTree);
+  });
+
+  it('should allow access (return true) if user IS admin', async () => {
+    const mockUser = {
+      getIdTokenResult: vi.fn().mockResolvedValue({
+        claims: { admin: true },
+      }),
+    } as unknown as User;
+
+    (authState as Mock).mockReturnValue(of(mockUser));
+
+    const result = await runGuard();
 
     expect(result).toBe(true);
-    expect(routerSpy.parseUrl).not.toHaveBeenCalled();
+    expect(routerSpy.createUrlTree).not.toHaveBeenCalled();
   });
 
-  it('should redirect to /login if user is NOT logged in', () => {
-    // Mock the Signal: isLoggedIn() returns false
-    authServiceSpy.isLoggedIn.mockReturnValue(false);
+  /**
+   * Helper to handle the Observable/UrlTree/boolean return types of the guard.
+   * @description Converts the Guard's return value to a Promise for easy async/await testing.
+   */
+  async function runGuard(): Promise<boolean | UrlTree> {
+    const route = {} as ActivatedRouteSnapshot;
+    const state = {} as RouterStateSnapshot;
 
-    // Mock the Router returning a UrlTree
-    const dummyUrlTree = {} as UrlTree;
-    routerSpy.parseUrl.mockReturnValue(dummyUrlTree);
+    // The guard returns an Observable<boolean | UrlTree> | Promise<...> | boolean | UrlTree
+    const result = executeGuard(route, state);
 
-    const result = executeGuard({} as any, {} as any);
+    if (result instanceof Observable) {
+      return await lastValueFrom(result);
+    }
 
-    // Verify logic
-    expect(routerSpy.parseUrl).toHaveBeenCalledWith('/login');
-    expect(result).toBe(dummyUrlTree);
-  });
+    return result as boolean | UrlTree;
+  }
 });

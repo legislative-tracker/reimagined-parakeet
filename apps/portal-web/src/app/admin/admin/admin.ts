@@ -1,7 +1,7 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, FormArray, FormGroup } from '@angular/forms';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,9 +14,14 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { RuntimeConfig, ResourceLink } from '../../models/runtime-config';
-import { ConfigService } from '../../core/services/config.service';
+import { RuntimeConfig, ResourceLink } from '../../models/runtime-config.js';
+import { ConfigService } from '../../core/services/config.service.js';
 
+/**
+ * Administrative component for managing application-wide configuration.
+ * @description Provides a form-based interface to manage organization details, branding,
+ * and dynamic resources with drag-and-drop support.
+ */
 @Component({
   selector: 'app-admin',
   standalone: true,
@@ -39,14 +44,20 @@ import { ConfigService } from '../../core/services/config.service';
   styleUrl: './admin.scss',
 })
 export class Admin {
-  private fb = inject(FormBuilder);
-  private configService = inject(ConfigService);
-  private snackBar = inject(MatSnackBar);
+  /** FormBuilder service for reactive form construction. */
+  private readonly fb = inject(FormBuilder);
+  /** Service for retrieving and persisting application configuration. */
+  private readonly configService = inject(ConfigService);
+  /** Material SnackBar for user feedback. */
+  private readonly snackBar = inject(MatSnackBar);
 
-  readonly panelOpenState = signal(false);
-  readonly isSaving = signal(false);
+  /** Reactive state for the expansion panel. */
+  public readonly panelOpenState = signal(false);
+  /** Indicates if a save operation is currently in progress. */
+  public readonly isSaving = signal(false);
 
-  form = this.fb.group({
+  /** Root form group for the configuration settings. */
+  public readonly form = this.fb.group({
     organization: this.fb.group({
       name: ['', Validators.required],
       url: ['', Validators.required],
@@ -57,14 +68,21 @@ export class Admin {
       faviconUrl: ['favicon.ico'],
       darkMode: [false],
     }),
-    resources: this.fb.array([]),
+    resources: this.fb.array<FormGroup>([]),
   });
 
-  get resourcesArray() {
+  /**
+   * Helper to access the resources FormArray with correct typing.
+   * @returns The FormArray containing resource FormGroups.
+   */
+  get resourcesArray(): FormArray {
     return this.form.get('resources') as FormArray;
   }
 
   constructor() {
+    /**
+     * Synchronizes the form state with the global configuration signal.
+     */
     effect(() => {
       const config = this.configService.config();
       if (config) {
@@ -85,6 +103,11 @@ export class Admin {
     });
   }
 
+  /**
+   * Creates a typed FormGroup for a resource link.
+   * @param data - Optional initial data for the resource.
+   * @returns A FormGroup representing a ResourceLink.
+   */
   private createResourceGroup(data?: ResourceLink): FormGroup {
     return this.fb.group({
       title: [data?.title || '', Validators.required],
@@ -95,29 +118,43 @@ export class Admin {
     });
   }
 
-  addResource() {
+  /**
+   * Adds a new empty resource to the list.
+   */
+  public addResource(): void {
     this.resourcesArray.push(this.createResourceGroup());
     this.form.markAsDirty();
   }
 
-  removeResource(index: number) {
+  /**
+   * Removes a resource at the specified index.
+   * @param index - The index of the resource to remove.
+   */
+  public removeResource(index: number): void {
     this.resourcesArray.removeAt(index);
     this.form.markAsDirty();
   }
 
-  drop(event: CdkDragDrop<any[]>) {
+  /**
+   * Handles the reordering of resources via drag-and-drop.
+   * @param event - The CDK drag-drop event containing movement indices.
+   * @description Resolved 'no-explicit-any' by using ResourceLink[] type.
+   */
+  public drop(event: CdkDragDrop<ResourceLink[]>): void {
     if (event.previousIndex === event.currentIndex) return;
 
     const movedControl = this.resourcesArray.at(event.previousIndex);
 
     this.resourcesArray.removeAt(event.previousIndex);
-
     this.resourcesArray.insert(event.currentIndex, movedControl);
 
     this.form.markAsDirty();
   }
 
-  async saveConfig() {
+  /**
+   * Persists the current form configuration to the backend.
+   */
+  public async saveConfig(): Promise<void> {
     if (this.form.invalid) {
       this.snackBar.open('Please check the form for errors.', 'Close', { duration: 3000 });
       this.form.markAllAsTouched();
@@ -130,9 +167,9 @@ export class Admin {
     try {
       await this.configService.save(formValue);
       this.snackBar.open('Configuration saved successfully', 'Close', { duration: 3000 });
-    } catch (err) {
-      console.error(err);
-      this.snackBar.open('Error saving configuration', 'Close', {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      this.snackBar.open(`Error saving configuration: ${message}`, 'Close', {
         duration: 5000,
         panelClass: 'error-snack',
       });
@@ -141,7 +178,10 @@ export class Admin {
     }
   }
 
-  resetForm() {
+  /**
+   * Resets the form to the current global configuration state.
+   */
+  public resetForm(): void {
     const config = this.configService.config();
     this.form.patchValue(config);
     this.resourcesArray.clear();

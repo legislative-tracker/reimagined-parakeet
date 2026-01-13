@@ -4,7 +4,8 @@ import { FirebaseApp } from '@angular/fire/app';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { of, throwError } from 'rxjs';
 
-import { ConfigService } from './config.service';
+import { ConfigService } from './config.service.js';
+import { RuntimeConfig } from '../../models/runtime-config.js';
 
 // -------------------------------------------------------------------------
 // Mock Dynamic Imports
@@ -13,14 +14,17 @@ import { ConfigService } from './config.service';
 // --- Firestore Mocks ---
 const mockDocData = vi.fn();
 const mockDoc = vi.fn();
-const mockSetDoc = vi.fn(); // <--- NEW: Mock for saving
+const mockSetDoc = vi.fn();
 const mockGetFirestore = vi.fn().mockReturnValue({});
 
+/**
+ * Mocks the Firebase Firestore module using unknown parameters to satisfy linting.
+ */
 vi.mock('@angular/fire/firestore', () => ({
-  getFirestore: (...args: any[]) => mockGetFirestore(...args),
-  doc: (...args: any[]) => mockDoc(...args),
-  docData: (...args: any[]) => mockDocData(...args),
-  setDoc: (...args: any[]) => mockSetDoc(...args), // <--- NEW: Register mock
+  getFirestore: (...args: unknown[]) => mockGetFirestore(...args),
+  doc: (...args: unknown[]) => mockDoc(...args),
+  docData: (...args: unknown[]) => mockDocData(...args),
+  setDoc: (...args: unknown[]) => mockSetDoc(...args),
 }));
 
 // --- Material Color Utilities Mocks ---
@@ -28,12 +32,18 @@ const mockArgbFromHex = vi.fn();
 const mockThemeFromSourceColor = vi.fn();
 const mockHexFromArgb = vi.fn();
 
+/**
+ * Mocks Material Color Utilities using unknown parameters to satisfy linting.
+ */
 vi.mock('@material/material-color-utilities', () => ({
-  argbFromHex: (...args: any[]) => mockArgbFromHex(...args),
-  themeFromSourceColor: (...args: any[]) => mockThemeFromSourceColor(...args),
-  hexFromArgb: (...args: any[]) => mockHexFromArgb(...args),
+  argbFromHex: (...args: unknown[]) => mockArgbFromHex(...args),
+  themeFromSourceColor: (...args: unknown[]) => mockThemeFromSourceColor(...args),
+  hexFromArgb: (...args: unknown[]) => mockHexFromArgb(...args),
 }));
 
+/**
+ * @description Unit tests for ConfigService, verifying dynamic branding and persistence.
+ */
 describe('ConfigService', () => {
   let service: ConfigService;
   let documentMock: Document;
@@ -41,20 +51,21 @@ describe('ConfigService', () => {
   const mockFirebaseApp = { name: '[DEFAULT]' };
 
   beforeEach(() => {
-    // ⚠️ RESET MOCKS
     vi.resetAllMocks();
 
-    // --- Fix: Ensure mocks return objects, not undefined ---
     mockGetFirestore.mockReturnValue({});
-    mockDoc.mockReturnValue({ path: 'configurations/global' }); // <--- ADD THIS
-    mockSetDoc.mockResolvedValue(void 0); // Simulate successful promise
+    mockDoc.mockReturnValue({ path: 'configurations/global' });
+    mockSetDoc.mockResolvedValue(void 0);
 
-    // Material Color Mocks
-    mockThemeFromSourceColor.mockReturnValue({ schemes: { light: { toJSON: () => ({}) } } });
+    // Setup default Material Scheme mock structure
+    mockThemeFromSourceColor.mockReturnValue({
+      schemes: {
+        light: { toJSON: () => ({}) },
+      },
+    });
     mockArgbFromHex.mockReturnValue(0);
     mockHexFromArgb.mockReturnValue('#000000');
 
-    // Mock Document
     documentMock = document;
     vi.spyOn(documentMock, 'querySelector');
     vi.spyOn(documentMock, 'createElement');
@@ -79,15 +90,17 @@ describe('ConfigService', () => {
   it('should be created with default configuration', () => {
     expect(service).toBeTruthy();
     const current = service.config();
-    // Assuming defaults from your RuntimeConfig
     expect(current.branding.primaryColor).toBe('#673ab7');
   });
 
   describe('load()', () => {
+    /**
+     * @description Verifies that remote configuration is merged correctly with local defaults.
+     */
     it('should fetch remote config and merge both organization and branding', async () => {
       const remoteConfig = {
         organization: { name: 'Test Org', url: 'https://test.com' },
-        branding: { primaryColor: '#ff0000' }, // Partial branding
+        branding: { primaryColor: '#ff0000' },
       };
       mockDocData.mockReturnValue(of(remoteConfig));
 
@@ -97,15 +110,9 @@ describe('ConfigService', () => {
       expect(mockDoc).toHaveBeenCalledWith(expect.anything(), 'configurations/global');
 
       const updated = service.config();
-
-      // Verify Organization Update
       expect(updated.organization.name).toBe('Test Org');
-
-      // Verify Branding Update
       expect(updated.branding.primaryColor).toBe('#ff0000');
-
-      // Verify Merge Logic (Should preserve default fields not present in remoteConfig)
-      // Assuming 'logoUrl' defaults to 'assets/default-logo.png' in your model
+      // Verify deep merge logic preserves defaults
       expect(updated.branding.logoUrl).toContain('assets/default-logo.png');
     });
 
@@ -126,21 +133,19 @@ describe('ConfigService', () => {
   });
 
   describe('save()', () => {
+    /**
+     * @description Ensures the save method updates both Firestore and the internal state Signal.
+     */
     it('should save to Firestore and update signal optimistically', async () => {
-      const newConfig = {
+      const newConfig: Partial<RuntimeConfig> = {
         organization: { name: 'Updated Org', url: 'http://update.com' },
       };
 
-      await service.save(newConfig as any);
+      // Resolved 'no-explicit-any' by using proper type assertion
+      await service.save(newConfig);
 
-      // Verify Firestore Call
-      expect(mockSetDoc).toHaveBeenCalledWith(
-        expect.anything(), // The docRef
-        newConfig,
-        { merge: true },
-      );
+      expect(mockSetDoc).toHaveBeenCalledWith(expect.anything(), newConfig, { merge: true });
 
-      // Verify Optimistic Signal Update
       const current = service.config();
       expect(current.organization.name).toBe('Updated Org');
     });
@@ -149,16 +154,18 @@ describe('ConfigService', () => {
       mockSetDoc.mockRejectedValue(new Error('Write Failed'));
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      const newConfig = { branding: { primaryColor: '#000000' } };
+      const newConfig: Partial<RuntimeConfig> = {
+        branding: { primaryColor: '#000000', faviconUrl: '', logoUrl: '' },
+      };
 
-      await expect(service.save(newConfig as any)).rejects.toThrow('Write Failed');
+      await expect(service.save(newConfig)).rejects.toThrow('Write Failed');
       expect(consoleSpy).toHaveBeenCalled();
     });
   });
 
   describe('Effects (Favicon & Theme)', () => {
     it('should update favicon when config changes', async () => {
-      const mockLink = document.createElement('link');
+      const mockLink = document.createElement('link') as HTMLLinkElement;
       vi.spyOn(documentMock, 'querySelector').mockReturnValue(mockLink);
 
       const newConfig = {
@@ -172,6 +179,9 @@ describe('ConfigService', () => {
       expect(mockLink.href).toContain('new-icon.ico');
     });
 
+    /**
+     * @description Tests the reactive effect that applies Material design tokens to CSS variables.
+     */
     it('should apply dynamic theme when primary color changes', async () => {
       mockArgbFromHex.mockReturnValue(12345);
       const mockTheme = { schemes: { light: { toJSON: () => ({ primary: 0xff0000 }) } } };
@@ -186,7 +196,7 @@ describe('ConfigService', () => {
       await service.load();
       await TestBed.flushEffects();
 
-      // Wait for async import inside effect
+      // Flush microtasks for the async dynamic import within applyAngularMaterialTheme
       await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(mockArgbFromHex).toHaveBeenCalledWith('#ff0000');

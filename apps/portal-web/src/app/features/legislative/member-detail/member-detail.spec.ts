@@ -1,44 +1,56 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, Directive, Input } from '@angular/core';
+import { Component, Directive, input } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of } from 'rxjs';
 
 // Target Component
-import { MemberDetail } from './member-detail';
+import { MemberDetail } from './member-detail.js';
 
 // Dependencies
-import { LegislatureService } from '../../../core/services/legislature.service';
-import { TableComponent } from '../../../shared/table/table.component';
-import { ImgFallbackDirective } from '../../../shared/directives/img-fallback';
-import { Legislator } from '../../../models/legislature';
+import { LegislatureService } from '../../../core/services/legislature.service.js';
+import { TableComponent } from '../../../shared/table/table.component.js';
+import { ImgFallbackDirective } from '../../../shared/directives/img-fallback.js';
+import { Legislator } from '../../../models/legislature.js';
 
 // -------------------------------------------------------------------------
 // Create Stubs for Children (Isolation)
 // -------------------------------------------------------------------------
 
-// Stub for TableComponent to avoid table dependencies
+/**
+ * @description Mock TableComponent refactored to use Signal-based inputs.
+ * This resolves the '@angular-eslint/no-inputs-metadata-property' linting error.
+ */
 @Component({
   selector: 'app-table',
   template: '',
   standalone: true,
-  inputs: ['dataSource', 'columnSource'],
 })
-class MockTableComponent {}
+class MockTableComponent {
+  public readonly dataSource = input<unknown[]>([]);
+  public readonly columnSource = input<unknown[]>([]);
+}
 
-// Stub for Directive to avoid needing the real file
+/**
+ * @description Mock ImgFallbackDirective refactored to use Signal-based inputs.
+ * Resolves metadata property errors and aligns with modern Angular patterns.
+ */
 @Directive({
   selector: 'img[appImgFallback]',
   standalone: true,
-  inputs: ['appImgFallback'],
 })
-class MockImgFallbackDirective {}
+class MockImgFallbackDirective {
+  public readonly appImgFallback = input<string>('');
+}
 
 describe('MemberDetail', () => {
   let component: MemberDetail;
   let fixture: ComponentFixture<MemberDetail>;
 
-  // Mock Data
+  /**
+   * Mock Legislator data for testing.
+   * Provides a full representation of the Legislator interface to avoid casting.
+   */
   const mockLegislator: Legislator = {
     id: '123',
     name: 'Jane Doe',
@@ -52,20 +64,21 @@ describe('MemberDetail', () => {
     ],
   };
 
-  // Mock Service
+  /** * Mock service implementation using Vitest spy functions.
+   */
   const mockLegislatureService = {
     getMemberById: vi.fn().mockReturnValue(of(mockLegislator)),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MemberDetail], // Standalone
+      imports: [MemberDetail],
       providers: [
-        provideNoopAnimations(), // For MatTabs/Spinner
+        provideNoopAnimations(),
         { provide: LegislatureService, useValue: mockLegislatureService },
       ],
     })
-      // Override Child Components/Directives
+      // Swap real dependencies for isolated mocks
       .overrideComponent(MemberDetail, {
         remove: { imports: [TableComponent, ImgFallbackDirective] },
         add: { imports: [MockTableComponent, MockImgFallbackDirective] },
@@ -75,7 +88,7 @@ describe('MemberDetail', () => {
     fixture = TestBed.createComponent(MemberDetail);
     component = fixture.componentInstance;
 
-    // Initialize Required Inputs (Signals)
+    // Initialize Required Inputs using the Signal-safe setInput method
     fixture.componentRef.setInput('stateCd', 'ny');
     fixture.componentRef.setInput('id', '123');
 
@@ -87,12 +100,10 @@ describe('MemberDetail', () => {
   });
 
   it('should call getMemberById with correct params on initialization', () => {
-    // rxResource triggers automatically when inputs are stable
     expect(mockLegislatureService.getMemberById).toHaveBeenCalledWith('ny', '123');
   });
 
   it('should update member signal when resource resolves', () => {
-    // Verify the computed member() signal holds the data
     const memberData = component.member();
 
     expect(memberData).toBeDefined();
@@ -104,7 +115,6 @@ describe('MemberDetail', () => {
   });
 
   it('should compute sponsorships correctly', () => {
-    // Verify the computed sponsorships() signal
     const sponsorships = component.sponsorships();
 
     expect(sponsorships.length).toBe(2);
@@ -112,10 +122,8 @@ describe('MemberDetail', () => {
   });
 
   it('should default sponsorships to empty array if member is undefined', () => {
-    // Simulate a scenario where service returns null/undefined
     mockLegislatureService.getMemberById.mockReturnValueOnce(of(null));
 
-    // Force a refresh (change input ID to trigger new resource fetch)
     fixture.componentRef.setInput('id', '999');
     fixture.detectChanges();
 
@@ -124,15 +132,12 @@ describe('MemberDetail', () => {
   });
 
   it('should refetch data when inputs change', () => {
-    // Clear previous calls
     mockLegislatureService.getMemberById.mockClear();
 
-    // Change inputs
     fixture.componentRef.setInput('stateCd', 'ca');
     fixture.componentRef.setInput('id', '456');
     fixture.detectChanges();
 
-    // Verify service was called with NEW params
     expect(mockLegislatureService.getMemberById).toHaveBeenCalledWith('ca', '456');
   });
 });

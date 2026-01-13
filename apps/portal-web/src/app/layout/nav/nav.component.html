@@ -42,10 +42,10 @@
 
         <div class="spacer"></div>
 
-        <a mat-list-item (click)="handleLogout()">
-          <mat-icon matListItemIcon>logout</mat-icon>
+        <button mat-list-item (click)="handleLogout()" type="button">
+          <mat-icon matListItemIcon color="warn">logout</mat-icon>
           <span matListItemTitle color="warn">Log Out</span>
-        </a>
+        </button>
       }
       @if (!auth.isLoggedIn()) {
         <div class="spacer"></div>

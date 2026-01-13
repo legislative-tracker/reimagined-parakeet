@@ -2,18 +2,30 @@ import { TestBed } from '@angular/core/testing';
 import { FirebaseApp } from '@angular/fire/app';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 
-import { FeedbackService } from './feedback.service';
+import { FeedbackService } from './feedback.service.js';
 
 // -------------------------------------------------------------------------
 // Mock Dynamic Imports (Firebase Functions)
 // -------------------------------------------------------------------------
-const mockHttpsCallable = vi.fn();
+
+/**
+ * Mock function to simulate the return of the Firebase Functions instance.
+ */
 const mockGetFunctions = vi.fn();
 
-// Intercept the dynamic "await import(...)" call
+/**
+ * Mock function to simulate the creation of a callable HTTPS function.
+ */
+const mockHttpsCallable = vi.fn();
+
+/**
+ * Intercept the dynamic "await import(...)" call for @angular/fire/functions.
+ * @description Uses unknown[] rest parameters to resolve 'no-explicit-any' linting errors
+ * while maintaining the ability to proxy all arguments to the underlying Vitest spies.
+ */
 vi.mock('@angular/fire/functions', () => ({
-  getFunctions: (...args: any[]) => mockGetFunctions(...args),
-  httpsCallable: (...args: any[]) => mockHttpsCallable(...args),
+  getFunctions: (...args: unknown[]) => mockGetFunctions(...args),
+  httpsCallable: (...args: unknown[]) => mockHttpsCallable(...args),
 }));
 
 describe('FeedbackService', () => {
@@ -36,6 +48,10 @@ describe('FeedbackService', () => {
   });
 
   describe('sendFeedback', () => {
+    /**
+     * @description Verifies that sendFeedback triggers the correct Firebase Function
+     * with the expected title and body payload.
+     */
     it('should call the "submitAnonymousIssue" cloud function with correct payload', async () => {
       // Setup the callable function spy
       const mockResponse = { data: { success: true, message: 'Received' } };
@@ -61,6 +77,10 @@ describe('FeedbackService', () => {
       expect(result).toEqual(mockResponse.data);
     });
 
+    /**
+     * @description Ensures the service propagates errors correctly when the
+     * underlying Cloud Function fails.
+     */
     it('should throw an error if the cloud function fails', async () => {
       // Setup failure scenario
       const callableFn = vi.fn().mockRejectedValue(new Error('Network Error'));

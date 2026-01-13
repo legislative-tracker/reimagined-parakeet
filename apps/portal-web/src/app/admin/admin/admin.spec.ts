@@ -1,20 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import { signal } from '@angular/core';
 
-import { Admin } from './admin';
-import { ConfigService } from '../../core/services/config.service';
-import { RuntimeConfig } from '../../models/runtime-config';
+import { Admin } from './admin.js';
+import { ConfigService } from '../../core/services/config.service.js';
+import { RuntimeConfig, ResourceLink } from '../../models/runtime-config.js';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
+/**
+ * @description Unit tests for the Admin component.
+ * Verifies form initialization, dynamic resource management,
+ * and persistence logic using Vitest mocks.
+ */
 describe('Admin', () => {
   let component: Admin;
   let fixture: ComponentFixture<Admin>;
-  let configServiceSpy: any;
-  let snackBarSpy: any;
+
+  /** * Resolved 'no-explicit-any': Explicitly typing spies as a partial of
+   * the real service with Mock functions.
+   */
+  let configServiceSpy: { config: ReturnType<typeof signal>; save: Mock };
+  let snackBarSpy: { open: Mock };
 
   const mockConfigData: RuntimeConfig = {
     organization: { name: 'Test Org', url: 'http://test.com' },
@@ -67,13 +76,14 @@ describe('Admin', () => {
     fixture = TestBed.createComponent(Admin);
     component = fixture.componentInstance;
 
-    // Retrieve the mocks from TestBed to ensure we have the correct handles
-    configServiceSpy = TestBed.inject(ConfigService);
-    snackBarSpy = TestBed.inject(MatSnackBar);
+    // Retrieve the mocks from TestBed cast to our defined interface
+    configServiceSpy = TestBed.inject(ConfigService) as unknown as typeof configServiceSpy;
+    snackBarSpy = TestBed.inject(MatSnackBar) as unknown as typeof snackBarSpy;
 
-    // 4. FORCE the component to use our mock Snack Bar
-    // (This fixes the injection mismatch causing "0 calls")
-    (component as any).snackBar = snackBarSpy;
+    /** * * Resolved 'no-explicit-any': Using unknown casting to safely
+     * access internal property for test initialization.
+     */
+    (component as unknown as { snackBar: typeof snackBarSpy }).snackBar = snackBarSpy;
 
     fixture.detectChanges();
   });
@@ -103,10 +113,13 @@ describe('Admin', () => {
   });
 
   it('should reorder resources on drop', () => {
+    /** * * Resolved 'no-explicit-any': Typed the mock event to match
+     * the ResourceLink[] expected by the refactored component.
+     */
     const mockDropEvent = {
       previousIndex: 0,
       currentIndex: 1,
-    } as CdkDragDrop<any[]>;
+    } as CdkDragDrop<ResourceLink[]>;
 
     component.drop(mockDropEvent);
 
@@ -116,16 +129,13 @@ describe('Admin', () => {
   });
 
   it('should save full configuration', async () => {
-    // 1. Ensure form is valid by patching required fields
     component.form.patchValue({
       organization: { name: 'Updated Org', url: 'http://valid.com' },
       branding: { primaryColor: '#ffffff', logoUrl: 'assets/logo.png' },
     });
 
-    // 2. Call save
     await component.saveConfig();
 
-    // 3. Assertions
     expect(component.isSaving()).toBe(false);
     expect(configServiceSpy.save).toHaveBeenCalled();
 
@@ -135,24 +145,20 @@ describe('Admin', () => {
       expect.any(Object),
     );
 
-    const capturedArgs = configServiceSpy.save.mock.calls[0][0];
+    const capturedArgs = configServiceSpy.save.mock.calls[0][0] as RuntimeConfig;
     expect(capturedArgs.organization.name).toBe('Updated Org');
   });
 
   it('should handle save errors gracefully', async () => {
-    // 1. Ensure form is valid so it attempts to save
     component.form.patchValue({
       organization: { name: 'Valid Org', url: 'http://valid.com' },
       branding: { primaryColor: '#ffffff', logoUrl: 'assets/logo.png' },
     });
 
-    // 2. Mock the rejection
     configServiceSpy.save.mockRejectedValueOnce(new Error('Save failed'));
 
-    // 3. Call save
     await component.saveConfig();
 
-    // 4. Assertions
     expect(component.isSaving()).toBe(false);
     expect(snackBarSpy.open).toHaveBeenCalledWith(
       expect.stringContaining('Error saving'),

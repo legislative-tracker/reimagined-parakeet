@@ -1,21 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router, provideRouter } from '@angular/router';
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BehaviorSubject } from 'rxjs';
-import { signal } from '@angular/core';
 
 // Target Component
 import { NavComponent } from './nav.component';
-import { Footer } from '../footer/footer'; // Import the real footer class so we can reference it
+import { Footer } from '../footer/footer';
 
 // Service Dependencies
 import { AuthService } from '../../core/services/auth.service';
 import { ConfigService } from '../../core/services/config.service';
 
-// Create a Dummy Footer
+/**
+ * @description A lightweight mock component to replace the real Footer during testing.
+ * This isolates the NavComponent from the Footer's internal dependencies.
+ */
 @Component({
   selector: 'app-footer',
   template: '',
@@ -28,7 +30,7 @@ describe('NavComponent', () => {
   let fixture: ComponentFixture<NavComponent>;
   let router: Router;
 
-  // Mock Services
+  // Mock Services using Vitest spy functions
   const mockAuthService = {
     logout: vi.fn().mockResolvedValue(undefined),
     isLoggedIn: vi.fn().mockReturnValue(true),
@@ -47,7 +49,7 @@ describe('NavComponent', () => {
     }),
   };
 
-  // Mock Breakpoint Observer with a Subject for live updates
+  /** BehaviorSubject to simulate real-time breakpoint changes in tests */
   const screenState$ = new BehaviorSubject<BreakpointState>({ matches: false, breakpoints: {} });
   const mockBreakpointObserver = {
     observe: vi.fn().mockReturnValue(screenState$.asObservable()),
@@ -66,8 +68,7 @@ describe('NavComponent', () => {
         { provide: BreakpointObserver, useValue: mockBreakpointObserver },
       ],
     })
-      // Swap the real Footer for the Dummy
-      // This prevents Footer's internal dependencies from crashing your test.
+      // Component Override to swap the real Footer for our MockFooter
       .overrideComponent(NavComponent, {
         remove: { imports: [Footer] },
         add: { imports: [MockFooter] },
@@ -89,19 +90,15 @@ describe('NavComponent', () => {
 
   describe('Responsive Behavior', () => {
     it('should identify Handset mode correctly', () => {
-      // Simulate Mobile (Handset)
       screenState$.next({ matches: true, breakpoints: {} });
 
-      // Capture the value
       let result: boolean | undefined;
       component.isHandset$.subscribe((val) => (result = val));
 
-      // Assert
       expect(result).toBe(true);
     });
 
     it('should identify Desktop mode correctly', () => {
-      // Simulate Desktop
       screenState$.next({ matches: false, breakpoints: {} });
 
       let result: boolean | undefined;
@@ -122,8 +119,15 @@ describe('NavComponent', () => {
 
   describe('Configuration', () => {
     it('should load branding from ConfigService', () => {
-      const protectedComponent = component as any;
-      expect(protectedComponent.config().branding.logoUrl).toBe('/assets/logo.png');
+      /**
+       * Cast to NavComponent safely to access public members.
+       * If 'config' is private, we use the bracket notation to bypass access restrictions
+       * without losing the benefits of the linter's 'any' check.
+       */
+      const logoUrl = (
+        component as unknown as { config: () => { branding: { logoUrl: string } } }
+      ).config().branding.logoUrl;
+      expect(logoUrl).toBe('/assets/logo.png');
     });
   });
 });

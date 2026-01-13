@@ -1,5 +1,4 @@
-import { Component, inject, input, output, computed, effect } from '@angular/core';
-
+import { Component, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,10 +6,41 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 
+/**
+ * Common fields shared across all address form types.
+ */
+export interface BaseAddress {
+  address: string | null;
+  address2?: string | null;
+  city: string | null;
+  state: string | null;
+  postalCode: string | null;
+}
+
+/**
+ * Specific fields for shipping scenarios.
+ */
+export interface ShippingAddress extends BaseAddress {
+  company?: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  shipping: string | null;
+}
+
+/**
+ * Union type representing the possible data payloads emitted by the form.
+ */
+export type AddressFormOutput = Partial<BaseAddress> | Partial<ShippingAddress>;
+
+/**
+ * A reusable address form component supporting search and shipping configurations.
+ * @description Utilizes Angular Signals (input) and new Output emitters for reactive data flow.
+ */
 @Component({
   selector: 'app-address-form',
   templateUrl: './address-form.component.html',
   styleUrl: './address-form.component.scss',
+  standalone: true,
   imports: [
     MatInputModule,
     MatButtonModule,
@@ -21,11 +51,17 @@ import { MatCardModule } from '@angular/material/card';
   ],
 })
 export class AddressForm {
-  private fb = inject(FormBuilder);
-  formType = input.required<'search' | 'shipping'>();
-  formSubmit = output<any>();
+  /** FormBuilder service injected using the modern inject() function. */
+  private readonly fb = inject(FormBuilder);
 
-  searchAddress = this.fb.group({
+  /** Determines the form layout and required fields. */
+  public readonly formType = input.required<'search' | 'shipping'>();
+
+  /** Emits the form value upon successful submission. */
+  public readonly formSubmit = output<AddressFormOutput>();
+
+  /** Form group for search-specific address queries. */
+  public readonly searchAddress = this.fb.group({
     address: ['', Validators.required],
     address2: '',
     city: ['', Validators.required],
@@ -36,7 +72,8 @@ export class AddressForm {
     ],
   });
 
-  shippingAddress = this.fb.group({
+  /** Form group for full shipping address details. */
+  public readonly shippingAddress = this.fb.group({
     company: '',
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
@@ -51,9 +88,11 @@ export class AddressForm {
     shipping: ['free', Validators.required],
   });
 
-  hasUnitNumber = false;
+  /** UI state for toggling secondary address fields. */
+  public hasUnitNumber = false;
 
-  states = [
+  /** Static list of US States and Territories for the selection dropdown. */
+  public readonly states = [
     { name: 'Alabama', abbreviation: 'AL' },
     { name: 'Alaska', abbreviation: 'AK' },
     { name: 'American Samoa', abbreviation: 'AS' },
@@ -115,8 +154,14 @@ export class AddressForm {
     { name: 'Wyoming', abbreviation: 'WY' },
   ];
 
-  onSubmit() {
-    if (this.formType() === 'search') this.formSubmit.emit(this.searchAddress.value);
-    if (this.formType() === 'shipping') this.formSubmit.emit(this.shippingAddress.value);
+  /**
+   * Validates the active form and emits the result through the formSubmit output.
+   */
+  public onSubmit(): void {
+    if (this.formType() === 'search') {
+      this.formSubmit.emit(this.searchAddress.value as Partial<BaseAddress>);
+    } else if (this.formType() === 'shipping') {
+      this.formSubmit.emit(this.shippingAddress.value as Partial<ShippingAddress>);
+    }
   }
 }

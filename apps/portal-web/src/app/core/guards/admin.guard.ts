@@ -4,28 +4,35 @@ import { Auth, authState } from '@angular/fire/auth';
 import { map, switchMap, take } from 'rxjs/operators';
 import { from, of } from 'rxjs';
 
-export const adminGuard: CanActivateFn = (route, state) => {
+/**
+ * A functional route guard that restricts access to administrative routes.
+ * @returns An Observable that resolves to 'true' if the user is an admin, or a UrlTree for redirection.
+ * @description This guard waits for the Firebase Auth SDK to initialize, retrieves the user's
+ * ID token, and verifies the custom 'admin' claim before granting access.
+ */
+export const adminGuard: CanActivateFn = () => {
   const auth = inject(Auth);
   const router = inject(Router);
 
-  // We use authState (an Observable) instead of the signal
-  // to ensure we wait for the Firebase SDK to initialize
-  // before kicking the user out.
+  /**
+   * We use authState (an Observable) instead of a Signal here to ensure
+   * we wait for the Firebase SDK to initialize before evaluating access.
+   */
   return authState(auth).pipe(
     take(1), // Take the first valid auth state (logged in or null)
     switchMap((user) => {
       if (!user) {
-        // Not logged in at all? Send to login
+        // Not logged in? Redirect to the login page.
         return of(router.createUrlTree(['/login']));
       }
 
-      // Logged in? Check the custom claim
+      // User is authenticated; now check for the 'admin' custom claim.
       return from(user.getIdTokenResult()).pipe(
         map((token) => {
           if (token.claims['admin'] === true) {
-            return true; // Access granted
+            return true; // Access granted.
           } else {
-            // Logged in but not an admin? Send to home
+            // Authenticated but lacks admin privileges; redirect to home.
             return router.createUrlTree(['/']);
           }
         }),

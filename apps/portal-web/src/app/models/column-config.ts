@@ -1,5 +1,4 @@
-import { Identifier } from 'popolo-types';
-import { Cosponsor, Legislation, Legislator, Sponsorship } from './legislature';
+import { Cosponsor, Legislation, Legislator, Sponsorship } from './legislature.js';
 
 export interface ColumnConfig<T> {
   key: keyof T & string; // Object property (e.g., 'billNumber')

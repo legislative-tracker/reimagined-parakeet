@@ -1,44 +1,59 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of } from 'rxjs';
 
 // Target Component
-import { Dashboard } from './dashboard';
+import { Dashboard } from './dashboard.js';
 
 // Dependencies
-import { LegislatureService } from 'src/app/core/services/legislature.service';
-import { TableComponent } from 'src/app/shared/table/table.component';
+import { LegislatureService } from 'src/app/core/services/legislature.service.js';
+import { TableComponent } from 'src/app/shared/table/table.component.js';
 
 // -------------------------------------------------------------------------
 // Stub Child Components
 // -------------------------------------------------------------------------
+
+/**
+ * @description A mock version of the TableComponent used to isolate the Dashboard tests.
+ * This refactor replaces the legacy 'inputs' metadata property with modern Signal-based inputs
+ * to comply with @angular-eslint rules and improve type safety.
+ */
 @Component({
   selector: 'app-table',
   template: '',
   standalone: true,
-  inputs: ['dataSource', 'columnSource', 'isLoading', 'routeType'],
 })
-class MockTableComponent {}
+class MockTableComponent {
+  /** The data to be displayed in the table. */
+  public readonly dataSource = input<unknown[]>([]);
+  /** Configuration for the table columns. */
+  public readonly columnSource = input<unknown[]>([]);
+  /** Indicates if the table is currently in a loading state. */
+  public readonly isLoading = input<boolean>(false);
+  /** The type of route or entity being displayed (e.g., 'bills', 'members'). */
+  public readonly routeType = input<string>();
+}
 
 describe('Dashboard', () => {
   let component: Dashboard;
   let fixture: ComponentFixture<Dashboard>;
 
-  // Mock Data
+  /** Mock bill data for testing initialization. */
   const mockBills = [
     { id: 'BILL-1', title: 'Education Reform', session: '2024' },
     { id: 'BILL-2', title: 'Infrastructure', session: '2024' },
   ];
 
+  /** Mock member data for testing tab switching and filtering. */
   const mockMembers = [
     { id: '1', name: 'Jane Doe', chamber: 'SENATE', party: 'D' },
     { id: '2', name: 'John Smith', chamber: 'ASSEMBLY', party: 'R' },
     { id: '3', name: 'Alice Johnson', chamber: 'SENATE', party: 'I' },
   ];
 
-  // Mock Service
+  /** Mock service implementation using Vitest spy functions. */
   const mockLegislatureService = {
     getBillsByState: vi.fn().mockReturnValue(of(mockBills)),
     getMembersByState: vi.fn().mockReturnValue(of(mockMembers)),
@@ -62,7 +77,7 @@ describe('Dashboard', () => {
     fixture = TestBed.createComponent(Dashboard);
     component = fixture.componentInstance;
 
-    // Initialize Required Input
+    // Initialize Required Input using the modern Signal-safe method
     fixture.componentRef.setInput('stateCd', 'ny');
 
     fixture.detectChanges();
@@ -87,7 +102,6 @@ describe('Dashboard', () => {
   });
 
   describe('Tab Switching & Data Filtering', () => {
-    // Make test async
     it('should fetch members when switching to Senate tab (Index 1)', async () => {
       // Switch Tab
       component.onTabChange(1);
@@ -106,7 +120,6 @@ describe('Dashboard', () => {
       expect(senate.find((m) => m.chamber === 'ASSEMBLY')).toBeUndefined();
     });
 
-    //: Make test async
     it('should fetch members when switching to Assembly tab (Index 2)', async () => {
       component.onTabChange(2);
       fixture.detectChanges();
@@ -119,7 +132,6 @@ describe('Dashboard', () => {
       expect(assembly[0].name).toBe('John Smith');
     });
 
-    // Make test async
     it('should stop fetching bills when switching away from Bills tab', async () => {
       mockLegislatureService.getBillsByState.mockClear();
 

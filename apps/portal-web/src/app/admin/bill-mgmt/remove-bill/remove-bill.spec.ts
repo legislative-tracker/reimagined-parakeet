@@ -20,19 +20,29 @@ const mockQuery = vi.fn();
 const mockOrderBy = vi.fn();
 const mockGetDocs = vi.fn();
 
+/**
+ * Mocks the Firebase Firestore module for unit testing.
+ * @description Uses unknown[] rest parameters to resolve '@typescript-eslint/no-explicit-any'
+ * while safely proxying calls to Vitest spies for behavioral assertions.
+ */
 vi.mock('@angular/fire/firestore', () => ({
-  getFirestore: (...args: any[]) => mockGetFirestore(...args),
-  collection: (...args: any[]) => mockCollection(...args),
-  query: (...args: any[]) => mockQuery(...args),
-  orderBy: (...args: any[]) => mockOrderBy(...args),
-  getDocs: (...args: any[]) => mockGetDocs(...args),
+  getFirestore: (...args: unknown[]) => mockGetFirestore(...args),
+  collection: (...args: unknown[]) => mockCollection(...args),
+  query: (...args: unknown[]) => mockQuery(...args),
+  orderBy: (...args: unknown[]) => mockOrderBy(...args),
+  getDocs: (...args: unknown[]) => mockGetDocs(...args),
 }));
 
+/**
+ * @description Unit tests for the RemoveBill component.
+ * Validates administrative bill deletion workflows, including state-based
+ * bill fetching and error handling via SnackBars.
+ */
 describe('RemoveBill', () => {
   let component: RemoveBill;
   let fixture: ComponentFixture<RemoveBill>;
 
-  // Mock Services
+  /** Mock services for component dependency injection. */
   const mockAuthService = {
     isAdmin: vi.fn().mockReturnValue(true),
     userProfile: vi.fn().mockReturnValue({ displayName: 'Admin User' }),
@@ -49,9 +59,9 @@ describe('RemoveBill', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
 
-    // Restore mock values immediately after clearing
+    // Restore mock values immediately after clearing to avoid undefined reference errors
     mockGetFirestore.mockReturnValue({});
-    mockGetDocs.mockResolvedValue({ docs: [] }); // Prevent crash if effect runs early
+    mockGetDocs.mockResolvedValue({ docs: [] });
 
     await TestBed.configureTestingModule({
       imports: [RemoveBill],
@@ -63,6 +73,7 @@ describe('RemoveBill', () => {
         { provide: FirebaseApp, useValue: mockFirebaseApp },
       ],
     })
+      // Isolated test by removing the Material infrastructure from imports
       .overrideComponent(RemoveBill, {
         remove: { imports: [MatSnackBarModule] },
       })
@@ -86,6 +97,10 @@ describe('RemoveBill', () => {
   });
 
   describe('Fetching Bills (Effect & Firestore)', () => {
+    /**
+     * @description Verifies that bills are correctly fetched from Firestore
+     * when the selectedState signal is updated.
+     */
     it('should fetch bills when selectedState changes', async () => {
       const mockSnapshot = {
         docs: [
@@ -98,11 +113,11 @@ describe('RemoveBill', () => {
       component.selectedState.set('ny');
       fixture.detectChanges();
 
+      // Ensure Signal effects are flushed and async Microtasks complete
       await TestBed.flushEffects();
       await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(mockGetFirestore).toHaveBeenCalledWith(mockFirebaseApp);
-      // Now mockGetFirestore returns {}, so expect.anything() passes
       expect(mockCollection).toHaveBeenCalledWith(expect.anything(), 'legislatures/ny/legislation');
       expect(mockGetDocs).toHaveBeenCalled();
 
@@ -151,7 +166,6 @@ describe('RemoveBill', () => {
       mockLegislatureService.removeBill.mockResolvedValue({ success: true });
 
       const fetchSpy = vi.spyOn(component, 'fetchBillsForState');
-      // Ensure the re-fetch gets a valid empty snapshot
       mockGetDocs.mockResolvedValue({ docs: [] });
 
       await component.onDelete();

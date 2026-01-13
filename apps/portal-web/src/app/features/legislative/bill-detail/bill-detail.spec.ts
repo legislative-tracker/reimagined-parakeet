@@ -1,38 +1,46 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of } from 'rxjs';
 
 // Target Component
-import { BillDetail } from './bill-detail';
+import { BillDetail } from './bill-detail.js';
 
 // Dependencies
-import { LegislatureService } from 'src/app/core/services/legislature.service';
-import { TableComponent } from 'src/app/shared/table/table.component';
+import { LegislatureService } from '../../../core/services/legislature/legislature.service.js';
+import { TableComponent } from '../../../shared/table/table.component.js';
 
 // -------------------------------------------------------------------------
 // Stub Child Components
 // -------------------------------------------------------------------------
+
+/**
+ * @description A mock version of the TableComponent used to isolate the BillDetail tests.
+ * Refactored to use modern Signal-based inputs to comply with @angular-eslint rules.
+ */
 @Component({
   selector: 'app-table',
   template: '',
   standalone: true,
-  inputs: ['dataSource', 'columnSource'],
 })
-class MockTableComponent {}
+class MockTableComponent {
+  /** The data to be displayed in the table. */
+  public readonly dataSource = input<unknown[]>([]);
+  /** Configuration for the table columns. */
+  public readonly columnSource = input<unknown[]>([]);
+}
 
 describe('BillDetail', () => {
   let component: BillDetail;
   let fixture: ComponentFixture<BillDetail>;
 
-  // Mock Data
+  /** Mock bill data including structured cosponsors for transformation testing. */
   const mockBillData = {
     id: 'BILL-123',
     title: 'Clean Water Act',
     description: 'A bill to ensure clean water.',
     session: '2024',
-    // Structure matches logic: Object.entries(cosponsors)
     cosponsors: {
       'AMENDED-A': [{ name: 'Rep. Smith', id: '1' }],
       ORIGINAL: [
@@ -42,7 +50,7 @@ describe('BillDetail', () => {
     },
   };
 
-  // Mock Service
+  /** Mock service implementation using Vitest spy functions. */
   const mockLegislatureService = {
     getBillById: vi.fn().mockReturnValue(of(mockBillData)),
   };
@@ -65,7 +73,7 @@ describe('BillDetail', () => {
     fixture = TestBed.createComponent(BillDetail);
     component = fixture.componentInstance;
 
-    // Initialize Required Inputs
+    // Initialize Required Inputs using the Signal-safe setInput method
     fixture.componentRef.setInput('stateCd', 'ny');
     fixture.componentRef.setInput('id', 'BILL-123');
 
@@ -77,7 +85,7 @@ describe('BillDetail', () => {
   });
 
   it('should fetch bill details with correct params on init', async () => {
-    // rxResource triggers immediately, but we wait for stability to be safe
+    // rxResource triggers immediately, but we wait for stability to ensure signals resolve
     await fixture.whenStable();
 
     expect(mockLegislatureService.getBillById).toHaveBeenCalledWith('ny', 'BILL-123');
@@ -91,11 +99,9 @@ describe('BillDetail', () => {
 
     const versions = component.billVersions();
 
-    // Logic: Object.entries -> map to { id, data }
+    // Verification of the transformation logic: Object.entries mapped to { id, data }
     expect(versions.length).toBe(2);
 
-    // Verify first version (Order depends on JS object iteration, usually insertion order for string keys,
-    // but specific assertion is safer by finding)
     const originalVer = versions.find((v) => v.id === 'ORIGINAL');
     expect(originalVer).toBeDefined();
     expect(originalVer?.data.length).toBe(2); // Rep. Doe, Rep. Jones
@@ -106,16 +112,16 @@ describe('BillDetail', () => {
   });
 
   it('should handle missing cosponsors gracefully', async () => {
-    // Mock service returning bill with NO cosponsors
+    // Mock service returning bill with null cosponsors
     mockLegislatureService.getBillById.mockReturnValueOnce(
       of({
         id: 'BILL-999',
         title: 'Empty Bill',
-        cosponsors: null, // or undefined
+        cosponsors: null,
       }),
     );
 
-    // Change Input ID to trigger refetch
+    // Change Input ID to trigger refetch via rxResource
     fixture.componentRef.setInput('id', 'BILL-999');
     fixture.detectChanges();
     await fixture.whenStable();
@@ -128,7 +134,7 @@ describe('BillDetail', () => {
   it('should refetch data when inputs change', async () => {
     mockLegislatureService.getBillById.mockClear();
 
-    // Change State and ID
+    // Change State and ID inputs
     fixture.componentRef.setInput('stateCd', 'ca');
     fixture.componentRef.setInput('id', 'BILL-456');
     fixture.detectChanges();

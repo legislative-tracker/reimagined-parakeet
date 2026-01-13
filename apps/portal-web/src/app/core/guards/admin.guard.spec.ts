@@ -6,13 +6,16 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
 } from '@angular/router';
-import { Auth, authState } from '@angular/fire/auth';
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { of } from 'rxjs';
+import { Auth, authState, User } from '@angular/fire/auth';
+import { vi, describe, it, expect, beforeEach, afterEach, type Mock } from 'vitest';
+import { of, Observable, lastValueFrom } from 'rxjs';
 
-import { adminGuard } from './admin.guard';
+import { adminGuard } from './admin.guard.js';
 
-// Mock the specific Firebase Auth functions we rely on
+/**
+ * Mocks the specific Firebase Auth functions required for the guard.
+ * @description We intercept the authState observable to control the simulated login status.
+ */
 vi.mock('@angular/fire/auth', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@angular/fire/auth')>();
   return {
@@ -22,12 +25,18 @@ vi.mock('@angular/fire/auth', async (importOriginal) => {
 });
 
 describe('adminGuard', () => {
+  /**
+   * Helper to execute the functional guard within an Angular Injection Context.
+   */
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => adminGuard(...guardParameters));
 
-  let routerSpy: { createUrlTree: ReturnType<typeof vi.fn> };
-  // We don't need a real Auth object, just a token placeholder
-  let mockAuth: any = {};
+  let routerSpy: { createUrlTree: Mock };
+
+  /** * Resolved 'no-explicit-any': Cast an empty object to Auth via unknown.
+   * This provides a valid token for the DI container without a full implementation.
+   */
+  const mockAuth = {} as unknown as Auth;
 
   beforeEach(() => {
     routerSpy = { createUrlTree: vi.fn() };
@@ -45,8 +54,8 @@ describe('adminGuard', () => {
   });
 
   it('should redirect to /login if user is not authenticated', async () => {
-    // Mock authState to emit "null" (logged out)
-    (authState as any).mockReturnValue(of(null));
+    // Resolved 'no-explicit-any': Cast authState to Mock for type-safe mock control.
+    (authState as Mock).mockReturnValue(of(null));
 
     const mockUrlTree = {} as UrlTree;
     routerSpy.createUrlTree.mockReturnValue(mockUrlTree);
@@ -58,13 +67,16 @@ describe('adminGuard', () => {
   });
 
   it('should redirect to / (Home) if user is logged in but NOT admin', async () => {
-    // Mock a standard user without claims
+    /** * Mock a standard user.
+     * We cast a partial object to User to provide the getIdTokenResult method.
+     */
     const mockUser = {
       getIdTokenResult: vi.fn().mockResolvedValue({
         claims: { admin: false },
       }),
-    };
-    (authState as any).mockReturnValue(of(mockUser));
+    } as unknown as User;
+
+    (authState as Mock).mockReturnValue(of(mockUser));
 
     const mockUrlTree = {} as UrlTree;
     routerSpy.createUrlTree.mockReturnValue(mockUrlTree);
@@ -76,28 +88,36 @@ describe('adminGuard', () => {
   });
 
   it('should allow access (return true) if user IS admin', async () => {
-    // Mock an admin user
     const mockUser = {
       getIdTokenResult: vi.fn().mockResolvedValue({
         claims: { admin: true },
       }),
-    };
-    (authState as any).mockReturnValue(of(mockUser));
+    } as unknown as User;
+
+    (authState as Mock).mockReturnValue(of(mockUser));
 
     const result = await runGuard();
 
     expect(result).toBe(true);
-    // Ensure we didn't redirect
     expect(routerSpy.createUrlTree).not.toHaveBeenCalled();
   });
 
-  // --- Helper to handle the Observable/Promise return type ---
-  async function runGuard() {
+  /**
+   * Helper to handle the complex return type of CanActivateFn.
+   * @description Resolves 'no-explicit-any' by properly handling the Observable or literal result.
+   * @returns A promise resolving to the final boolean or UrlTree.
+   */
+  async function runGuard(): Promise<boolean | UrlTree> {
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
 
-    // The guard returns an Observable, so we convert it to a Promise for the test
-    const result$ = executeGuard(route, state) as any;
-    return await result$.toPromise();
+    const result = executeGuard(route, state);
+
+    // If the guard returns an Observable, convert it to a Promise using lastValueFrom
+    if (result instanceof Observable) {
+      return await lastValueFrom(result);
+    }
+
+    return result as boolean | UrlTree;
   }
 });
