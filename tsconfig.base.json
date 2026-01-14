@@ -16,6 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@reimagined-parakeet/shared/data-models": ["libs/shared/data-models/src/index.ts"],
+      "@reimagined-parakeet/shared/plugins/legislatures/us-ny": [
+        "libs/shared/plugins/legislatures/us-ny/src/index.ts"
+      ],
       "@reimagined-parakeet/shared/util-ui": ["libs/shared/util-ui/src/index.ts"]
     }
   },

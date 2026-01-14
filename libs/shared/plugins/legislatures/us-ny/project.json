@@ -1,0 +1,31 @@
+{
+  "name": "plugin-leg-us-ny",
+  "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/plugins/legislatures/us-ny/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/shared/plugins/legislatures/us-ny",
+        "main": "libs/shared/plugins/legislatures/us-ny/src/index.ts",
+        "tsConfig": "libs/shared/plugins/legislatures/us-ny/tsconfig.lib.json",
+        "assets": ["libs/shared/plugins/legislatures/us-ny/*.md"],
+        "format": ["cjs"],
+        "generatePackageJson": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../../../../coverage/libs/shared/plugins/legislatures/us-ny"
+      }
+    }
+  }
+}
