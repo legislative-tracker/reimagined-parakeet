@@ -13,8 +13,7 @@
         "main": "libs/shared/plugins/legislatures/us-ny/src/index.ts",
         "tsConfig": "libs/shared/plugins/legislatures/us-ny/tsconfig.lib.json",
         "assets": ["libs/shared/plugins/legislatures/us-ny/*.md"],
-        "format": ["cjs"],
-        "generatePackageJson": true
+        "format": ["cjs"]
       }
     },
     "lint": {

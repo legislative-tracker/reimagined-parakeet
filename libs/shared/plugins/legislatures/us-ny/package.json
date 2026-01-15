@@ -1,5 +1,5 @@
 {
-  "name": "@reimagined-parakeet/shared/plugins/legislatures/us-ny",
+  "name": "@reimagined-parakeet/plugin-leg-us-ny",
   "version": "0.0.1",
   "private": true,
   "type": "commonjs",

@@ -1,9 +1,12 @@
 # custom-ignore-file
 dist/
 cache/
-graph.json
+temp/
+tmp/
 .nx/cache
 .nx/workspace-data
+
+graph.json
 
 # Logs
 logs

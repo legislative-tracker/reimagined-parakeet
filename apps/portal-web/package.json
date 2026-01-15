@@ -1,5 +1,5 @@
 {
-  "name": "portal-web",
+  "name": "@reimagined-parakeet/portal-web",
   "type": "module",
   "version": "0.8.4",
   "description": "Angular frontend for the Legislative Tracker PWA",
