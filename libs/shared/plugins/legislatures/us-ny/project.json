@@ -7,13 +7,19 @@
   "targets": {
     "build": {
       "executor": "@nx/esbuild:esbuild",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/shared/plugins/legislatures/us-ny",
         "main": "libs/shared/plugins/legislatures/us-ny/src/index.ts",
         "tsConfig": "libs/shared/plugins/legislatures/us-ny/tsconfig.lib.json",
-        "assets": ["libs/shared/plugins/legislatures/us-ny/*.md"],
-        "format": ["cjs"]
+        "assets": [
+          "libs/shared/plugins/legislatures/us-ny/*.md"
+        ],
+        "format": [
+          "cjs"
+        ]
       }
     },
     "lint": {
@@ -21,7 +27,9 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
         "reportsDirectory": "../../../../../coverage/libs/shared/plugins/legislatures/us-ny"
       }

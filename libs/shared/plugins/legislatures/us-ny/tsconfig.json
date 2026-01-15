@@ -3,6 +3,7 @@
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "composite": true,
     "importHelpers": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,

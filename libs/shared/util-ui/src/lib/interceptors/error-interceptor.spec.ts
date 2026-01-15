@@ -1,8 +1,9 @@
 import { TestBed } from "@angular/core/testing";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideHttpClient, withInterceptors, HttpRequest, HttpClient } from "@angular/common/http";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
+import { vi, type Mock } from "vitest";
 import { Observable } from "rxjs";
 
 // Ensure this path exactly matches your file name
@@ -18,6 +19,7 @@ describe("errorInterceptor", () => {
 
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         provideHttpClient(withInterceptors([errorInterceptor])),
         provideHttpClientTesting(),
         { provide: MatSnackBar, useValue: snackBarSpy },

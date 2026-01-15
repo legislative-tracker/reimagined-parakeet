@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2022",
+    "composite": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
@@ -9,7 +10,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "files": [],
-  "include": [],
+  "include": ["vitest.config.ts", "eslint.config.mjs"],
   "references": [
     {
       "path": "./tsconfig.lib.json"

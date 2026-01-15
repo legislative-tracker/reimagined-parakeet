@@ -4,7 +4,10 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/portal-web/src",
-  "tags": ["type:app", "scope:portal"],
+  "tags": [
+    "type:app",
+    "scope:portal"
+  ],
   "targets": {
     "build": {
       "executor": "@nx/angular:browser-esbuild",
@@ -12,7 +15,9 @@
         "outputPath": "dist/apps/portal-web",
         "index": "apps/portal-web/src/index.html",
         "main": "apps/portal-web/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/portal-web/tsconfig.app.json",
         "assets": [
           {
@@ -21,13 +26,17 @@
             "output": "/"
           }
         ],
-        "styles": ["apps/portal-web/src/styles.scss"],
+        "styles": [
+          "apps/portal-web/src/styles.scss"
+        ],
         "scripts": []
       }
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
         "config": "apps/portal-web/vitest.config.ts"
       }
@@ -40,10 +49,15 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
         "eslintConfig": "apps/portal-web/eslint.config.js",
-        "lintFilePatterns": ["apps/portal-web/**/*.ts", "apps/portal-web/**/*.html"]
+        "lintFilePatterns": [
+          "apps/portal-web/**/*.ts",
+          "apps/portal-web/**/*.html"
+        ]
       }
     }
   }

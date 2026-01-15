@@ -1,5 +1,5 @@
 import { defineProject, mergeConfig } from "vitest/config";
-import baseConfig from "../../vitest.config.ts";
+import baseConfig from "../../vitest.config.js";
 
 /**
  * @description Vitest project configuration for the server-firebase application.

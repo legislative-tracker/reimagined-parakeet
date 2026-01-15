@@ -21,6 +21,7 @@ export default tseslint.config(
         'error',
         { type: 'element', prefix: 'app', style: 'kebab-case' },
       ],
+      '@angular-eslint/component-class-suffix': ['off', { suffixes: ['Component'] }],
     },
   },
   {
@@ -32,5 +33,5 @@ export default tseslint.config(
     rules: {
       '@nx/enforce-module-boundaries': 'off',
     },
-  },
+  }
 );
