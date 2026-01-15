@@ -1,6 +1,6 @@
 import { defineConfig, mergeConfig } from "vitest/config";
 import type { UserConfig } from "vite";
-import { baseConfig } from "../../../vitest.base.config.js";
+import baseConfig from "../../../vitest.config.js";
 
 /**
  * @description Vitest configuration for the shared data-models library.

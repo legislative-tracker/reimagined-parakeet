@@ -7,6 +7,6 @@
     "rootDir": "../../.."
   },
   "files": [],
-  "include": ["vitest.config.ts", "../../../vitest.base.config.ts"],
+  "include": ["vitest.config.ts", "../../../vitest.config.ts"],
   "references": [{ "path": "./tsconfig.lib.json" }, { "path": "./tsconfig.spec.json" }]
 }

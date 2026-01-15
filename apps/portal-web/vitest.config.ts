@@ -1,5 +1,5 @@
 import { mergeConfig } from 'vitest/config';
-import { baseConfig } from '../../vitest.base.config.js';
+import baseConfig from '../../vitest.config.js';
 import angular from '@analogjs/vite-plugin-angular';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 

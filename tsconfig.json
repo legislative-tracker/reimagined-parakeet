@@ -1,6 +1,6 @@
 {
   "files": [],
-  "include": ["vitest.base.config.ts"],
+  "include": ["vitest.config.ts"],
   "references": [
     { "path": "./apps/portal-web" },
     { "path": "./apps/server-firebase" },

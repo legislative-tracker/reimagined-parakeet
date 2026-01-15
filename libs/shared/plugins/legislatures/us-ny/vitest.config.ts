@@ -1,15 +1,15 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
 import { nxCopyAssetsPlugin } from "@nx/vite/plugins/nx-copy-assets.plugin";
 
-export default defineConfig(() => ({
+/**
+ * @description Vitest configuration for the US-NY Legislature plugin.
+ * Uses 'vitest/config' to ensure proper type safety and Node.js environment shimming.
+ */
+export default defineConfig({
   root: __dirname,
   cacheDir: "../../../../../node_modules/.vite/libs/shared/plugins/legislatures/us-ny",
   plugins: [nxViteTsPaths(), nxCopyAssetsPlugin(["*.md"])],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ],
-  // },
   test: {
     watch: false,
     globals: true,
@@ -18,7 +18,7 @@ export default defineConfig(() => ({
     reporters: ["default"],
     coverage: {
       reportsDirectory: "../../../../../coverage/libs/shared/plugins/legislatures/us-ny",
-      provider: "v8" as const,
+      provider: "v8",
     },
   },
-}));
+});
