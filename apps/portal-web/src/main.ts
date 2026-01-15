@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { App } from './app/app';
-import { getAppConfig } from './app/app.config';
-import { AppConfig } from './app/core/app-config/app-config-token';
+import { App } from './app/app.js';
+import { getAppConfig } from './app/app.config.js';
+import { AppConfig } from './app/core/app-config/app-config-token.js';
 
 // 1. Fetch Config
 fetch('/config.json')

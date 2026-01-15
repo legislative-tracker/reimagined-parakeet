@@ -3,35 +3,28 @@
   "$schema": "https://raw.githubusercontent.com/nrwl/nx/master/packages/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/server-firebase/src",
-  "tags": [
-    "type:app",
-    "scope:backend"
-  ],
+  "tags": ["type:app", "scope:backend"],
   "targets": {
     "build": {
       "executor": "@nx/esbuild:esbuild",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/server-firebase",
         "main": "apps/server-firebase/src/index.ts",
         "tsConfig": "apps/server-firebase/tsconfig.app.json",
-        "assets": [
-          "apps/server-firebase/src/assets"
-        ],
-        "format": [
-          "esm"
-        ],
+        "assets": ["apps/server-firebase/src/assets"],
+        "format": ["esm"],
         "platform": "node",
         "target": "node24",
         "bundle": true,
         "thirdParty": true,
         "generatePackageJson": true,
-        "external": [
-          "firebase-admin",
-          "firebase-functions"
-        ]
+        "esbuildOptions": {
+          "banner": {
+            "js": "import { createRequire } from 'module'; const require = createRequire(import.meta.url);"
+          }
+        },
+        "external": ["firebase-admin", "firebase-functions"]
       }
     },
     "test": {
@@ -42,6 +35,7 @@
     },
     "serve": {
       "executor": "nx:run-commands",
+      "dependsOn": ["build"],
       "options": {
         "command": "firebase emulators:start --only functions"
       }
@@ -54,14 +48,10 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
         "eslintConfig": "apps/server-firebase/eslint.config.js",
-        "lintFilePatterns": [
-          "apps/server-firebase/**/*.ts"
-        ]
+        "lintFilePatterns": ["apps/server-firebase/**/*.ts"]
       }
     }
   }

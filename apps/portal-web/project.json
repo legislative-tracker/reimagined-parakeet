@@ -4,20 +4,16 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/portal-web/src",
-  "tags": [
-    "type:app",
-    "scope:portal"
-  ],
+  "tags": ["type:app", "scope:portal"],
   "targets": {
     "build": {
-      "executor": "@nx/angular:browser-esbuild",
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath}"],
       "options": {
+        "browser": "apps/portal-web/src/main.ts",
         "outputPath": "dist/apps/portal-web",
         "index": "apps/portal-web/src/index.html",
-        "main": "apps/portal-web/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
+        "polyfills": ["zone.js"],
         "tsConfig": "apps/portal-web/tsconfig.app.json",
         "assets": [
           {
@@ -26,38 +22,61 @@
             "output": "/"
           }
         ],
-        "styles": [
-          "apps/portal-web/src/styles.scss"
-        ],
+        "styles": ["apps/portal-web/src/styles.scss"],
         "scripts": []
-      }
-    },
-    "test": {
-      "executor": "@nx/vite:test",
-      "outputs": [
-        "{options.reportsDirectory}"
-      ],
-      "options": {
-        "config": "apps/portal-web/vitest.config.ts"
-      }
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nx/angular:dev-server",
+      "executor": "@angular-devkit/build-angular:dev-server",
       "options": {
-        "buildTarget": "portal-web:build"
+        "buildTarget": "@reimagined-parakeet/portal-web:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "@reimagined-parakeet/portal-web:build:production"
+        },
+        "development": {
+          "buildTarget": "@reimagined-parakeet/portal-web:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "config": "apps/portal-web/vitest.config.ts",
+        "reportsDirectory": "../../coverage/apps/portal-web"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "eslintConfig": "apps/portal-web/eslint.config.js",
-        "lintFilePatterns": [
-          "apps/portal-web/**/*.ts",
-          "apps/portal-web/**/*.html"
-        ]
+        "lintFilePatterns": ["apps/portal-web/**/*.ts", "apps/portal-web/**/*.html"]
       }
     }
   }
