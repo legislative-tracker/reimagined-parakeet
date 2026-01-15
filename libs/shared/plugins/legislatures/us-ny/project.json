@@ -1,5 +1,5 @@
 {
-  "name": "plugin-leg-us-ny",
+  "name": "@reimagined-parakeet/plugin-leg-us-ny",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/plugins/legislatures/us-ny/src",
   "projectType": "library",

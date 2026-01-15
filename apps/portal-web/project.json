@@ -1,5 +1,5 @@
 {
-  "name": "portal-web",
+  "name": "@reimagined-parakeet/portal-web",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",

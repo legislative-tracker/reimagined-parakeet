@@ -14,7 +14,7 @@
       [
         "portal-web",
         "server-firebase",
-        "shared-data-models",
+        "shared/data-models",
         "cli-config",
         "secrets-setup",
         "deps",

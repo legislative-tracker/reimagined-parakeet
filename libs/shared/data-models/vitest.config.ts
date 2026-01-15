@@ -9,7 +9,7 @@ import { baseConfig } from "../../../vitest.base.config";
 export default mergeConfig(baseConfig, {
   test: {
     /** Unique name used by the root workspace runner to identify this project */
-    name: "shared-data-models",
+    name: "shared/data-models",
     /** Node environment is sufficient for data models and logic utilities */
     environment: "node",
     /** Matches any .spec.ts files within the library's source directory */
