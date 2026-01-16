@@ -1,6 +1,6 @@
 import { defineProject, mergeConfig } from "vitest/config";
 import { nxCopyAssetsPlugin } from "@nx/vite/plugins/nx-copy-assets.plugin";
-import { baseConfig } from "../../../../../vitest.config.js";
+import { baseConfig } from "../../../../vitest.config.js";
 
 /**
  * @description Vitest configuration for the US-NY Legislature plugin.
