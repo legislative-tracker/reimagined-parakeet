@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**.md"
+      - ".vscode/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".github/workflows/**"
 
 permissions:
   contents: write
@@ -52,13 +58,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Fetch all branches to ensure dev is available
           git fetch origin dev
           git checkout dev
-
-          # Use the 'theirs' strategy to resolve conflicts in favor of main.
-          # This ensures version bumps and nx.json changes from the release win.
           git merge -X theirs origin/main -m "chore: sync dev with main after release [skip ci]"
-
           git push origin dev

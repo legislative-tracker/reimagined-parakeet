@@ -5,6 +5,12 @@ on:
     branches:
       - main
     types: [opened, synchronize, reopened]
+    paths-ignore:
+      - "**.md"
+      - ".vscode/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".github/workflows/**"
 
 permissions:
   contents: read
@@ -13,7 +19,6 @@ permissions:
   statuses: write
 
 jobs:
-  # Job 1: Build only what changed
   build-affected:
     runs-on: ubuntu-latest
     outputs:
@@ -39,7 +44,6 @@ jobs:
       - name: Check Affected Projects
         id: check-affected
         run: |
-          # Determine if the portal-web app or its dependencies are affected
           IS_AFFECTED=$(npx nx show projects --affected --with-target build | grep -q "portal-web" && echo "true" || echo "false")
           echo "portal_affected=$IS_AFFECTED" >> $GITHUB_OUTPUT
 
@@ -48,7 +52,6 @@ jobs:
 
       - name: Package for Preview
         run: |
-          # Prepare dist for the deployment step
           if [ -d "dist/apps/portal-web/browser" ]; then
             echo '${{ secrets.PREVIEW_APP_CONFIG_JSON }}' > dist/apps/portal-web/browser/config.json
           fi
@@ -60,7 +63,6 @@ jobs:
           path: dist/
           retention-days: 1
 
-  # Job 2: Deploy to Firebase Preview Channel
   deploy-preview:
     needs: build-affected
     if: needs.build-affected.outputs.portal_affected == 'true'

@@ -3,8 +3,20 @@ name: CI Build
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "**.md"
+      - ".vscode/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".github/workflows/**"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "**.md"
+      - ".vscode/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".github/workflows/**"
 
 jobs:
   build:
@@ -34,12 +46,10 @@ jobs:
 
       - name: Package for Firebase
         run: |
-          # Prepare Functions
           if [ -d "dist/apps/server-firebase" ]; then
             cp package.json dist/apps/server-firebase/
             cp package-lock.json dist/apps/server-firebase/
           fi
-          # Ensure portal-web browser dir exists for config injection later
           mkdir -p dist/apps/portal-web/browser
 
       - name: Upload Workspace Artifact
