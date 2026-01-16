@@ -9,7 +9,7 @@
   ],
   "hosting": {
     "target": "hosting",
-    "public": "dist/apps/portal-web",
+    "public": "dist/apps/portal-web/browser",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
