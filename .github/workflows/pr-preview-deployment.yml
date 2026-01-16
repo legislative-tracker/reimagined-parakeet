@@ -9,6 +9,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+
   checks: write
   statuses: write
 
@@ -36,6 +37,11 @@ jobs:
       - name: Build Affected Projects
         run: npx nx affected -t build --parallel=3
 
+      - name: Inject Configuration
+        run: |
+          mkdir -p dist/apps/portal-web/browser
+          echo '${{ secrets.APP_CONFIG_JSON }}' > dist/apps/portal-web/browser/config.json
+
       - name: Run Affected Tests with Coverage
         run: npx nx affected -t test --parallel=3 --coverage
 
@@ -52,4 +58,4 @@ jobs:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}"
           projectId: tracker-cwapolitical-org
-          channelId: "pr-${{ github.event.number }}"
+          channelId: pr-${{ github.event.number }}
