@@ -43,21 +43,56 @@
         "projectsRelationship": "fixed",
         "projects": ["portal-web", "server-firebase"],
         "version": {
-          "currentVersionResolver": "git-tag"
+          "currentVersionResolver": "git-tag",
+          "specifierSource": "conventional-commits",
+          "versionActionsOptions": {
+            "conventionalCommits": {
+              "ignoreScopes": ["cli-config", "secrets-setup", "deps", "workflow", "workspace"]
+            }
+          }
         },
         "changelog": {
           "projectChangelogs": true
         }
       }
     },
+    "conventionalCommits": {
+      "types": {
+        "feat": { "semverBump": "minor", "changelog": { "title": "Features" } },
+        "fix": { "semverBump": "patch", "changelog": { "title": "Fixes" } },
+        "perf": { "semverBump": "patch", "changelog": { "title": "Performance" } },
+        "docs": { "semverBump": "none", "changelog": false },
+        "style": { "semverBump": "none", "changelog": false },
+        "refactor": { "semverBump": "none", "changelog": false },
+        "test": { "semverBump": "none", "changelog": false },
+        "build": { "semverBump": "none", "changelog": false },
+        "ci": { "semverBump": "none", "changelog": false },
+        "chore": { "semverBump": "none", "changelog": false },
+        "revert": { "semverBump": "none", "changelog": false }
+      }
+    },
     "changelog": {
+      "automaticFromRef": true,
       "workspaceChangelog": {
         "createRelease": "github",
-        "automaticFromRef": true
+        "renderOptions": {
+          "authors": true,
+          "commitReferences": true
+        }
+      },
+      "projectChangelogs": {
+        "renderOptions": {
+          "authors": true,
+          "commitReferences": true,
+          "ignoreScopes": ["workflow", "workspace"]
+        }
       }
     },
     "releaseTag": {
       "pattern": "v{version}"
+    },
+    "git": {
+      "tagMessage": "v{version}\n\n{notes}"
     }
   },
   "useInferencePlugins": false,
