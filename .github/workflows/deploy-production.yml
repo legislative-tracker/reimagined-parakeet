@@ -1,4 +1,4 @@
-name: Deploy to Production (tracker.cwapolitical.org)
+name: Deploy to Production
 
 on:
   workflow_run:
@@ -30,7 +30,7 @@ jobs:
         run: |
           echo '${{ secrets.CWA_APP_CONFIG_JSON }}' > dist/apps/portal-web/browser/config.json
 
-      - name: Deploy to Firebase
+      - name: Deploy to Firebase (CWA)
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
