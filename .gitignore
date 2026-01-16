@@ -1,3 +1,13 @@
+# custom-ignore-file
+dist/
+cache/
+temp/
+tmp/
+.nx/cache
+.nx/workspace-data
+
+graph.json
+
 # Logs
 logs
 *.log
@@ -67,3 +77,8 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+.angular
+
+vite.config.*.timestamp*
+vitest.config.*.timestamp*

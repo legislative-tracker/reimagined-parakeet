@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "include": ["vitest.config.ts"],
+  "references": [
+    { "path": "./apps/portal-web" },
+    { "path": "./apps/server-firebase" },
+    { "path": "./libs/shared/data-models" },
+    { "path": "./libs/shared/util-ui" },
+    { "path": "./libs/shared/plugins/legislatures/us-ny" }
+  ]
+}

@@ -3,3 +3,7 @@ dist
 coverage
 node_modules
 package-lock.json
+.angular
+
+/.nx/cache
+/.nx/workspace-data
