@@ -49,6 +49,8 @@
     "@nx/js": "22.3.3",
     "@nx/vite": "22.3.3",
     "@nx/workspace": "22.3.3",
+    "@swc-node/register": "^1.11.1",
+    "@swc/core": "^1.15.8",
     "@types/node": "^24.0.0",
     "angular-eslint": "^21.1.0",
     "esbuild": "0.25.0",
