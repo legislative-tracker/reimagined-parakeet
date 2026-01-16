@@ -47,7 +47,7 @@
           "specifierSource": "conventional-commits",
           "versionActionsOptions": {
             "conventionalCommits": {
-              "ignoreScopes": ["cli-config", "secrets-setup", "deps", "workflow", "workspace"]
+              "ignoreScopes": ["deps", "workflow", "workspace"]
             }
           }
         },
