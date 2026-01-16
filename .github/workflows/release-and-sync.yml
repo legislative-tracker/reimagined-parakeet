@@ -12,6 +12,16 @@ on:
       - ".github/workflows/**"
   workflow_dispatch:
     inputs:
+      force_bump:
+        description: "Force a specific version bump (patch, minor, major)"
+        required: false
+        type: choice
+        default: ""
+        options:
+          - ""
+          - "patch"
+          - "minor"
+          - "major"
       manual_reason:
         description: "Reason for manual release"
         required: false
@@ -46,7 +56,14 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Run Nx Release
-        run: npx nx release --yes
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.force_bump }}" ]; then
+            echo "Forcing a ${{ github.event.inputs.force_bump }} release..."
+            npx nx release --yes --specifier ${{ github.event.inputs.force_bump }}
+          else
+            echo "Running automated semantic release..."
+            npx nx release --yes
+          fi
 
       - name: Push Release to Main
         run: git push --follow-tags origin main
