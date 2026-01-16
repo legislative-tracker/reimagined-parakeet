@@ -1,45 +1,54 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit guidelines.
+
 ## 0.9.0 (2026-01-16)
 
 ### 🩹 Fixes
 
-- **portal-web:** fixed multiple issues preventing successful build ([3cfa393](https://github.com/legislative-tracker/reimagined-parakeet/commit/3cfa393))
-- **server-firebase:** avoid explicit 'any' ([2abc2af](https://github.com/legislative-tracker/reimagined-parakeet/commit/2abc2af))
-- **workflow:** added 'write' permissions needed for Deploy step ([291258e](https://github.com/legislative-tracker/reimagined-parakeet/commit/291258e))
-- **workflow:** updated "public" folder target for Firebase hosting ([8e69f7b](https://github.com/legislative-tracker/reimagined-parakeet/commit/8e69f7b))
-- **workflow:** push config file to portal-web's build output so the preview works ([c2a90af](https://github.com/legislative-tracker/reimagined-parakeet/commit/c2a90af))
-- **workflow:** add workflow run id so the workflow can find the previously built artifacts ([41a8d30](https://github.com/legislative-tracker/reimagined-parakeet/commit/41a8d30))
-- **workflow:** fix back-merge to dev ([a323c3a](https://github.com/legislative-tracker/reimagined-parakeet/commit/a323c3a))
-- **workflow:** prevent build/release/deploy when no code changes have been made ([07266c7](https://github.com/legislative-tracker/reimagined-parakeet/commit/07266c7))
-- **workspace:** downgrade to vite 6.3.5 to avoid SSR issues in testing ([7508473](https://github.com/legislative-tracker/reimagined-parakeet/commit/7508473))
-- **workspace:** define "defualt projects" for the nx release cmd ([4959df2](https://github.com/legislative-tracker/reimagined-parakeet/commit/4959df2))
+- **portal-web:** fixed multiple issues preventing successful build
+  ([3cfa393](https://github.com/legislative-tracker/reimagined-parakeet/commit/3cfa393))
+- **server-firebase:** avoid explicit 'any'
+  ([2abc2af](https://github.com/legislative-tracker/reimagined-parakeet/commit/2abc2af))
+- **workflow:** added 'write' permissions needed for Deploy step
+  ([291258e](https://github.com/legislative-tracker/reimagined-parakeet/commit/291258e))
+- **workflow:** updated "public" folder target for Firebase hosting
+  ([8e69f7b](https://github.com/legislative-tracker/reimagined-parakeet/commit/8e69f7b))
+- **workflow:** push config file to portal-web's build output so the preview works
+  ([c2a90af](https://github.com/legislative-tracker/reimagined-parakeet/commit/c2a90af))
+- **workflow:** add workflow run id so the workflow can find the previously built artifacts
+  ([41a8d30](https://github.com/legislative-tracker/reimagined-parakeet/commit/41a8d30))
+- **workflow:** fix back-merge to dev
+  ([a323c3a](https://github.com/legislative-tracker/reimagined-parakeet/commit/a323c3a))
+- **workflow:** prevent build/release/deploy when no code changes have been made
+  ([07266c7](https://github.com/legislative-tracker/reimagined-parakeet/commit/07266c7))
+- **workspace:** downgrade to vite 6.3.5 to avoid SSR issues in testing
+  ([7508473](https://github.com/legislative-tracker/reimagined-parakeet/commit/7508473))
+- **workspace:** define "defualt projects" for the nx release cmd
+  ([4959df2](https://github.com/legislative-tracker/reimagined-parakeet/commit/4959df2))
 
 ### ❤️ Thank You
 
 - Joshua Pelton-Stroud @jpelton-stroud
 
-# Changelog
+## [0.8.4](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.3...v0.8.4) (2026-01-10)
 
-All notable changes to this project will be documented in this file. See
-[standard-version](https://github.com/conventional-changelog/standard-version) for commit
-guidelines.
-
-### [0.8.4](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.3...v0.8.4) (2026-01-10)
-
-### [0.8.3](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.2...v0.8.3) (2026-01-10)
+## [0.8.3](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.2...v0.8.3) (2026-01-10)
 
 ### Bug Fixes
 
 - **backend:** updated bad schedule definition for legislators.monthlyUpdate()
   ([bda2014](https://github.com/legislative-tracker/reimagined-parakeet/commit/bda2014bd48658c5649a6c6ae1569a3354595faf))
 
-### [0.8.2](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.1...v0.8.2) (2026-01-10)
+## [0.8.2](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.1...v0.8.2) (2026-01-10)
 
 ### CI/CD & Build System
 
 - **frontend:** fixed missing config file
   ([66d52ef](https://github.com/legislative-tracker/reimagined-parakeet/commit/66d52ef6bfbadd9a0a5981b7e3bfce96718cf927))
 
-### [0.8.1](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.0...v0.8.1) (2026-01-10)
+## [0.8.1](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.8.0...v0.8.1) (2026-01-10)
 
 ### Bug Fixes
 
@@ -86,7 +95,7 @@ guidelines.
 - **versioning:** bump version for breaking change in 0.7.24
   ([0c8bc36](https://github.com/legislative-tracker/reimagined-parakeet/commit/0c8bc36a8beef3322f924f8063872d754d5a096c))
 
-### [0.7.25](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.24...v0.7.25) (2026-01-08)
+## [0.7.25](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.24...v0.7.25) (2026-01-08)
 
 ### ⚠ BREAKING CHANGES
 
@@ -95,7 +104,7 @@ guidelines.
 - **version:** bump version for breaking change in v0.7.24
   ([d6394c0](https://github.com/legislative-tracker/reimagined-parakeet/commit/d6394c080810213492ed79c107c032e2caa348d6))
 
-### [0.7.24](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.23...v0.7.24) (2026-01-08)
+## [0.7.24](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.23...v0.7.24) (2026-01-08)
 
 ### Features
 
@@ -109,7 +118,7 @@ guidelines.
 - **api:** fleshed out member updates to include additional OpenStates data
   ([bbce738](https://github.com/legislative-tracker/reimagined-parakeet/commit/bbce738fc799c1bf84fcaebc8b3cbd39d033885d))
 
-### [0.7.23](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.22...v0.7.23) (2026-01-08)
+## [0.7.23](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.22...v0.7.23) (2026-01-08)
 
 ### Features
 
@@ -127,14 +136,14 @@ guidelines.
 - **ny-api:** export apikey secret so it can be used by other functions
   ([f2cf764](https://github.com/legislative-tracker/reimagined-parakeet/commit/f2cf7643d7ef4fa21c48e4776e4923d5facaa6d1))
 
-### [0.7.22](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.21...v0.7.22) (2026-01-08)
+## [0.7.22](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.21...v0.7.22) (2026-01-08)
 
 ### CI/CD & Build System
 
 - **app:** fixed condition where a pr changes frontend but not backend failing to deploy preview
   ([03e8c10](https://github.com/legislative-tracker/reimagined-parakeet/commit/03e8c102cc7e92ee10276d38dc1db28fdd298c32))
 
-### [0.7.21](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.20...v0.7.21) (2026-01-08)
+## [0.7.21](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.20...v0.7.21) (2026-01-08)
 
 ### Features
 
@@ -145,7 +154,7 @@ guidelines.
 - **app-config:** now loads more info from global config doc
   ([47ebc86](https://github.com/legislative-tracker/reimagined-parakeet/commit/47ebc86a788ef4e11c1cfe138a31b44af378e894))
 
-### [0.7.20](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.19...v0.7.20) (2026-01-08)
+## [0.7.20](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.19...v0.7.20) (2026-01-08)
 
 ### Features
 
@@ -157,7 +166,7 @@ guidelines.
 - **git:** auto-sync main to dev [skip ci]
   ([742a693](https://github.com/legislative-tracker/reimagined-parakeet/commit/742a69338e9281e1e80e10a38eec5e95bf0e8bdf))
 
-### [0.7.19](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.18...v0.7.19) (2026-01-07)
+## [0.7.19](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.18...v0.7.19) (2026-01-07)
 
 ### Chores & Maintenance
 
@@ -169,7 +178,7 @@ guidelines.
 - **pages:** updated formatting and language
   ([b78553b](https://github.com/legislative-tracker/reimagined-parakeet/commit/b78553b903970537fc1be8a9bf497e6f135dfbbe))
 
-### [0.7.18](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.17...v0.7.18) (2026-01-07)
+## [0.7.18](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.17...v0.7.18) (2026-01-07)
 
 ### Chores & Maintenance
 
@@ -187,14 +196,14 @@ guidelines.
 - **project:** release step should still happen if deploy is skipped
   ([9213246](https://github.com/legislative-tracker/reimagined-parakeet/commit/92132465683e2577f6f57a156220dc64f0a069d2))
 
-### [0.7.13](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.12...v0.7.13) (2026-01-06)
+## [0.7.13](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.12...v0.7.13) (2026-01-06)
 
 ### Documentation
 
 - **repo:** added general repo documentation
   ([ccf8bc2](https://github.com/legislative-tracker/reimagined-parakeet/commit/ccf8bc290080f8892d17f2af1dd52290b4bab808))
 
-### [0.7.12](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.11...v0.7.12) (2026-01-06)
+## [0.7.12](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.11...v0.7.12) (2026-01-06)
 
 ### Bug Fixes
 
@@ -230,16 +239,16 @@ guidelines.
   ([325cf83](https://github.com/legislative-tracker/reimagined-parakeet/commit/325cf83e0b91cd4e92b21c0b5ca532c0b9645b9e))
 - **services/guards:** renamed with dot-notation for personal sanity
   ([0596baa](https://github.com/legislative-tracker/reimagined-parakeet/commit/0596baafbc7dccd8b046caf9d87ada8ee03c5ca6))
-- **table:** removed testClick and replaced @Output() with output<T>()
+- **table:** removed testClick and replaced @Output() with `output<T>()`
   ([0754050](https://github.com/legislative-tracker/reimagined-parakeet/commit/0754050aafa6802bd982e802f2e137417919b43d))
 - **tsconfig:** added custom paths & updated imports
   ([9c0622c](https://github.com/legislative-tracker/reimagined-parakeet/commit/9c0622cefca16a7a990ab776a4fd63d7afa355cc))
 - **tsconfig:** added custom paths & updated imports
   ([c3084e4](https://github.com/legislative-tracker/reimagined-parakeet/commit/c3084e441be572953c00decaae190891fb5deb39))
 
-### [0.7.11](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.10...v0.7.11) (2026-01-06)
+## [0.7.11](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.10...v0.7.11) (2026-01-06)
 
-### [0.7.10](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.9...v0.7.10) (2026-01-05)
+## [0.7.10](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.9...v0.7.10) (2026-01-05)
 
 ### Features
 
@@ -259,15 +268,15 @@ guidelines.
 - **pkg:** fixed pkg deps
   ([5e523dc](https://github.com/legislative-tracker/reimagined-parakeet/commit/5e523dcab881ee657d767e30f8eb7c5dd1bcf2b7))
 
-### [0.7.9](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.8...v0.7.9) (2026-01-04)
+## [0.7.9](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.8...v0.7.9) (2026-01-04)
 
-### [0.7.8](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.7...v0.7.8) (2026-01-04)
+## [0.7.8](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.7...v0.7.8) (2026-01-04)
 
-### [0.7.7](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.6...v0.7.7) (2026-01-04)
+## [0.7.7](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.6...v0.7.7) (2026-01-04)
 
-### [0.7.6](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.5...v0.7.6) (2026-01-04)
+## [0.7.6](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.5...v0.7.6) (2026-01-04)
 
-### [0.7.5](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.4...v0.7.5) (2026-01-04)
+## [0.7.5](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.4...v0.7.5) (2026-01-04)
 
 ### Bug Fixes
 
@@ -276,7 +285,7 @@ guidelines.
 - **footer:** corrected "report bug" link
   ([2de4bb5](https://github.com/legislative-tracker/reimagined-parakeet/commit/2de4bb5adf560e1c12d32be1e3b9887fb86ad2c4))
 
-### [0.7.4](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.3...v0.7.4) (2026-01-04)
+## [0.7.4](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.3...v0.7.4) (2026-01-04)
 
 ### Features
 
@@ -292,21 +301,21 @@ guidelines.
 - **nav:** fixed CSS for footer and login/logout btns
   ([ebe0f15](https://github.com/legislative-tracker/reimagined-parakeet/commit/ebe0f1557142a74de92a8a1a8e91810e03fe5d0d))
 
-### [0.7.3](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.2...v0.7.3) (2026-01-04)
+## [0.7.3](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.2...v0.7.3) (2026-01-04)
 
 ### Bug Fixes
 
 - **ci:** wrong project name
   ([d9c79b7](https://github.com/legislative-tracker/reimagined-parakeet/commit/d9c79b785af4a000dc2553c1d57ffbc0410b5f35))
 
-### [0.7.2](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.1...v0.7.2) (2026-01-04)
+## [0.7.2](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.1...v0.7.2) (2026-01-04)
 
 ### Bug Fixes
 
 - **ci:** pushed wrong secret variable name
   ([6f4ae68](https://github.com/legislative-tracker/reimagined-parakeet/commit/6f4ae68d0e9ca1e90f8fd4b8f29de3f839d01d3d))
 
-### [0.7.1](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.0...v0.7.1) (2026-01-04)
+## [0.7.1](https://github.com/legislative-tracker/reimagined-parakeet/compare/v0.7.0...v0.7.1) (2026-01-04)
 
 ### Bug Fixes
 

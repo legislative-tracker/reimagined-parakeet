@@ -1,3 +1,5 @@
+# Changelog (portal-web)
+
 ## 0.9.0 (2026-01-16)
 
 ### 🩹 Fixes
