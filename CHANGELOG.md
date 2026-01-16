@@ -1,3 +1,22 @@
+## 0.9.0 (2026-01-16)
+
+### 🩹 Fixes
+
+- **portal-web:** fixed multiple issues preventing successful build ([3cfa393](https://github.com/legislative-tracker/reimagined-parakeet/commit/3cfa393))
+- **server-firebase:** avoid explicit 'any' ([2abc2af](https://github.com/legislative-tracker/reimagined-parakeet/commit/2abc2af))
+- **workflow:** added 'write' permissions needed for Deploy step ([291258e](https://github.com/legislative-tracker/reimagined-parakeet/commit/291258e))
+- **workflow:** updated "public" folder target for Firebase hosting ([8e69f7b](https://github.com/legislative-tracker/reimagined-parakeet/commit/8e69f7b))
+- **workflow:** push config file to portal-web's build output so the preview works ([c2a90af](https://github.com/legislative-tracker/reimagined-parakeet/commit/c2a90af))
+- **workflow:** add workflow run id so the workflow can find the previously built artifacts ([41a8d30](https://github.com/legislative-tracker/reimagined-parakeet/commit/41a8d30))
+- **workflow:** fix back-merge to dev ([a323c3a](https://github.com/legislative-tracker/reimagined-parakeet/commit/a323c3a))
+- **workflow:** prevent build/release/deploy when no code changes have been made ([07266c7](https://github.com/legislative-tracker/reimagined-parakeet/commit/07266c7))
+- **workspace:** downgrade to vite 6.3.5 to avoid SSR issues in testing ([7508473](https://github.com/legislative-tracker/reimagined-parakeet/commit/7508473))
+- **workspace:** define "defualt projects" for the nx release cmd ([4959df2](https://github.com/legislative-tracker/reimagined-parakeet/commit/4959df2))
+
+### ❤️ Thank You
+
+- Joshua Pelton-Stroud @jpelton-stroud
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See

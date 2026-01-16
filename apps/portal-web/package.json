@@ -1,7 +1,7 @@
 {
   "name": "@reimagined-parakeet/portal-web",
   "type": "module",
-  "version": "0.8.4",
+  "version": "0.9.0",
   "description": "Angular frontend for the Legislative Tracker PWA",
   "scripts": {
     "ng": "ng",

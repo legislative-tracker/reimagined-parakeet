@@ -1,7 +1,7 @@
 {
   "name": "@reimagined-parakeet/server-firebase",
   "type": "module",
-  "version": "0.8.4",
+  "version": "0.9.0",
   "description": "Firestore backend for the Legislative Tracker PWA",
   "engines": {
     "node": "24"
