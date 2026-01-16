@@ -1,13 +1,17 @@
-name: Deploy to Production
+name: Deploy to Production (tracker.cwapolitical.org)
 
 on:
   workflow_run:
     workflows: ["CI Build"]
-    branches: [main]
-    types: [completed]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  actions: read
 
 jobs:
-  deploy-tracker-cwa:
+  deploy-production:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
@@ -19,10 +23,11 @@ jobs:
         with:
           name: workspace-dist
           path: dist/
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Inject Environment Config
+      - name: Inject Configuration
         run: |
-          # Here you can swap secrets based on the deployment target
           echo '${{ secrets.CWA_APP_CONFIG_JSON }}' > dist/apps/portal-web/browser/config.json
 
       - name: Deploy to Firebase
