@@ -12,7 +12,7 @@
     "vitest.config.ts",
     "vitest.setup.ts",
     "eslint.config.js",
-    "../../vitest.config.js"
+    "../../vitest.config.ts"
   ],
   "references": [
     { "path": "./tsconfig.app.json" },

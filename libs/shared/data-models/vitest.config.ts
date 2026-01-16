@@ -1,24 +1,17 @@
-import { defineConfig, mergeConfig } from "vitest/config";
-import type { UserConfig } from "vite";
-import baseConfig from "../../../vitest.config.js";
+import { defineProject, mergeConfig } from "vitest/config";
+import { baseConfig } from "../../../vitest.config.js";
 
 /**
  * @description Vitest configuration for the shared data-models library.
- * This library contains shared DTOs and interfaces used by both
- * the Angular frontend and Firebase backend functions.
+ * Inherits from the consolidated root to ensure path resolution works for the backend.
  */
 export default mergeConfig(
-  baseConfig as UserConfig,
-  defineConfig({
+  baseConfig,
+  defineProject({
     test: {
-      globals: true,
+      name: "shared-data-models",
       environment: "node",
       include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-      reporters: ["default"],
-      coverage: {
-        reportsDirectory: "../../../coverage/libs/shared/data-models",
-        provider: "v8",
-      },
     },
   })
 );

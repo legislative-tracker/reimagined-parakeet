@@ -1,24 +1,27 @@
-import { defineConfig } from "vitest/config";
-import { nxViteTsPaths } from "@nx/vite/plugins/nx-tsconfig-paths.plugin";
+import { defineProject, mergeConfig } from "vitest/config";
 import { nxCopyAssetsPlugin } from "@nx/vite/plugins/nx-copy-assets.plugin";
+import { baseConfig } from "../../../../../vitest.config.js";
 
 /**
  * @description Vitest configuration for the US-NY Legislature plugin.
- * Uses 'vitest/config' to ensure proper type safety and Node.js environment shimming.
+ * Uses surgical inlining for workspace packages to ensure correct alias resolution.
  */
-export default defineConfig({
-  root: __dirname,
-  cacheDir: "../../../../../node_modules/.vite/libs/shared/plugins/legislatures/us-ny",
-  plugins: [nxViteTsPaths(), nxCopyAssetsPlugin(["*.md"])],
-  test: {
-    watch: false,
-    globals: true,
-    environment: "node",
-    include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    reporters: ["default"],
-    coverage: {
-      reportsDirectory: "../../../../../coverage/libs/shared/plugins/legislatures/us-ny",
-      provider: "v8",
+export default mergeConfig(
+  baseConfig,
+  defineProject({
+    plugins: [nxCopyAssetsPlugin(["*.md"])],
+    test: {
+      name: "plugin-leg-us-ny",
+      environment: "node",
+      include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+      server: {
+        deps: {
+          /** * Ensures our internal TypeScript libraries are processed by
+           * Vitest while leaving third-party Node modules to the native runtime.
+           */
+          inline: [/@reimagined-parakeet\/.*/],
+        },
+      },
     },
-  },
-});
+  })
+);

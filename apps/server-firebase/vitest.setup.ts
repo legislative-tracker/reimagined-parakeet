@@ -1,5 +1,16 @@
-import firebaseFunctionsTest from "firebase-functions-test";
+import { beforeAll } from "vitest";
 
-const testEnv = firebaseFunctionsTest();
+/**
+ * @description Dynamically imports Firebase utilities to avoid SSR ReferenceErrors.
+ */
+beforeAll(async () => {
+  const { default: firebaseFunctionsTest } = await import(
+    "firebase-functions-test"
+  );
 
-export { testEnv };
+  /** Initialize the test environment */
+  const testEnv = firebaseFunctionsTest();
+
+  /** Store on global scope for use in spec files */
+  (globalThis as any).testEnv = testEnv;
+});
