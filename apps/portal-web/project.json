@@ -1,0 +1,83 @@
+{
+  "name": "@reimagined-parakeet/portal-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/portal-web/src",
+  "tags": ["type:app", "scope:portal"],
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "browser": "apps/portal-web/src/main.ts",
+        "outputPath": "dist/apps/portal-web",
+        "index": "apps/portal-web/src/index.html",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/portal-web/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/portal-web/public",
+            "output": "/"
+          }
+        ],
+        "styles": ["apps/portal-web/src/styles.scss"],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "buildTarget": "@reimagined-parakeet/portal-web:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "@reimagined-parakeet/portal-web:build:production"
+        },
+        "development": {
+          "buildTarget": "@reimagined-parakeet/portal-web:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "config": "apps/portal-web/vitest.config.ts",
+        "reportsDirectory": "../../coverage/apps/portal-web"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/portal-web/**/*.ts", "apps/portal-web/**/*.html"]
+      }
+    }
+  }
+}

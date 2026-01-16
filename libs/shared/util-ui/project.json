@@ -1,0 +1,41 @@
+{
+  "name": "@reimagined-parakeet/shared/util-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/util-ui/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "platform:web",
+    "scope:shared",
+    "type:util"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{workspaceRoot}/dist/libs/shared/util-ui"
+      ],
+      "options": {
+        "outputPath": "dist/libs/shared/util-ui",
+        "main": "libs/shared/util-ui/src/index.ts",
+        "tsConfig": "libs/shared/util-ui/tsconfig.lib.json",
+        "assets": [
+          "libs/shared/util-ui/*.md"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "config": "libs/shared/util-ui/vitest.config.ts",
+        "reportsDirectory": "../../../coverage/libs/shared/util-ui"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

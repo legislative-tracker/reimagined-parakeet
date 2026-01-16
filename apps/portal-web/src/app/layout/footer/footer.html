@@ -1,0 +1,23 @@
+<footer class="app-footer">
+  <div class="content">
+    <div class="section left">
+      <span class="copyright">&copy; {{ currentYear() }} Legislative Tracker</span>
+      <span class="attribution">
+        Data via <a href="https://openstates.org" target="_blank" rel="noopener">OpenStates</a> &
+        <a href="https://legislation.nysenate.gov/public" target="_blank" rel="noopener">
+          NY OpenLegislation
+        </a>
+      </span>
+    </div>
+
+    <div class="section center">
+      <button type="button" class="link-button" (click)="openFeedback()">Report Bug</button>
+      <span class="separator">•</span>
+      <a routerLink="/privacy">Privacy</a>
+    </div>
+
+    <div class="section right">
+      <span class="version" title="Build: {{ buildTimestamp() }}"> v{{ appVersion() }} </span>
+    </div>
+  </div>
+</footer>
