@@ -1,4 +1,4 @@
-name: Release and Build Artifacts
+name: Release and Sync
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  release-and-build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,18 +39,8 @@ jobs:
       - name: Push Release to Main
         run: git push --follow-tags origin main
 
-      - name: Build All Projects
-        run: npx nx run-many -t build --all --parallel=3
-
-      - name: Upload Workspace Dist
-        uses: actions/upload-artifact@v4
-        with:
-          name: workspace-dist
-          path: dist/
-          retention-days: 1
-
-  merge-to-dev:
-    needs: release-and-build
+  sync-dev:
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

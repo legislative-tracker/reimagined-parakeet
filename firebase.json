@@ -8,7 +8,6 @@
     }
   ],
   "hosting": {
-    "target": "hosting",
     "public": "dist/apps/portal-web/browser",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
@@ -19,11 +18,6 @@
     ]
   },
   "emulators": {
-    "apphosting": {
-      "port": 5002,
-      "rootDirectory": "apps/portal-web",
-      "startCommand": "npm run dev"
-    },
     "auth": {
       "port": 9099
     },

@@ -1,13 +1,13 @@
-name: Deploy to Production (tracker.cwapolitical.org)
+name: Deploy to Production
 
 on:
   workflow_run:
-    workflows: ["Release and Build Artifacts"]
-    types:
-      - completed
+    workflows: ["CI Build"]
+    branches: [main]
+    types: [completed]
 
 jobs:
-  deploy-production:
+  deploy-tracker-cwa:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
@@ -20,14 +20,15 @@ jobs:
           name: workspace-dist
           path: dist/
 
-      - name: Prepare App Config
+      - name: Inject Environment Config
         run: |
-          echo '${{ secrets.APP_CONFIG_JSON }}' > dist/apps/portal-web/config.json
+          # Here you can swap secrets based on the deployment target
+          echo '${{ secrets.CWA_APP_CONFIG_JSON }}' > dist/apps/portal-web/browser/config.json
 
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRACKER_CWAPOLITICAL_ORG }}"
+          firebaseServiceAccount: "${{ secrets.CWA_FIREBASE_SERVICE_ACCOUNT }}"
           projectId: tracker-cwapolitical-org
           channelId: live
