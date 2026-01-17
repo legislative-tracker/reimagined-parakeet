@@ -11,7 +11,7 @@ export interface Legislator extends Person {
   honorific_prefix: string;
   /** Formal suffix (e.g., 'Jr.', 'III') */
   honorific_suffix: string;
-  /** The legislative chamber (e.g., 'Upper', 'Lower') */
+  /** The legislative chamber (e.g., 'Senate', 'Assembly') */
   chamber: string;
   /** The representative's district identifier */
   district: string;
@@ -39,7 +39,8 @@ export interface Legislation extends Bill {
   current_version: string;
   /** The full text content of the bill */
   text: string;
-  /** * @description Map of cosponsors grouped by chamber or type.
+  /**
+   * @description Map of cosponsors grouped by bill amendment version.
    */
   cosponsors?: {
     [key: string]: Cosponsor[];
@@ -50,13 +51,9 @@ export interface Legislation extends Bill {
  * @description Minimal representative data for a bill cosponsor.
  */
 export type Cosponsor = {
-  /** System ID for the legislator */
   id: string;
-  /** Full name of the cosponsor */
   name: string;
-  /** Chamber they represent */
   chamber: string;
-  /** Specific district represented */
   district: string;
 };
 
