@@ -1,6 +1,0 @@
-# Load Node.js version manager (nvm) if it exists to ensure npx is in PATH
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-# Run commitlint to enforce conventional commit messages
-npx --no -- commitlint --edit "$1"

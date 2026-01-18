@@ -2,108 +2,24 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "sharedGlobals": [],
-    "production": [
-      "default",
-      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/vitest.config.ts",
-      "!{projectRoot}/src/test-setup.[jt]s",
-      "!{projectRoot}/.eslintrc.json",
-      "!{projectRoot}/**/*.md"
-    ]
+    "production": ["default"],
+    "sharedGlobals": []
   },
-  "targetDefaults": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"],
-      "cache": true
-    },
-    "test": {
-      "inputs": ["default", "^production"],
-      "cache": true
-    },
-    "lint": {
-      "inputs": ["default", "sharedGlobals"],
-      "cache": true
-    },
-    "@nx/vite:test": {
-      "cache": true,
-      "inputs": ["default", "^production"]
-    },
-    "@nx/esbuild:esbuild": {
-      "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
-    }
-  },
-  "release": {
-    "groups": {
-      "default": {
-        "projectsRelationship": "fixed",
-        "projects": ["portal-web", "server-firebase"],
-        "version": {
-          "currentVersionResolver": "git-tag",
-          "specifierSource": "conventional-commits",
-          "versionActionsOptions": {
-            "conventionalCommits": {
-              "ignoreScopes": ["deps", "workflow", "workspace"]
-            }
-          }
+  "nxCloudId": "696d4491175afa25e25c9fb7",
+  "plugins": [
+    {
+      "plugin": "@nx/js/typescript",
+      "options": {
+        "typecheck": {
+          "targetName": "typecheck"
         },
-        "changelog": {
-          "projectChangelogs": true
+        "build": {
+          "targetName": "build",
+          "configName": "tsconfig.lib.json",
+          "buildDepsName": "build-deps",
+          "watchDepsName": "watch-deps"
         }
       }
-    },
-    "conventionalCommits": {
-      "types": {
-        "feat": { "semverBump": "minor", "changelog": { "title": "Features" } },
-        "fix": { "semverBump": "patch", "changelog": { "title": "Fixes" } },
-        "perf": { "semverBump": "patch", "changelog": { "title": "Performance" } },
-        "docs": { "semverBump": "none", "changelog": false },
-        "style": { "semverBump": "none", "changelog": false },
-        "refactor": { "semverBump": "none", "changelog": false },
-        "test": { "semverBump": "none", "changelog": false },
-        "build": { "semverBump": "none", "changelog": false },
-        "ci": { "semverBump": "none", "changelog": false },
-        "chore": { "semverBump": "none", "changelog": false },
-        "revert": { "semverBump": "none", "changelog": false }
-      }
-    },
-    "changelog": {
-      "automaticFromRef": true,
-      "workspaceChangelog": {
-        "createRelease": "github",
-        "renderOptions": {
-          "authors": true,
-          "commitReferences": true
-        }
-      },
-      "projectChangelogs": {
-        "renderOptions": {
-          "authors": true,
-          "commitReferences": true,
-          "ignoreScopes": ["workflow", "workspace"]
-        }
-      }
-    },
-    "releaseTag": {
-      "pattern": "v{version}"
-    },
-    "git": {
-      "tagMessage": "v{version}\n\n{notes}"
     }
-  },
-  "useInferencePlugins": false,
-  "defaultBase": "main",
-  "generators": {
-    "@nx/angular:library": {
-      "linter": "eslint",
-      "unitTestRunner": "vitest"
-    },
-    "@nx/angular:component": {
-      "style": "css"
-    }
-  }
+  ]
 }

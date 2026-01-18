@@ -1,3 +1,0 @@
-# Load Node.js version manager (nvm) if it exists to ensure npx is in PATH
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"

@@ -1,43 +1,21 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ES2022",
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "declaration": true,
+    "composite": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "paths": {
-      "@reimagined-parakeet/portal-web": [
-        "apps/portal-web/src/index.ts"
-      ],
-      "@reimagined-parakeet/server-firebase": [
-        "apps/server-firebase/src/index.ts"
-      ],
-      "@reimagined-parakeet/shared/data-models": [
-        "libs/shared/data-models/src/index.ts"
-      ],
-      "@reimagined-parakeet/shared/util-ui": [
-        "libs/shared/util-ui/src/index.ts"
-      ],
-      "@reimagined-parakeet/shared/plugins/legislatures/us-ny": [
-        "libs/plugins/legislatures/us-ny/src/index.ts"
-      ]
-    }
-  },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+    "emitDeclarationOnly": true,
+    "importHelpers": true,
+    "isolatedModules": true,
+    "lib": ["es2022"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2022",
+    "customConditions": ["@legislative-tracker/source"]
+  }
 }
