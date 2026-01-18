@@ -23,9 +23,8 @@ beforeAll(async () => {
   /** * Dynamically load the test utility to ensure it bypasses the Vite SSR transformer.
    * We use the 'default' export as per the firebase-functions-test ESM wrapper.
    */
-  const { default: firebaseFunctionsTest } = await import(
-    "firebase-functions-test"
-  );
+  const { default: firebaseFunctionsTest } =
+    await import("firebase-functions-test");
 
   /** * Initialize the test environment and assign it to globalThis.
    * Because of the 'declare global' block above, this is now 100% type-safe.

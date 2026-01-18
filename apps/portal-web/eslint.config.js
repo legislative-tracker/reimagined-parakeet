@@ -33,5 +33,5 @@ export default tseslint.config(
     rules: {
       '@nx/enforce-module-boundaries': 'off',
     },
-  }
+  },
 );
