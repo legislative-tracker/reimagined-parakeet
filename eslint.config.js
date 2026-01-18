@@ -15,6 +15,7 @@ module.exports = [
       '**/.nx',
       '**/coverage',
       '**/vite.config.*.timestamp*',
+      '**/vitest.config.*.timestamp*',
     ],
   },
 
