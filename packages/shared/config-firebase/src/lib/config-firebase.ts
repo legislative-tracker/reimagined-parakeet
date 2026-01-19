@@ -6,6 +6,7 @@ export const FIREBASE_CONFIG = {
   messagingSenderId: '611689477631',
   appId: '1:611689477631:web:7271e05c18af54a5ebe3ca',
   measurementId: 'G-Q3G5CVP8NK',
+  recaptchaSiteKey: '6LeS2k8sAAAAAP7QS4slTJ3fQQZLPpaYXcA3ikTH',
 };
 
 /**
