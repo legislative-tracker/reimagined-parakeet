@@ -72,7 +72,8 @@
         "default",
         "^production",
         "{workspaceRoot}/vitest.workspace.ts"
-      ]
+      ],
+      "executor": "@nx/vite:test"
     },
     "@angular/build:application": {
       "cache": true,
@@ -86,6 +87,17 @@
       "linter": "eslint",
       "style": "scss",
       "unitTestRunner": "vitest"
+    },
+    "@nx/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "vitest"
+    },
+    "@nx/js:library": {
+      "linter": "eslint",
+      "unitTestRunner": "vitest"
+    },
+    "@nx/vite:vitest": {
+      "uiFramework": "none"
     }
   }
 }
