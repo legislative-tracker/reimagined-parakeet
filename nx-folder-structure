@@ -1,0 +1,49 @@
+legislative-tracker/
+├── packages/
+│   ├── portal-web/                 # Web Portal Features
+│   │   └── client/                 # Angular v20 Client App
+│   │   └── data-access/
+│   │       └── admin/ 
+│   │       └── auth/ 
+│   │       └── users/ 
+│   │       └── legislation/ 
+│   │       └── legislators/ 
+│   │       └── legislatures/ 
+│   │   └── features/
+│   │       └── admin/ 
+│   │           └── mgmt-bills/ 
+│   │           └── mgmt-users/ 
+│   │           └── runtime-config/ 
+│   │       └── dashboard/ 
+│   │       └── detail-bill/ 
+│   │       └── detail-member/ 
+│   │       └── detail-user/ 
+│   │       └── feedback/ 
+│   │       └── shell/ 
+│   │       └── static-pages/ 
+│   │           └── about/ 
+│   │           └── privacy/ 
+│   │   └── ui/
+│   │       └── address-form/ 
+│   │       └── footer/ 
+│   │       └── snackbar-link/ 
+│   │       └── table/ 
+│   │   └── utils/
+│   │       └── directives/ 
+│   │       └── guards/ 
+│   └── server/                     # Firebase/Node.js
+│   │   └── app/
+│   │   └── data-access/            # Plugin Calls, etc
+│   │   └── triggers/               # Cloud Functions
+│   │   └── utils/                  # Helper Functions
+│   ├── plugins/
+│   │   └── legislatures/           # Bounded Context: States
+│   │       ├── us-ny/              # Name: plugin-leg-us-ny
+│   │       └── us-ca/              # Name: plugin-leg-us-ca
+│   ├── onboarding/
+│   │   ├── cli-config/             # Tooling for consumers
+│   │   └── secrets-setup/          # Secret Management
+│   └── shared/
+│       └── data-models/            # Common TS Interfaces
+│           └── data-models/internal
+│           └── data-models/open-states
