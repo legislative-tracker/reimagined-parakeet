@@ -1,27 +1,50 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper function to check if the user is an admin
-    // This assumes you have set a custom claim called 'admin' via Admin SDK
+    /**
+     * HELPER: App Check Verification
+     * Ensures the request originates from your authentic Angular portal.
+     */
+    function isAppCheckVerified() {
+      return request.appCheck != null;
+    }
+
+    /**
+     * HELPER: Admin Verification
+     * Checks for the 'admin' custom claim set via the Admin SDK.
+     */
     function isAdmin() {
       return request.auth != null && request.auth.token.admin == true;
     }
 
-    // Rule for the 'users' collection
+    /**
+     * COLLECTION: App Check Handshake
+     * Used exclusively to trigger the App Check pulse and log the debug token.
+     */
+    match /app-check-handshake/{document=**} {
+      allow read: if isAppCheckVerified();
+      allow write: if false; // Only the Admin SDK/Console should create these
+    }
+
+    /**
+     * COLLECTION: Users
+     * Users can manage their own data; Admins have full override access.
+     */
     match /users/{userId} {
-      // A logged-in user can only edit their OWN document
-      // OR an Admin can edit ANY user document
       allow read, write: if (request.auth != null && request.auth.uid == userId) || isAdmin();
     }
 
-    // Global rule for all other collections (Bills, etc.)
-    // {document=**} is a recursive wildcard that matches any document in any subcollection
+    /**
+     * GLOBAL: All other collections (Bills, Committees, etc.)
+     * Upgraded from "if true" to "if isAppCheckVerified()" to prevent scraping.
+     */
     match /{document=**} {
-      // Anyone can read anything
-      allow read: if true;
+      // Require the request to come from your portal, but allow anyone to view.
+      allow read: if isAppCheckVerified();
       
-      // ONLY admins can write (create, update, delete)
+      // Keep your existing admin-only write restriction.
       allow write: if isAdmin();
     }
   }

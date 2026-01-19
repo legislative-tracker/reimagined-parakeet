@@ -21,8 +21,14 @@ export const isEmulatorEnv = (): boolean => {
     );
   }
 
-  return (
-    process.env['FUNCTIONS_EMULATOR'] === 'true' ||
-    process.env['NODE_ENV'] === 'development'
-  );
+  const globalProcess = typeof process !== 'undefined' ? process : null;
+
+  if (globalProcess && globalProcess.env) {
+    return (
+      globalProcess.env['FUNCTIONS_EMULATOR'] === 'true' ||
+      globalProcess.env['NODE_ENV'] === 'development'
+    );
+  }
+
+  return false;
 };

@@ -43,7 +43,7 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "firebase-functions-test": "^3.1.1",
-    "firebase-tools": "^12.9.1",
+    "firebase-tools": "^15.3.1",
     "jiti": "2.4.2",
     "jsdom": "~26.0.0",
     "kill-port": "^2.0.1",
@@ -58,6 +58,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@firebase/util",
       "@parcel/watcher",
       "@swc/core",
       "esbuild",
@@ -71,10 +72,13 @@
     ]
   },
   "dependencies": {
+    "@angular/cdk": "~20.2.0",
     "@angular/common": "~20.3.0",
     "@angular/compiler": "~20.3.0",
     "@angular/core": "~20.3.0",
+    "@angular/fire": "^20.0.0",
     "@angular/forms": "~20.3.0",
+    "@angular/material": "~20.2.0",
     "@angular/platform-browser": "~20.3.0",
     "@angular/router": "~20.3.0",
     "@google-cloud/functions-framework": "^3.3.0",

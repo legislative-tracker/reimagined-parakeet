@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "packages/portal-web/client/src",
-  "tags": [],
+  "tags": ["type:app", "scope:portal"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
@@ -12,7 +12,7 @@
       "options": {
         "outputPath": "dist/packages/portal-web/client",
         "browser": "packages/portal-web/client/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [],
         "tsConfig": "packages/portal-web/client/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -21,10 +21,16 @@
             "input": "packages/portal-web/client/public"
           }
         ],
-        "styles": ["packages/portal-web/client/src/styles.scss"]
+        "styles": ["packages/portal-web/client/src/styles.scss"],
+        "define": {
+          "process.env.NODE_ENV": "\"development\""
+        }
       },
       "configurations": {
         "production": {
+          "define": {
+            "process.env.NODE_ENV": "\"production\""
+          },
           "budgets": [
             {
               "type": "initial",

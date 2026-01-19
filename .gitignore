@@ -57,3 +57,7 @@ firebase-export*
 .secret.local
 
 vitest.config.*.timestamp*
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json
