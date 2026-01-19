@@ -1,16 +1,28 @@
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Helper function to check if the user is an admin
+    // This assumes you have set a custom claim called 'admin' via Admin SDK
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Rule for the 'users' collection
+    match /users/{userId} {
+      // A logged-in user can only edit their OWN document
+      // OR an Admin can edit ANY user document
+      allow read, write: if (request.auth != null && request.auth.uid == userId) || isAdmin();
+    }
+
+    // Global rule for all other collections (Bills, etc.)
+    // {document=**} is a recursive wildcard that matches any document in any subcollection
     match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 2, 18);
+      // Anyone can read anything
+      allow read: if true;
+      
+      // ONLY admins can write (create, update, delete)
+      allow write: if isAdmin();
     }
   }
 }
