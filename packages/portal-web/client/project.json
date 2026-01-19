@@ -1,27 +1,27 @@
 {
-  "name": "portal-web",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "portal-web-client",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "packages/portal-web/src",
+  "sourceRoot": "packages/portal-web/client/src",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/portal-web",
-        "browser": "packages/portal-web/src/main.ts",
+        "outputPath": "dist/packages/portal-web/client",
+        "browser": "packages/portal-web/client/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "packages/portal-web/tsconfig.app.json",
+        "tsConfig": "packages/portal-web/client/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
             "glob": "**/*",
-            "input": "packages/portal-web/public"
+            "input": "packages/portal-web/client/public"
           }
         ],
-        "styles": ["packages/portal-web/src/styles.scss"]
+        "styles": ["packages/portal-web/client/src/styles.scss"]
       },
       "configurations": {
         "production": {
@@ -52,10 +52,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "portal-web:build:production"
+          "buildTarget": "portal-web-client:build:production"
         },
         "development": {
-          "buildTarget": "portal-web:build:development"
+          "buildTarget": "portal-web-client:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -63,7 +63,7 @@
     "extract-i18n": {
       "executor": "@angular/build:extract-i18n",
       "options": {
-        "buildTarget": "portal-web:build"
+        "buildTarget": "portal-web-client:build"
       }
     },
     "lint": {
@@ -73,8 +73,8 @@
       "continuous": true,
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "portal-web:build",
-        "staticFilePath": "dist/packages/portal-web/browser",
+        "buildTarget": "portal-web-client:build",
+        "staticFilePath": "dist/packages/portal-web/client/browser",
         "spa": true
       }
     }
