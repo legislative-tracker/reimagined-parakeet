@@ -26,7 +26,10 @@
           "watchDepsName": "watch-deps"
         }
       },
-      "exclude": ["packages/shared/data-models/*"]
+      "exclude": [
+        "packages/shared/data-models/*",
+        "packages/shared/config-firebase/*"
+      ]
     },
     {
       "plugin": "@nx/eslint/plugin",
@@ -50,7 +53,10 @@
     },
     {
       "plugin": "@nx/js/typescript",
-      "include": ["packages/shared/data-models/*"],
+      "include": [
+        "packages/shared/data-models/*",
+        "packages/shared/config-firebase/*"
+      ],
       "options": {
         "typecheck": {
           "targetName": "typecheck"

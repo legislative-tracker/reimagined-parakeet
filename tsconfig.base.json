@@ -18,7 +18,10 @@
     "customConditions": ["@legislative-tracker/source"],
     "baseUrl": ".",
     "paths": {
-      "@legislative-tracker/shared/models": [
+      "@legislative-tracker/shared-config-firebase": [
+        "packages/shared/config-firebase/src/index.ts"
+      ],
+      "@legislative-tracker/shared-data-models": [
         "packages/shared/data-models/src/index.ts"
       ],
       "@legislative-tracker/shared/models/openstates": [
