@@ -17,7 +17,14 @@
     "useDefineForClassFields": true,
     "customConditions": ["@legislative-tracker/source"],
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@legislative-tracker/shared/models": [
+        "packages/shared/data-models/src/index.ts"
+      ],
+      "@legislative-tracker/shared/models/openstates": [
+        "packages/shared/data-models/src/openstates.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
