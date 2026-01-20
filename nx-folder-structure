@@ -40,6 +40,7 @@ legislative-tracker/
 │   │   └── legislatures/           # Bounded Context: States
 │   │       ├── us-ny/              # Name: plugin-leg-us-ny
 │   │       └── us-ca/              # Name: plugin-leg-us-ca
+│   │   └── shared-utils/           # Common Utilities for Plugins
 │   ├── onboarding/
 │   │   ├── cli-config/             # Tooling for consumers
 │   │   └── secrets-setup/          # Secret Management
