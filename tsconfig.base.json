@@ -18,6 +18,9 @@
     "customConditions": ["@legislative-tracker/source"],
     "baseUrl": ".",
     "paths": {
+      "@legislative-tracker/portal-web-features-shell": [
+        "packages/portal-web/features/shell/src/index.ts"
+      ],
       "@legislative-tracker/shared-config-firebase": [
         "packages/shared/config-firebase/src/index.ts"
       ],

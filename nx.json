@@ -110,6 +110,9 @@
     },
     "@nx/vite:vitest": {
       "uiFramework": "none"
+    },
+    "@nx/angular:component": {
+      "style": "scss"
     }
   }
 }

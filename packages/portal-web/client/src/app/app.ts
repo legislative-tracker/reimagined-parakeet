@@ -7,11 +7,10 @@ import {
   limit,
   query,
 } from '@angular/fire/firestore';
-import { NxWelcome } from './nx-welcome';
 
 @Component({
   standalone: true,
-  imports: [NxWelcome, RouterModule],
+  imports: [RouterModule],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',

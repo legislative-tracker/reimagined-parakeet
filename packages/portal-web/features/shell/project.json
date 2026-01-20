@@ -1,0 +1,13 @@
+{
+  "name": "portal-web-features-shell",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/portal-web/features/shell/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["type:feature", "scope:portal"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
