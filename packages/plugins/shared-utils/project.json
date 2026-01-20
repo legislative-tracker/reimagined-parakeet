@@ -1,0 +1,21 @@
+{
+  "name": "plugin-shared-utils",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/plugins/shared-utils/src",
+  "projectType": "library",
+  "tags": ["type:util", "scope:shared"],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/plugins/shared-utils",
+        "main": "packages/plugins/shared-utils/src/index.ts",
+        "tsConfig": "packages/plugins/shared-utils/tsconfig.lib.json",
+        "assets": ["packages/plugins/shared-utils/*.md"],
+        "format": ["cjs"],
+        "generatePackageJson": true
+      }
+    }
+  }
+}
