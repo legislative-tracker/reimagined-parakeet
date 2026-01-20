@@ -1,0 +1,23 @@
+{
+  "name": "plugin-leg-us-ny",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/plugins/legislatures/us-ny/src",
+  "tags": ["type:plugin", "scope:legislature", "state:us-ny"],
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/plugins/legislatures/us-ny"
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "coverage/packages/plugins/legislatures/us-ny"
+      }
+    }
+  }
+}
