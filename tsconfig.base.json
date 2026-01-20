@@ -18,11 +18,17 @@
     "customConditions": ["@legislative-tracker/source"],
     "baseUrl": ".",
     "paths": {
+      "@legislative-tracker/plugin-leg-us-ny": [
+        "packages/plugins/legislatures/us-ny/src/index.ts"
+      ],
       "@legislative-tracker/portal-web-features-shell": [
         "packages/portal-web/features/shell/src/index.ts"
       ],
       "@legislative-tracker/shared-config-firebase": [
         "packages/shared/config-firebase/src/index.ts"
+      ],
+      "@legislative-tracker/shared-config-secrets": [
+        "packages/shared/config-secrets/src/index.ts"
       ],
       "@legislative-tracker/shared-data-models": [
         "packages/shared/data-models/src/index.ts"

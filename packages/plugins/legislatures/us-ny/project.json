@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "packages/plugins/legislatures/us-ny/src",
-  "tags": ["type:plugin", "scope:legislature", "state:us-ny"],
+  "tags": ["type:plugin", "scope:backend", "state:us-ny"],
   "targets": {
     "build": {
       "executor": "@nx/vite:build",

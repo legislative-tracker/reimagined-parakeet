@@ -4,6 +4,8 @@
   "sourceRoot": "packages/server/triggers/src",
   "projectType": "application",
   "tags": [
+    "type:app",
+    "scope:backend",
     "firebase:function",
     "firebase:name:server-triggers",
     "firebase:dep:server-app"

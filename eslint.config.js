@@ -2,12 +2,10 @@ const nx = require('@nx/eslint-plugin');
 const tsEslint = require('typescript-eslint');
 
 /**
- * @description Root ESLint configuration using Flat Config format (ESLint 9+).
- * This file serves as the global policy engine for the workspace, enforcing
- * module boundaries, type safety, and code consistency.
+ * @description Root ESLint configuration (ESLint 9+ Flat Config).
+ * Using Project-Specific type-aware linting to solve performance bottlenecks.
  */
 module.exports = [
-  // Global ignores to prevent linting artifacts and dependencies
   {
     ignores: [
       '**/dist',
@@ -19,12 +17,10 @@ module.exports = [
     ],
   },
 
-  // Base configurations for Javascript and Typescript
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
 
-  // Custom rules for Typescript files
   {
     files: ['**/*.ts', '**/*.tsx'],
     plugins: {
@@ -33,20 +29,46 @@ module.exports = [
     languageOptions: {
       parser: tsEslint.parser,
       parserOptions: {
-        project: ['./tsconfig.base.json'],
+        /**
+         * PERFORMANCE FIX: Enables the Project Service to find the nearest tsconfig.json.
+         * This replaces the global 'project: ["./tsconfig.base.json"]' which was causing
+         * the 100s+ linting times in the server-triggers project.
+         */
+        project: true,
+        tsconfigRootDir: __dirname,
       },
     },
     rules: {
-      /**
-       * Enforces the Nx Monorepo architectural boundaries.
-       * Logic: Apps depend on Features -> Features depend on UI/Data-Access -> All depend on Utils.
-       */
       '@nx/enforce-module-boundaries': [
         'error',
         {
           enforceBuildableLibDependency: true,
           allow: [],
           depConstraints: [
+            /**
+             * DESCRIPTION: SCOPE BOUNDARIES
+             * - Frontend apps/libs cannot import backend-only logic or secrets.
+             * - Backend services only import backend or shared logic.
+             * - Shared libs remain platform-agnostic.
+             */
+            {
+              sourceTag: 'scope:client',
+              onlyDependOnLibsWithTags: ['scope:client', 'scope:shared'],
+            },
+            {
+              sourceTag: 'scope:backend',
+              onlyDependOnLibsWithTags: ['scope:backend', 'scope:shared'],
+            },
+            {
+              sourceTag: 'scope:shared',
+              onlyDependOnLibsWithTags: ['scope:shared'],
+            },
+
+            /**
+             * DESCRIPTION: TYPE BOUNDARIES (Layered Architecture)
+             * Enforces that higher-level layers (apps/features) depend on
+             * lower-level layers (ui/data-access/utils), never the reverse.
+             */
             {
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
@@ -54,6 +76,7 @@ module.exports = [
                 'type:ui',
                 'type:data-access',
                 'type:util',
+                'type:plugin',
               ],
             },
             {
@@ -70,16 +93,19 @@ module.exports = [
             },
             {
               sourceTag: 'type:data-access',
-              onlyDependOnLibsWithTags: ['type:util'],
+              onlyDependOnLibsWithTags: ['type:util', 'type:data-models'],
             },
             {
               sourceTag: 'type:util',
               onlyDependOnLibsWithTags: ['type:util'],
             },
+            {
+              sourceTag: 'type:plugin',
+              onlyDependOnLibsWithTags: ['type:util', 'type:data-models'],
+            },
           ],
         },
       ],
-      // Senior-level Typescript strictness rules
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/consistent-type-imports': [
         'error',
@@ -92,13 +118,12 @@ module.exports = [
     },
   },
 
-  // Configuration for project-specific files (e.g., package.json)
   {
     files: ['**/*.json'],
     rules: {
       '@nx/dependency-checks': [
         'error',
-        { ignoredFiles: ['{projectRoot}/eslint.config.js'] },
+        { ignoredFiles: ['{projectRoot}/vite.config.{js,ts,mjs,mts}'] },
       ],
     },
   },

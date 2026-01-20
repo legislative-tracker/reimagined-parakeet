@@ -7,6 +7,13 @@ module.exports = [
   ...nx.configs['flat/angular-template'],
   {
     files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        // Point to the specific configs that include your library and test files
+        project: ['./tsconfig.lib.json', './tsconfig.spec.json'],
+        tsconfigRootDir: __dirname,
+      },
+    },
     rules: {
       '@angular-eslint/directive-selector': [
         'error',
