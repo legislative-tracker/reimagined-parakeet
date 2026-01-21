@@ -30,6 +30,9 @@
       "@legislative-tracker/portal-web-features-shell": [
         "packages/portal-web/features/shell/src/index.ts"
       ],
+      "@legislative-tracker/server-data-access": [
+        "packages/server/data-access/src/index.ts"
+      ],
       "@legislative-tracker/shared-config-firebase": [
         "packages/shared/config-firebase/src/index.ts"
       ],
