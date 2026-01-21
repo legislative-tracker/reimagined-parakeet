@@ -4,7 +4,7 @@ export const isImage = (imgStr: string | undefined): boolean => {
   if (!imgStr) return false;
   const str = imgStr.trim();
   if (!str) return false;
-  if (str.includes('no_photo')) return false;
+  if (str.includes('no_image')) return false;
   return true;
 };
 
