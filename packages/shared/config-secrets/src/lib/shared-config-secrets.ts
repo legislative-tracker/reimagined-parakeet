@@ -4,7 +4,7 @@ import { defineSecret } from 'firebase-functions/params';
  * @description Backend-only secrets definition using Firebase Functions v2 API.
  * These parameters are resolved at runtime from Google Cloud Secret Manager.
  */
-const OPEN_STATES_API_KEY_PARAM = defineSecret('OPEN_STATES_API_KEY');
+const OPEN_STATES_API_KEY_PARAM = defineSecret('OPENSTATES_API_KEY');
 const GOOGLE_MAPS_API_KEY_PARAM = defineSecret('GOOGLE_MAPS_API_KEY');
 const US_NY_API_KEY_PARAM = defineSecret('US_NY_API_KEY');
 
