@@ -1,0 +1,8 @@
+{
+  "name": "plugin-openstates",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/plugins/openstates/src",
+  "projectType": "library",
+  "tags": ["type:plugin", "scope:backend"],
+  "targets": {}
+}
