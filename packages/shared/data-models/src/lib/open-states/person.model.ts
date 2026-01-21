@@ -9,9 +9,6 @@ export type PersonStub = {
 };
 
 export interface Person extends PersonStub {
-  name: string;
-  party: string;
-  current_role: Role;
   jurisdiction: JurisdictionStub;
   given_name: string;
   family_name: string;
