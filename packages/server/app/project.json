@@ -9,6 +9,16 @@
     "type:app"
   ],
   "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx watch --all -- nx build server-app",
+          "nx serve server-app --only functions"
+        ],
+        "parallel": true
+      }
+    },
     "build": {
       "executor": "nx:run-commands",
       "dependsOn": ["^build"],
