@@ -6,8 +6,23 @@
   "tags": ["type:util", "scope:shared"],
   "// targets": "to see all targets run: nx show project shared-config-firebase --web",
   "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/shared/config-firebase",
+        "configFile": "packages/shared/config-firebase/vite.config.ts"
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../../coverage/packages/shared/config-firebase"
+      }
     }
   }
 }
