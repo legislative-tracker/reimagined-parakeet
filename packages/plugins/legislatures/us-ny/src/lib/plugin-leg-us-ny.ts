@@ -1,10 +1,16 @@
-import type { FullMember } from '../types/members.js';
 import type { Legislator } from '@legislative-tracker/shared-data-models';
+import { mapToLegislators } from './map-legislators.js';
+import { mapToLegislation } from './map-legislation.js';
 
+// Base URL for the NY Senate's OpenLegislation API
 const BASE_URL = 'https://legislation.nysenate.gov/api/3';
-const MEMBER_IMG_BASE_URL =
-  'https://legislation.nysenate.gov/static/img/business_assets/members/mini/';
 
+/**
+ * Fetches all members of the New York Legislature's current session and maps
+ * them to the internal 'Legislator' type
+ * @param {string} API_KEY The NY OpenLegislation API Key
+ * @returns An array of Legislator objects
+ */
 export const fetchMembers = async (API_KEY: string) => {
   const CURR_YEAR = new Date().getFullYear();
   const searchParams = new URLSearchParams({
@@ -13,59 +19,53 @@ export const fetchMembers = async (API_KEY: string) => {
     limit: '1000',
   });
 
-  const response = await fetch(
-    `${BASE_URL}/members/${CURR_YEAR}?${searchParams.toString()}`,
-  );
+  const url = `${BASE_URL}/members/${CURR_YEAR}?${searchParams.toString()}`;
+
+  const response = await fetch(url);
   const data = await response.json();
-  return data;
+
+  if (!data.success) throw new Error('Failed to fetch NY legislators');
+  if (!data.result.items) throw new Error('Unexpected response format');
+
+  const legislators: Partial<Legislator>[] = mapToLegislators(
+    data.result.items,
+  );
+
+  return legislators;
 };
 
-export const mapToLegislators = (
-  members: FullMember[],
-): Partial<Legislator>[] => {
-  return members.map((member) => ({
-    id: member.fullName.replaceAll(' ', '-').replaceAll('.', ''),
-    given_name: member.person.firstName,
-    family_name: member.person.lastName,
-    name: member.fullName,
-    image: isImage(member.imgName)
-      ? MEMBER_IMG_BASE_URL + member.imgName
-      : undefined,
-    email: isEmail(member.person.email) ? member.person.email : undefined,
-    current_role: {
-      title: member.chamber === 'SENATE' ? 'Senator' : 'Assembly Member',
-      district: `${member.districtCode}`,
-      org_classification: member.chamber === 'SENATE' ? 'upper' : 'lower',
-      division_id: `ocd-division/country:us/state:ny/${member.chamber === 'SENATE' ? 'sldu' : 'sldl'}:${member.districtCode}`,
-    },
-    jurisdiction: {
-      id: 'ocd-jurisdiction/country:us/state:ny/government',
-      name: 'New York State',
-      classification: 'state',
-    },
-    other_identifiers: [
-      {
-        scheme: 'ny_state_leg_session_id',
-        identifier: member.sessionMemberId.toString(),
-      },
-      {
-        scheme: 'ny_state_leg_session_short_name',
-        identifier: member.shortName,
-      },
-    ],
-  }));
+/**
+ * Fetches the latest bill data from the New York Legislature and maps it to the
+ * internal 'Legislation' type
+ * @param bill A New York Legislature Bill object
+ * @param API_KEY A NY OpenLegislation API Key
+ * @returns A Legislation Object
+ */
+export const fetchBill = async (billId: string, API_KEY: string) => {
+  const searchParams = new URLSearchParams({
+    key: API_KEY,
+    view: 'default',
+  });
+
+  const billParts = billId.split('-');
+  const url = `${BASE_URL}/bills/${billParts.pop()}/${billParts.pop()}?${searchParams.toString()}`;
+
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (!data.success) throw new Error('Failed to fetch NY legislation');
+  if (!data.result) throw new Error('Unexpected response format');
+
+  return mapToLegislation(data.result);
 };
 
-const isImage = (imgStr: string): boolean => {
-  const str = imgStr.trim();
-  if (!str) return false;
-  if (str.includes('no_photo')) return false;
-  return true;
-};
-
-const isEmail = (emailStr: string): boolean => {
-  const str = emailStr.trim();
-  if (!str) return false;
-  if (!str.includes('@')) return false;
-  return true;
+/**
+ * Fetches the latest bill data from the New York Legislature for an array of
+ * bills and maps them to the internal 'Legislation' type
+ * @param billList An array of bill ids (e.g., 'S8451-2025')
+ * @param API_KEY A New York OpenLegislation API Key
+ * @returns An array of Legislation Objects
+ */
+export const fetchBills = async (billList: string[], API_KEY: string) => {
+  return await Promise.all(billList.map((bill) => fetchBill(bill, API_KEY)));
 };
