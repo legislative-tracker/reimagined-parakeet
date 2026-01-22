@@ -1,0 +1,9 @@
+{
+  "name": "server-shared-utils",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/server/shared-utils/src",
+  "projectType": "library",
+  "tags": ["type:util", "scope:backend", "firebase:dep:server-app"],
+  "// targets": "to see all targets run: nx show project server-shared-utils --web",
+  "targets": {}
+}

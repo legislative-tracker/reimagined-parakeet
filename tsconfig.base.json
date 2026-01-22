@@ -33,6 +33,12 @@
       "@legislative-tracker/server-data-access": [
         "packages/server/data-access/src/index.ts"
       ],
+      "@legislative-tracker/server-feature-sync": [
+        "packages/server/features/sync/src/index.ts"
+      ],
+      "@legislative-tracker/server-shared-utils": [
+        "packages/server/shared-utils/src/index.ts"
+      ],
       "@legislative-tracker/shared-config-firebase": [
         "packages/shared/config-firebase/src/index.ts"
       ],
@@ -42,7 +48,7 @@
       "@legislative-tracker/shared-data-models": [
         "packages/shared/data-models/src/index.ts"
       ],
-      "@legislative-tracker/shared/models/openstates": [
+      "@legislative-tracker/shared-data-models/openstates": [
         "packages/shared/data-models/src/openstates.ts"
       ]
     }
