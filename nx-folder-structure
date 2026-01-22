@@ -1,50 +1,56 @@
 legislative-tracker/
-├── packages/
-│   ├── portal-web/                 # Web Portal Features
-│   │   └── client/                 # Angular v20 Client App
-│   │   └── data-access/
-│   │       └── admin/ 
-│   │       └── auth/ 
-│   │       └── users/ 
-│   │       └── legislation/ 
-│   │       └── legislators/ 
-│   │       └── legislatures/ 
-│   │   └── features/
-│   │       └── admin/ 
-│   │           └── mgmt-bills/ 
-│   │           └── mgmt-users/ 
-│   │           └── runtime-config/ 
-│   │       └── dashboard/ 
-│   │       └── detail-bill/ 
-│   │       └── detail-member/ 
-│   │       └── detail-user/ 
-│   │       └── feedback/ 
-│   │       └── shell/ 
-│   │       └── static-pages/ 
-│   │           └── about/ 
-│   │           └── privacy/ 
-│   │   └── ui/
-│   │       └── address-form/ 
-│   │       └── footer/ 
-│   │       └── snackbar-link/ 
-│   │       └── table/ 
-│   │   └── utils/
-│   │       └── directives/ 
-│   │       └── guards/ 
-│   └── server/                     # Firebase/Node.js
-│   │   └── app/
-│   │   └── data-access/            # Plugin Calls, etc
-│   │   └── triggers/               # Cloud Functions
-│   │   └── utils/                  # Helper Functions
-│   ├── plugins/
-│   │   └── legislatures/           # Bounded Context: States
-│   │       ├── us-ny/              # Name: plugin-leg-us-ny
-│   │       └── us-ca/              # Name: plugin-leg-us-ca
-│   │   └── shared-utils/           # Common Utilities for Plugins
-│   ├── onboarding/
-│   │   ├── cli-config/             # Tooling for consumers
-│   │   └── secrets-setup/          # Secret Management
-│   └── shared/
-│       └── data-models/            # Common TS Interfaces
-│           └── data-models/internal
-│           └── data-models/open-states
+└── packages/
+   ├── portal-web/                 # Web Portal Features
+   │   ├── client/                 # Angular Client App
+   │   ├── data-access/            # Services & Functions that talk to the Backend
+   │   │   ├── admin/ 
+   │   │   ├── auth/ 
+   │   │   ├── legislation/ 
+   │   │   ├── legislators/ 
+   │   │   ├── legislatures/ 
+   │   │   └── users/ 
+   │   ├── features/               # Smart Frontend Feature Components
+   │   │   ├── admin/ 
+   │   │   │   ├── mgmt-bills/ 
+   │   │   │   ├── mgmt-users/ 
+   │   │   │   └── runtime-config/ 
+   │   │   ├── dashboard/ 
+   │   │   ├── detail-bill/ 
+   │   │   ├── detail-member/ 
+   │   │   ├── detail-user/ 
+   │   │   ├── feedback/ 
+   │   │   ├── shell/ 
+   │   │   └── static-pages/ 
+   │   │       ├── about/ 
+   │   │       └── privacy/ 
+   │   ├── ui/                     # Dumb Frontend UI Components
+   │   │   ├── address-form/ 
+   │   │   ├── footer/ 
+   │   │   ├── snackbar-link/ 
+   │   │   └── table/ 
+   │   └── utils/                  # Common Helper Functions - Portal
+   │       ├── directives/ 
+   │       └── guards/ 
+   │
+   ├── server/                     # Server Features (Firebase/Node.js)
+   │   ├── app/                    # .env & .rules files ONLY
+   │   ├── data-access/            # Plugin Calls, etc
+   │   ├── triggers/               # Cloud Functions
+   │   └── utils/                  # Common Helper Functions - Server
+   │
+   ├── plugins/
+   │   ├── legislatures/           # Bounded Context: States
+   │   │   ├── us-nj/              # Name: plugin-leg-us-nj
+   │   │   └── us-ny/              # Name: plugin-leg-us-ny
+   │   └── utils/                  # Common Helper Functions - Plugins
+   │
+   ├── onboarding/
+   │   ├── cli-config/             # Tooling for consumers
+   │   ├── secrets-setup/          # Secret Management
+   │   └── utils/                  # Common Helper Functions - Onboarding
+   │
+   └── shared/
+       ├── data-models/            # Common TS Interfaces
+       │   ├── data-models/internal
+       │   └── data-models/open-states
+       └── utils/                  # Common Helper Functions - Shared (EVERYWHERE)
