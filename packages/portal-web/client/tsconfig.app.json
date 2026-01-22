@@ -22,5 +22,12 @@
     "src/**/*.spec.jsx",
     "src/test-setup.ts"
   ],
-  "references": []
+  "references": [
+    {
+      "path": "../features/shell"
+    },
+    {
+      "path": "../../shared/config-firebase"
+    }
+  ]
 }

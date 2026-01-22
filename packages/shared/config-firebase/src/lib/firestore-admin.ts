@@ -23,6 +23,15 @@ export function getAdminApp(): App {
 export const db: Firestore = getFirestore(getAdminApp());
 
 /**
+ * @description Apply global Firestore settings.
+ * ignoreUndefinedProperties: true ensures that 'undefined' values in your DTOs
+ * are ignored rather than causing the SDK to throw an error.
+ */
+db.settings({
+  ignoreUndefinedProperties: true,
+});
+
+/**
  * @description Helper to provide type-safe collection references using Firestore Data Converters.
  * @template T - The interface type from @legislative-tracker/shared-data-models.
  * @param {string} collectionPath - The path to the Firestore collection.
