@@ -12,58 +12,12 @@
   ],
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/server/triggers",
-        "main": "packages/server/triggers/src/main.ts",
-        "tsConfig": "packages/server/triggers/tsconfig.app.json",
-        "assets": [
-          "packages/server/triggers/src/assets",
-          {
-            "glob": "**/*",
-            "input": "packages/server/app/environment",
-            "output": "."
-          }
-        ],
-        "generatePackageJson": true,
-        "platform": "node",
-        "bundle": true,
-        "thirdParty": false,
-        "dependenciesFieldType": "dependencies",
-        "target": "node22",
-        "format": ["esm"],
-        "esbuildOptions": {
-          "logLevel": "info"
-        }
+        "configFile": "packages/server/triggers/vite.config.ts"
       }
-    },
-    "prune-lockfile": {
-      "dependsOn": ["build"],
-      "cache": true,
-      "executor": "@nx/js:prune-lockfile",
-      "outputs": [
-        "{workspaceRoot}/dist/packages/server/triggers/package.json",
-        "{workspaceRoot}/dist/packages/server/triggers/pnpm-lock.yaml"
-      ],
-      "options": {
-        "buildTarget": "build"
-      }
-    },
-    "copy-workspace-modules": {
-      "dependsOn": ["build"],
-      "cache": true,
-      "outputs": [
-        "{workspaceRoot}/dist/packages/server/triggers/workspace_modules"
-      ],
-      "executor": "@nx/js:copy-workspace-modules",
-      "options": {
-        "buildTarget": "build"
-      }
-    },
-    "prune": {
-      "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
-      "executor": "nx:noop"
     },
     "test": {
       "executor": "@nx/vite:test",
@@ -71,6 +25,9 @@
       "options": {
         "config": "packages/server/triggers/vite.config.ts"
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
     },
     "deploy": {
       "executor": "nx:run-commands",
