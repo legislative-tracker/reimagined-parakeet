@@ -1,3 +1,7 @@
+/**
+ * Production Firebase configuration object.
+ * These values are safe to be public as they are used by the client-side SDK.
+ */
 export const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyAiHiuJpzdTKQpnUrnMD-Oqkr_iqQvs_1g',
   authDomain: 'legislative-tracker-41022.firebaseapp.com',
@@ -10,8 +14,24 @@ export const FIREBASE_CONFIG = {
 };
 
 /**
- * Universal helper to detect if we are in a local development/emulator environment.
- * Works for both the Angular Portal (browser) and Firebase Triggers (Node).
+ * Port configurations for Firebase Emulators.
+ * These must match the values defined in the root firebase.json file.
+ */
+export const FIREBASE_EMULATOR_PORTS = {
+  auth: 9099,
+  functions: 5001,
+  firestore: 8080,
+  database: 9000,
+  hosting: 5000,
+  storage: 9199,
+};
+
+/**
+ * Universal helper to detect if the current execution environment is a local development/emulator environment.
+ * * For the browser: Checks the hostname for localhost or 127.0.0.1.
+ * * For Node.js (Cloud Functions): Checks the standard Firebase emulator environment variable.
+ *
+ * @returns {boolean} True if running in an emulator environment.
  */
 export const isEmulatorEnv = (): boolean => {
   if (typeof window !== 'undefined' && window.location) {

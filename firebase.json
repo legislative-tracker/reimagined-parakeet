@@ -1,7 +1,4 @@
 {
-  "database": {
-    "rules": "packages/server/app/database.rules.json"
-  },
   "firestore": {
     "rules": "packages/server/app/firestore.rules",
     "indexes": "packages/server/app/firestore.indexes.json"
@@ -15,9 +12,6 @@
         "destination": "/index.html"
       }
     ]
-  },
-  "storage": {
-    "rules": "packages/server/app/storage.rules"
   },
   "functions": [
     {
@@ -37,17 +31,11 @@
     "firestore": {
       "port": 8080
     },
-    "database": {
-      "port": 9000
-    },
     "hosting": {
       "port": 5000
     },
     "pubsub": {
       "port": 8085
-    },
-    "storage": {
-      "port": 9199
     },
     "eventarc": {
       "port": 9299

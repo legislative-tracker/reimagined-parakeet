@@ -8,7 +8,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { appRoutes } from './app.routes';
 
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getAuth, provideAuth, connectAuthEmulator } from '@angular/fire/auth';
 import {
   getAnalytics,
   provideAnalytics,
@@ -20,12 +20,26 @@ import {
   ReCaptchaEnterpriseProvider,
   provideAppCheck,
 } from '@angular/fire/app-check';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getFunctions, provideFunctions } from '@angular/fire/functions';
+import {
+  getFirestore,
+  provideFirestore,
+  connectFirestoreEmulator,
+} from '@angular/fire/firestore';
+import {
+  getFunctions,
+  provideFunctions,
+  connectFunctionsEmulator,
+} from '@angular/fire/functions';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
+import {
+  getStorage,
+  provideStorage,
+  connectStorageEmulator,
+} from '@angular/fire/storage';
 
 import {
   FIREBASE_CONFIG,
+  FIREBASE_EMULATOR_PORTS,
   isEmulatorEnv,
 } from '@legislative-tracker/shared-config-firebase';
 
@@ -38,39 +52,19 @@ import {
  */
 export const appConfig: ApplicationConfig = {
   providers: [
-    /**
-     * Enables Zoneless Change Detection. This requires the removal of 'zone.js'
-     * from the polyfills array in project.json to take full effect.
-     */
     provideZonelessChangeDetection(),
-
-    /**
-     * Configures global error listeners for the browser environment.
-     */
     provideBrowserGlobalErrorListeners(),
-
-    /**
-     * Sets up the application router with defined routes.
-     */
     provideRouter(appRoutes),
-
-    /**
-     * Configures asynchronous animations for Angular Material, ensuring
-     * the animation engine is loaded lazily for better initial load performance.
-     */
     provideAnimationsAsync(),
 
     /**
-     * Initializes the core Firebase application using credentials from
-     * the shared-config-firebase library.
+     * Initializes the core Firebase application.
      */
     provideFirebaseApp(() => initializeApp(FIREBASE_CONFIG)),
 
     /**
-     * Configures Firebase App Check with reCAPTCHA Enterprise.
-     * * In local development or emulator environments, it activates a debug
-     * provider by setting a global debug token flag, allowing the developer
-     * to bypass reCAPTCHA and use a debug token from the browser console.
+     * Configures Firebase App Check.
+     * Activates debug tokens when running in the emulator to bypass reCAPTCHA.
      */
     provideAppCheck(() => {
       if (isEmulatorEnv()) {
@@ -88,33 +82,67 @@ export const appConfig: ApplicationConfig = {
     }),
 
     /**
-     * Provides Firebase Authentication service.
+     * Provides Firebase Authentication with Emulator support.
      */
-    provideAuth(() => getAuth()),
+    provideAuth(() => {
+      const auth = getAuth();
+      if (isEmulatorEnv()) {
+        connectAuthEmulator(
+          auth,
+          `http://localhost:${FIREBASE_EMULATOR_PORTS.auth}`,
+        );
+      }
+      return auth;
+    }),
 
     /**
-     * Provides Cloud Firestore database service.
+     * Provides Cloud Firestore with Emulator support.
      */
-    provideFirestore(() => getFirestore()),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      if (isEmulatorEnv()) {
+        connectFirestoreEmulator(
+          firestore,
+          'localhost',
+          FIREBASE_EMULATOR_PORTS.firestore,
+        );
+      }
+      return firestore;
+    }),
 
     /**
-     * Provides Cloud Functions service for calling backend logic.
+     * Provides Cloud Functions with Emulator support.
      */
-    provideFunctions(() => getFunctions()),
+    provideFunctions(() => {
+      const functions = getFunctions();
+      if (isEmulatorEnv()) {
+        connectFunctionsEmulator(
+          functions,
+          'localhost',
+          FIREBASE_EMULATOR_PORTS.functions,
+        );
+      }
+      return functions;
+    }),
 
     /**
-     * Provides Firebase Cloud Messaging for push notifications.
+     * Provides Firebase Storage with Emulator support.
      */
+    provideStorage(() => {
+      const storage = getStorage();
+      if (isEmulatorEnv()) {
+        connectStorageEmulator(
+          storage,
+          'localhost',
+          FIREBASE_EMULATOR_PORTS.storage,
+        );
+      }
+      return storage;
+    }),
+
     provideMessaging(() => getMessaging()),
-
-    /**
-     * Provides Google Analytics for Firebase.
-     */
     provideAnalytics(() => getAnalytics()),
 
-    /**
-     * Services for automatic screen and user tracking in Google Analytics.
-     */
     ScreenTrackingService,
     UserTrackingService,
   ],
