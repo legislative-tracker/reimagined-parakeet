@@ -93,7 +93,11 @@ module.exports = [
             },
             {
               sourceTag: 'type:data-access',
-              onlyDependOnLibsWithTags: ['type:util', 'type:data-models'],
+              onlyDependOnLibsWithTags: [
+                'type:util',
+                'type:data-models',
+                'type:plugin',
+              ],
             },
             {
               sourceTag: 'type:util',
