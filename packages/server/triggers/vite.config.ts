@@ -34,6 +34,10 @@ export default defineConfig({
         'os',
         'crypto',
       ],
+      output: {
+        format: 'es',
+        entryFileNames: '[name].js',
+      },
     },
   },
 

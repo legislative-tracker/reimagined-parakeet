@@ -7,9 +7,15 @@
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/src/test-setup.[jt]s",
-      "!{projectRoot}/test-setup.[jt]s"
+      "!{projectRoot}/test-setup.[jt]s",
+      "!{projectRoot}/eslint.config.js",
+      "!{projectRoot}/eslint.config.cjs"
     ],
-    "sharedGlobals": ["{workspaceRoot}/eslint.config.js"]
+    "sharedGlobals": [
+      "{workspaceRoot}/tsconfig.base.json",
+      "{workspaceRoot}/eslint.config.js",
+      "{workspaceRoot}/eslint.config.cjs"
+    ]
   },
   "nxCloudId": "696d4491175afa25e25c9fb7",
   "plugins": [
@@ -43,12 +49,8 @@
         "buildTargetName": "build",
         "testTargetName": "test",
         "serveTargetName": "serve",
-        "devTargetName": "dev",
         "previewTargetName": "preview",
-        "serveStaticTargetName": "serve-static",
-        "typecheckTargetName": "typecheck",
-        "buildDepsTargetName": "build-deps",
-        "watchDepsTargetName": "watch-deps"
+        "serveStaticTargetName": "serve-static"
       }
     },
     {
@@ -70,6 +72,7 @@
       "inputs": [
         "default",
         "{workspaceRoot}/eslint.config.js",
+        "{workspaceRoot}/eslint.config.cjs",
         "{workspaceRoot}/.prettierrc"
       ]
     },
@@ -79,15 +82,9 @@
         "default",
         "^production",
         "{workspaceRoot}/vitest.workspace.ts"
-      ],
-      "executor": "@nx/vite:test"
+      ]
     },
     "@angular/build:application": {
-      "cache": true,
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"]
-    },
-    "@nx/esbuild:esbuild": {
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
@@ -102,17 +99,18 @@
     },
     "@nx/angular:library": {
       "linter": "eslint",
-      "unitTestRunner": "vitest"
-    },
-    "@nx/js:library": {
-      "linter": "eslint",
-      "unitTestRunner": "vitest"
-    },
-    "@nx/vite:vitest": {
-      "uiFramework": "none"
+      "unitTestRunner": "vitest",
+      "standalone": true,
+      "changeDetection": "OnPush",
+      "style": "scss"
     },
     "@nx/angular:component": {
-      "style": "scss"
+      "style": "scss",
+      "standalone": true,
+      "signals": true,
+      "displayBlock": true
     }
-  }
+  },
+  "useInferencePlugins": true,
+  "defaultBase": "main"
 }
