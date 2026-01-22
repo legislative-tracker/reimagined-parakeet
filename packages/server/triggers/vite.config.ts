@@ -5,13 +5,29 @@ import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 /**
  * @description Vite configuration for the server-triggers Firebase Functions entry point.
  * Configured as an SSR library to bundle TypeScript into a Node-compatible main.js.
+ * Updated to copy local environment and secret files to the dist folder for emulator support.
  * @returns {import('vite').UserConfig}
  */
 export default defineConfig({
   root: __dirname,
   cacheDir: '../../../node_modules/.vite/packages/server/triggers',
 
-  plugins: [nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
+  plugins: [
+    nxViteTsPaths(),
+    nxCopyAssetsPlugin([
+      '*.md',
+      {
+        input: '../app/environment',
+        glob: '.env.local',
+        output: '.',
+      },
+      {
+        input: '../app/environment',
+        glob: '.secret.local',
+        output: '.',
+      },
+    ]),
+  ],
 
   build: {
     outDir: '../../../dist/packages/server/triggers',
