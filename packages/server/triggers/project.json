@@ -16,7 +16,8 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/server/triggers",
-        "configFile": "packages/server/triggers/vite.config.ts"
+        "configFile": "packages/server/triggers/vite.config.ts",
+        "ssr": true
       }
     },
     "test": {
