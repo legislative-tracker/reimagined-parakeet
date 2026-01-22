@@ -28,8 +28,8 @@ export const db: Firestore = getFirestore(getAdminApp());
  * @param {string} collectionPath - The path to the Firestore collection.
  * @returns {CollectionReference<T>} A typed collection reference.
  */
-export function getTypedCollection<T extends object>(
+export const getTypedCollection = <T extends object>(
   collectionPath: string,
-): CollectionReference<T> {
+): CollectionReference<T> => {
   return db.collection(collectionPath) as CollectionReference<T>;
-}
+};
