@@ -3,6 +3,25 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/plugins/openstates/src",
   "projectType": "library",
-  "tags": ["type:plugin", "scope:backend"],
-  "targets": {}
+  "tags": ["type:plugin", "scope:backend", "firebase:dep:server-app"],
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/plugins/openstates",
+        "configFile": "packages/plugins/openstates/vite.config.ts"
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../../coverage/packages/plugins/openstates"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
 }

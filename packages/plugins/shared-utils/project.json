@@ -3,19 +3,25 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/plugins/shared-utils/src",
   "projectType": "library",
-  "tags": ["type:util", "scope:shared"],
+  "tags": ["type:util", "scope:shared", "firebase:dep:server-app"],
   "targets": {
     "build": {
-      "executor": "@nx/esbuild:esbuild",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/plugins/shared-utils",
-        "main": "packages/plugins/shared-utils/src/index.ts",
-        "tsConfig": "packages/plugins/shared-utils/tsconfig.lib.json",
-        "assets": ["packages/plugins/shared-utils/*.md"],
-        "format": ["cjs"],
-        "generatePackageJson": true
+        "configFile": "packages/plugins/shared-utils/vite.config.ts"
       }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../../coverage/packages/plugins/shared-utils"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
     }
   }
 }

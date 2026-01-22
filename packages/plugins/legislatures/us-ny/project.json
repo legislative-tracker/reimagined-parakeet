@@ -3,13 +3,19 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "packages/plugins/legislatures/us-ny/src",
-  "tags": ["type:plugin", "scope:backend", "state:us-ny"],
+  "tags": [
+    "type:plugin",
+    "scope:backend",
+    "state:us-ny",
+    "firebase:dep:server-app"
+  ],
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/plugins/legislatures/us-ny"
+        "outputPath": "dist/packages/plugins/legislatures/us-ny",
+        "configFile": "packages/plugins/legislatures/us-ny/vite.config.ts"
       }
     },
     "test": {
@@ -18,6 +24,9 @@
       "options": {
         "reportsDirectory": "coverage/packages/plugins/legislatures/us-ny"
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
     }
   }
 }

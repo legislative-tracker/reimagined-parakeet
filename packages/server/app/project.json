@@ -9,16 +9,6 @@
     "type:app"
   ],
   "targets": {
-    "dev": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx watch --all -- nx build server-app",
-          "nx serve server-app --only functions"
-        ],
-        "parallel": true
-      }
-    },
     "build": {
       "executor": "nx:run-commands",
       "dependsOn": ["^build"],
@@ -36,6 +26,12 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "nx run-many --targets=lint --projects=tag:firebase:dep:server-app --parallel=100"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run-many --targets=typecheck --projects=tag:firebase:dep:server-app --parallel=100"
       }
     },
     "test": {
@@ -57,6 +53,7 @@
     },
     "killports": {
       "executor": "nx:run-commands",
+      "cache": false,
       "options": {
         "command": "kill-port --port 9099,5001,8080,9000,5000,8085,9199,9299,4000,4400,4500"
       }
@@ -69,12 +66,9 @@
     },
     "emulate": {
       "executor": "nx:run-commands",
+      "dependsOn": ["killports"],
       "options": {
-        "commands": [
-          "nx run server-app:killports",
-          "nx run server-app:firebase emulators:start --import=packages/server/app/.emulators --export-on-exit"
-        ],
-        "parallel": false
+        "command": "nx run server-app:firebase emulators:start --import=packages/server/app/.emulators --export-on-exit"
       }
     },
     "serve": {

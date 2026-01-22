@@ -5,8 +5,8 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 
 /**
- * @description Vite configuration for the buildable shared-data-models library.
- * This configures the library for 'lib' mode to produce a bundle and type declarations.
+ * @description Vite configuration for shared-data-models.
+ * Uses build.ssr to ensure Node.js compatibility for Firebase Cloud Functions.
  */
 export default defineConfig({
   root: __dirname,
@@ -23,6 +23,8 @@ export default defineConfig({
     outDir: '../../../dist/packages/shared/data-models',
     emptyOutDir: true,
     reportCompressedSize: true,
+    // Correct placement for SSR flag
+    ssr: true,
     commonjsOptions: {
       transformMixedEsModules: true,
     },
@@ -30,10 +32,9 @@ export default defineConfig({
       entry: 'src/index.ts',
       name: 'shared-data-models',
       fileName: 'index',
-      formats: ['es'],
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      // Externalize peer dependencies
       external: [],
     },
   },
@@ -46,7 +47,7 @@ export default defineConfig({
     reporters: ['default'],
     coverage: {
       reportsDirectory: '../../../coverage/packages/shared/data-models',
-      provider: 'v8' as const,
+      provider: 'v8',
     },
   },
 });

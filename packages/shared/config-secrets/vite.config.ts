@@ -1,11 +1,14 @@
-/// <reference types='vitest' />
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 
-export default defineConfig(() => ({
+/**
+ * @description Vite configuration for shared-config-secrets.
+ * Targets Node.js environment to prevent stripping of 'crypto' and 'fs'.
+ */
+export default defineConfig({
   root: __dirname,
   cacheDir: '../../../node_modules/.vite/packages/shared/config-secrets',
   plugins: [
@@ -17,30 +20,21 @@ export default defineConfig(() => ({
       pathsToAliases: false,
     }),
   ],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ],
-  // },
-  // Configuration for building your library.
-  // See: https://vitejs.dev/guide/build.html#library-mode
   build: {
     outDir: '../../../dist/packages/shared/config-secrets',
     emptyOutDir: true,
     reportCompressedSize: true,
+    ssr: true,
     commonjsOptions: {
       transformMixedEsModules: true,
     },
     lib: {
-      // Could also be a dictionary or array of multiple entry points.
       entry: 'src/index.ts',
       name: 'shared-config-secrets',
       fileName: 'index',
-      // Change this to the formats you want to support.
-      // Don't forget to update your package.json as well.
-      formats: ['es' as const],
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      // External packages that should not be bundled into your library.
       external: [],
     },
   },
@@ -53,7 +47,7 @@ export default defineConfig(() => ({
     reporters: ['default'],
     coverage: {
       reportsDirectory: '../../../coverage/packages/shared/config-secrets',
-      provider: 'v8' as const,
+      provider: 'v8',
     },
   },
-}));
+});
