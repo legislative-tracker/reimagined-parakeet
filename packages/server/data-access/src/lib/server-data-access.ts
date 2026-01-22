@@ -1,4 +1,7 @@
-import { getTypedCollection } from '@legislative-tracker/shared-config-firebase';
+import {
+  db,
+  getTypedCollection,
+} from '@legislative-tracker/shared-config-firebase';
 import type {
   Legislation,
   Legislator,
@@ -46,4 +49,38 @@ export const getFirestoreLegislators = async (
 
   const snapshot = await colRef.get();
   return snapshot.empty ? undefined : snapshot.docs.map((doc) => doc.data());
+};
+
+export const updateFirestoreLegislators = async (
+  stateCd: string,
+  data: Legislator[],
+) => {
+  const bulkWriter = db.bulkWriter();
+  const path = `legislatures/${stateCd.toUpperCase()}/legislators`;
+
+  const colRef = db.collection(path);
+
+  data.forEach((d: Legislator) => {
+    const docRef = colRef.doc(d.id);
+    bulkWriter.set(docRef, d, { merge: true });
+  });
+
+  await bulkWriter.close();
+};
+
+export const updateFirestoreLegislation = async (
+  stateCd: string,
+  data: Legislation[],
+) => {
+  const bulkWriter = db.bulkWriter();
+  const path = `legislatures/${stateCd.toUpperCase()}/legislation`;
+
+  const colRef = db.collection(path);
+
+  data.forEach((d: Legislation) => {
+    const docRef = colRef.doc(d.id);
+    bulkWriter.set(docRef, d, { merge: true });
+  });
+
+  await bulkWriter.close();
 };
