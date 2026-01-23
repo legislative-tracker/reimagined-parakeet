@@ -27,6 +27,9 @@
       "@legislative-tracker/plugin-shared-utils": [
         "packages/plugins/shared-utils/src/index.ts"
       ],
+      "@legislative-tracker/portal-web-data-access-auth": [
+        "packages/portal-web/data-access/auth/src/index.ts"
+      ],
       "@legislative-tracker/portal-web-features-shell": [
         "packages/portal-web/features/shell/src/index.ts"
       ],
