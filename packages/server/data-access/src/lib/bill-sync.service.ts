@@ -5,7 +5,7 @@ import { PluginFactory } from './plugin-factory.service.js';
 import {
   db,
   getTypedCollection,
-} from '@legislative-tracker/shared-config-firebase';
+} from '@legislative-tracker/shared-config-firebase/admin';
 
 /**
  * @description Service responsible for coordinating the sync process between plugins and Firestore.

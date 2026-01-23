@@ -1,0 +1,10 @@
+{
+  "name": "@legislative-tracker/shared-config-firebase",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./admin": "./src/lib/firestore-admin.ts"
+  }
+}

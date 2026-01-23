@@ -4,7 +4,7 @@
     "indexes": "packages/server/app/firestore.indexes.json"
   },
   "hosting": {
-    "public": "dist/packages/portal-web/client",
+    "public": "dist/packages/portal-web/client/browser",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {

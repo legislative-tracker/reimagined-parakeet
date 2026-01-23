@@ -42,6 +42,9 @@
       "@legislative-tracker/shared-config-firebase": [
         "packages/shared/config-firebase/src/index.ts"
       ],
+      "@legislative-tracker/shared-config-firebase/admin": [
+        "packages/shared/config-firebase/src/lib/firestore-admin.ts"
+      ],
       "@legislative-tracker/shared-config-secrets": [
         "packages/shared/config-secrets/src/index.ts"
       ],

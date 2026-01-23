@@ -22,5 +22,12 @@
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx"
   ],
-  "references": []
+  "references": [
+    {
+      "path": "../data-access"
+    },
+    {
+      "path": "../../shared/config-secrets"
+    }
+  ]
 }
