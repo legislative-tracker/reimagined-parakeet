@@ -37,7 +37,10 @@
           "watchDepsName": "watch-deps"
         }
       },
-      "exclude": ["packages/portal-web/data-access/auth/*"]
+      "exclude": [
+        "packages/portal-web/data-access/auth/*",
+        "packages/portal-web/data-access/config/*"
+      ]
     },
     {
       "plugin": "@nx/eslint/plugin",
@@ -57,7 +60,10 @@
     },
     {
       "plugin": "@nx/js/typescript",
-      "include": ["packages/portal-web/data-access/auth/*"],
+      "include": [
+        "packages/portal-web/data-access/auth/*",
+        "packages/portal-web/data-access/config/*"
+      ],
       "options": {
         "typecheck": {
           "targetName": "typecheck"

@@ -86,6 +86,7 @@
     "@angular/platform-browser": "~20.3.0",
     "@angular/router": "~20.3.0",
     "@google-cloud/functions-framework": "^3.3.0",
+    "@material/material-color-utilities": "^0.4.0",
     "firebase": "^10.10.0",
     "firebase-admin": "^11.11.1",
     "firebase-functions": "^7.0.3",

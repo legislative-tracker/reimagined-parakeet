@@ -41,6 +41,9 @@ importers:
       '@google-cloud/functions-framework':
         specifier: ^3.3.0
         version: 3.5.1
+      '@material/material-color-utilities':
+        specifier: ^0.4.0
+        version: 0.4.0
       firebase:
         specifier: ^10.10.0
         version: 10.14.1
@@ -2765,6 +2768,9 @@ packages:
     resolution: {integrity: sha512-IY+r3bxKW6Q6sIPiMC0L533DEfRJSXibjSI3Ft/w9Q8KQBNqEIvUFXt+09wV8S5BRk0a8uSF19YWxuRwEfI90g==}
     cpu: [x64]
     os: [win32]
+
+  '@material/material-color-utilities@0.4.0':
+    resolution: {integrity: sha512-dlq6VExJReb8dhjj3a/yTigr3ncNwoFmL5Iy2ENtbDX03EmNeOEdZ+vsaGrj7RTuO+mB7L58II4LCsl4NpM8uw==}
 
   '@microsoft/api-extractor-model@7.32.2':
     resolution: {integrity: sha512-Ussc25rAalc+4JJs9HNQE7TuO9y6jpYQX9nWD1DhqUzYPBr3Lr7O9intf+ZY8kD5HnIqeIRJX7ccCT0QyBy2Ww==}
@@ -13390,6 +13396,8 @@ snapshots:
 
   '@lmdb/lmdb-win32-x64@3.4.2':
     optional: true
+
+  '@material/material-color-utilities@0.4.0': {}
 
   '@microsoft/api-extractor-model@7.32.2(@types/node@20.19.9)':
     dependencies:
