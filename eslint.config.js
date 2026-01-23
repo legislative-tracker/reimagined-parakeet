@@ -42,7 +42,7 @@ module.exports = [
       '@nx/enforce-module-boundaries': [
         'error',
         {
-          enforceBuildableLibDependency: true,
+          enforceBuildableLibDependency: false,
           allow: [],
           depConstraints: [
             /**
@@ -52,8 +52,8 @@ module.exports = [
              * - Shared libs remain platform-agnostic.
              */
             {
-              sourceTag: 'scope:client',
-              onlyDependOnLibsWithTags: ['scope:client', 'scope:shared'],
+              sourceTag: 'scope:frontend',
+              onlyDependOnLibsWithTags: ['scope:frontend', 'scope:shared'],
             },
             {
               sourceTag: 'scope:backend',

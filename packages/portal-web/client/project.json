@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "packages/portal-web/client/src",
-  "tags": ["type:app", "scope:portal"],
+  "tags": ["type:app", "scope:frontend"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

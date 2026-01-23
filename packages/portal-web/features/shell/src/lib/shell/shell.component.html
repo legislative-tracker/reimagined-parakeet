@@ -1,28 +1,74 @@
+<mat-toolbar color="primary" class="app-header">
+  <button
+    type="button"
+    mat-icon-button
+    (click)="drawer.toggle()"
+    aria-label="Toggle sidenav"
+  >
+    <mat-icon style="color: white">menu</mat-icon>
+  </button>
+
+  <div class="branding-container">
+    <img [src]="config().branding.logoUrl" alt="Logo" height="48" />
+    <span class="title">| Legislative Tracker</span>
+  </div>
+</mat-toolbar>
+
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="(isHandset$ | async) === false">
-    <mat-toolbar>Menu</mat-toolbar>
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false"
+  >
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      @if (isHandset$ | async) {
-        <button
-          type="button"
-          aria-label="Toggle sidenav"
-          matIconButton
-          (click)="drawer.toggle()">
-          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      <a mat-list-item routerLink="/" routerLinkActive="active">
+        <mat-icon matListItemIcon>home</mat-icon>
+        <span matListItemTitle>Home</span>
+      </a>
+      <a mat-list-item routerLink="/about" routerLinkActive="active">
+        <mat-icon matListItemIcon>info</mat-icon>
+        <span matListItemTitle>About</span>
+      </a>
+
+      @if (auth.isLoggedIn()) {
+        <a mat-list-item routerLink="/profile" routerLinkActive="active">
+          <mat-icon matListItemIcon>person</mat-icon>
+          <span matListItemTitle>Profile</span>
+        </a>
+
+        @if (auth.isAdmin()) {
+          <a mat-list-item routerLink="/admin" routerLinkActive="active">
+            <mat-icon matListItemIcon>settings</mat-icon>
+            <span matListItemTitle>Admin</span>
+          </a>
+        }
+
+        <div class="spacer"></div>
+
+        <button mat-list-item (click)="handleLogout()" type="button">
+          <mat-icon matListItemIcon color="warn">logout</mat-icon>
+          <span matListItemTitle color="warn">Log Out</span>
         </button>
       }
-      <span>portal-web-features-shell</span>
-    </mat-toolbar>
-    <!-- Add Content Here -->
+      @if (!auth.isLoggedIn()) {
+        <div class="spacer"></div>
+
+        <a mat-list-item routerLink="/login" routerLinkActive="active">
+          <mat-icon matListItemIcon>login</mat-icon>
+          <span matListItemTitle>Login</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <div class="content-wrapper">
+      <main class="main-content">
+        <router-outlet />
+      </main>
+      <ui-footer></ui-footer>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

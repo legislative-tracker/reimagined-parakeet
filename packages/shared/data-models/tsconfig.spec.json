@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../../dist/out-tsc",
+    "outDir": "../../../dist/packages/shared/data-models",
     "declaration": true,
     "types": [
       "vitest/globals",

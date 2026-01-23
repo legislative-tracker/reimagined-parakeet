@@ -4,7 +4,7 @@
   "sourceRoot": "packages/portal-web/ui/src",
   "prefix": "ui",
   "projectType": "library",
-  "tags": ["type:ui", "scope:portal"],
+  "tags": ["type:ui", "scope:frontend"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"

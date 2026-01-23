@@ -3,7 +3,7 @@
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/portal-web/data-access/config/src",
   "projectType": "library",
-  "tags": ["type:data-access", "scope:portal-web"],
+  "tags": ["type:data-access", "scope:frontend"],
   "// targets": "to see all targets run: nx show project portal-web-data-access-config --web",
   "targets": {}
 }

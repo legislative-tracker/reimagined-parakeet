@@ -68,7 +68,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["killports"],
       "options": {
-        "command": "nx run server-app:firebase emulators:start --import=packages/server/app/.emulators --export-on-exit"
+        "command": "nx run server-app:firebase emulators:start --only auth,functions,firestore,pubsub,eventarc --import=packages/server/app/.emulators --export-on-exit"
       }
     },
     "serve": {

@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../../dist/out-tsc",
+    "outDir": "../../../dist/packages/plugins/openstates",
     "types": [
       "vitest/globals",
       "vitest/importMeta",

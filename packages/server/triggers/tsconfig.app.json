@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../../dist/out-tsc",
+    "outDir": "../../../dist/packages/server/triggers",
     "module": "nodenext",
     "types": ["node"],
     "target": "es2022"
