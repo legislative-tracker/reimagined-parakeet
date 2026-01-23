@@ -4,7 +4,7 @@ import { PluginFactory } from './plugin-factory.service.js';
 import {
   db,
   getTypedCollection,
-} from '@legislative-tracker/shared-config-firebase';
+} from '@legislative-tracker/shared-config-firebase/admin';
 import type { Legislation } from '@legislative-tracker/shared-data-models';
 
 /**

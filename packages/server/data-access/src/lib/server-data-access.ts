@@ -1,7 +1,7 @@
 import {
   db,
   getTypedCollection,
-} from '@legislative-tracker/shared-config-firebase';
+} from '@legislative-tracker/shared-config-firebase/admin';
 import type {
   Legislation,
   Legislator,
