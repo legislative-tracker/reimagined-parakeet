@@ -16,9 +16,11 @@ legislative-tracker/
    │   │   │   ├── mgmt-users/ 
    │   │   │   └── runtime-config/ 
    │   │   │   
-   │   │   ├── dashboard/ 
-   │   │   ├── detail-bill/ 
-   │   │   ├── detail-member/ 
+   │   │   ├── legislature/ 
+   │   │   │   ├── dashboard/ 
+   │   │   │   ├── detail-bill/ 
+   │   │   │   └── detail-member/ 
+   │   │   │   
    │   │   ├── detail-user/ 
    │   │   ├── feedback/ 
    │   │   ├── shell/ 
