@@ -9,11 +9,13 @@ legislative-tracker/
    │   │   ├── legislators/ 
    │   │   ├── legislatures/ 
    │   │   └── users/ 
+   │   │
    │   ├── features/               # Smart Frontend Feature Components
    │   │   ├── admin/ 
    │   │   │   ├── mgmt-bills/ 
    │   │   │   ├── mgmt-users/ 
    │   │   │   └── runtime-config/ 
+   │   │   │   
    │   │   ├── dashboard/ 
    │   │   ├── detail-bill/ 
    │   │   ├── detail-member/ 
@@ -23,11 +25,13 @@ legislative-tracker/
    │   │   └── static-pages/ 
    │   │       ├── about/ 
    │   │       └── privacy/ 
+   │   │
    │   ├── ui/                     # Dumb Frontend UI Components
    │   │   ├── address-form/ 
    │   │   ├── footer/ 
    │   │   ├── snackbar-link/ 
    │   │   └── table/ 
+   │   │
    │   └── utils/                  # Common Helper Functions - Portal
    │       ├── directives/ 
    │       └── guards/ 
