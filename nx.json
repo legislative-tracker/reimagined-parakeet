@@ -39,7 +39,8 @@
       },
       "exclude": [
         "packages/portal-web/data-access/auth/*",
-        "packages/portal-web/data-access/config/*"
+        "packages/portal-web/data-access/config/*",
+        "packages/portal-web/data-access/feedback/*"
       ]
     },
     {
@@ -62,7 +63,8 @@
       "plugin": "@nx/js/typescript",
       "include": [
         "packages/portal-web/data-access/auth/*",
-        "packages/portal-web/data-access/config/*"
+        "packages/portal-web/data-access/config/*",
+        "packages/portal-web/data-access/feedback/*"
       ],
       "options": {
         "typecheck": {
