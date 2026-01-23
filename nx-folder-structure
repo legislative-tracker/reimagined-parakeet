@@ -49,8 +49,12 @@ legislative-tracker/
    │   ├── secrets-setup/          # Secret Management
    │   └── utils/                  # Common Helper Functions - Onboarding
    │
-   └── shared/
-       ├── data-models/            # Common TS Interfaces
-       │   ├── data-models/internal
-       │   └── data-models/open-states
-       └── utils/                  # Common Helper Functions - Shared (EVERYWHERE)
+   ├── shared/
+   │   ├── data-models/            # Common TS Interfaces
+   │   │   ├── data-models/internal
+   │   │   └── data-models/open-states
+   │   └── utils/                  # Common Helper Functions - Shared (EVERYWHERE)
+   │
+   └── tools/
+       └── generators/
+           └── legislature-plugin/
