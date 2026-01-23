@@ -18,10 +18,15 @@
     ]
   },
   "nxCloudId": "696d4491175afa25e25c9fb7",
+  "sync": {
+    "applyChanges": false,
+    "disabledTaskSyncGenerators": ["@nx/js:typescript-sync"]
+  },
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
       "options": {
+        "syncTsProjectReferences": false,
         "typecheck": {
           "targetName": "typecheck"
         },
@@ -31,11 +36,7 @@
           "buildDepsName": "build-deps",
           "watchDepsName": "watch-deps"
         }
-      },
-      "exclude": [
-        "packages/shared/data-models/*",
-        "packages/shared/config-firebase/*"
-      ]
+      }
     },
     {
       "plugin": "@nx/eslint/plugin",
@@ -51,18 +52,6 @@
         "serveTargetName": "serve",
         "previewTargetName": "preview",
         "serveStaticTargetName": "serve-static"
-      }
-    },
-    {
-      "plugin": "@nx/js/typescript",
-      "include": [
-        "packages/shared/data-models/*",
-        "packages/shared/config-firebase/*"
-      ],
-      "options": {
-        "typecheck": {
-          "targetName": "typecheck"
-        }
       }
     }
   ],
