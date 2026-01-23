@@ -36,6 +36,9 @@
       "@legislative-tracker/portal-web-data-access-feedback": [
         "packages/portal-web/data-access/feedback/src/index.ts"
       ],
+      "@legislative-tracker/portal-web-data-access-legislature": [
+        "packages/portal-web/data-access/legislature/src/index.ts"
+      ],
       "@legislative-tracker/portal-web-features-shell": [
         "packages/portal-web/features/shell/src/index.ts"
       ],
