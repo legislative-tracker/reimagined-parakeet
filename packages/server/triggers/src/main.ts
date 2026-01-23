@@ -1,4 +1,5 @@
-// import * as logger from 'firebase-functions/logger';
+export * from './nightly-sync.trigger.js';
+
 import { onRequest } from 'firebase-functions/v2/https';
 
 export const helloWorld = onRequest(async (request, response) => {
