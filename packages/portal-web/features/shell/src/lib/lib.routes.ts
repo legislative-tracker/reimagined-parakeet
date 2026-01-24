@@ -54,12 +54,14 @@ export const portalWebFeaturesShellRoutes: Route[] = [
       //   },
 
       // --- Feature: User Profile ---
-      //   {
-      //     path: 'profile',
-      //     loadComponent: () =>
-      //       import('./features/user/profile/profile').then((m) => m.Profile),
-      //     title: 'Profile | Legislative Tracker',
-      //   },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('@legislative-tracker/portal-web-features-user-profile').then(
+            (m) => m.ProfileComponent,
+          ),
+        title: 'Profile | Legislative Tracker',
+      },
 
       // --- Feature: Legislative Tracker (State Wildcard) ---
       //   {

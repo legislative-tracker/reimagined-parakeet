@@ -1,0 +1,13 @@
+{
+  "name": "portal-web-features-user-profile",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/portal-web/features/user-profile/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["type:feature", "scope:frontend"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

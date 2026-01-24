@@ -51,6 +51,9 @@
       "@legislative-tracker/portal-web-features-static-pages": [
         "packages/portal-web/features/static-pages/src/index.ts"
       ],
+      "@legislative-tracker/portal-web-features-user-profile": [
+        "packages/portal-web/features/user-profile/src/index.ts"
+      ],
       "@legislative-tracker/portal-web-ui": [
         "packages/portal-web/ui/src/index.ts"
       ],
