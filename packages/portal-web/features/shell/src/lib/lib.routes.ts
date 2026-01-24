@@ -36,12 +36,14 @@ export const portalWebFeaturesShellRoutes: Route[] = [
       },
 
       // --- Feature: Authentication ---
-      //   {
-      //     path: 'login',
-      //     loadComponent: () =>
-      //       import('./features/auth/login/login').then((m) => m.Login),
-      //     title: 'Login | Legislative Tracker',
-      //   },
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('@legislative-tracker/portal-web-features-login').then(
+            (m) => m.LoginComponent,
+          ),
+        title: 'Login | Legislative Tracker',
+      },
 
       // --- Feature: Admin ---
       //   {

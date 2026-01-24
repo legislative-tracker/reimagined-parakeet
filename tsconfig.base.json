@@ -42,6 +42,9 @@
       "@legislative-tracker/portal-web-features-legislature": [
         "packages/portal-web/features/legislature/src/index.ts"
       ],
+      "@legislative-tracker/portal-web-features-login": [
+        "packages/portal-web/features/login/src/index.ts"
+      ],
       "@legislative-tracker/portal-web-features-shell": [
         "packages/portal-web/features/shell/src/index.ts"
       ],
