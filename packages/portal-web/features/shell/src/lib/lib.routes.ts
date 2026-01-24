@@ -12,12 +12,14 @@ export const portalWebFeaturesShellRoutes: Route[] = [
         redirectTo: 'ny',
       },
       // --- Public Static Pages ---
-      //   {
-      //     path: '404',
-      //     loadComponent: () =>
-      //       import('./pages/not-found/not-found').then((m) => m.NotFound),
-      //     title: '404 | Legislative Tracker',
-      //   },
+      {
+        path: '404',
+        loadComponent: () =>
+          import('@legislative-tracker/portal-web-features-static-pages').then(
+            (m) => m.NotFoundComponent,
+          ),
+        title: '404 - Page Not Found | Legislative Tracker',
+      },
       {
         path: 'about',
         loadComponent: () =>
