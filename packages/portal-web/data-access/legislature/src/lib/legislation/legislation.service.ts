@@ -66,7 +66,7 @@ export class LegislationService {
    * @param billData - The Legislation object payload.
    * @returns The result of the Cloud Function call.
    */
-  async addBill(state: string, billData: Legislation) {
+  async addBill(state: string, billData: Partial<Legislation>) {
     const { getFunctions, httpsCallable } = await import(
       '@angular/fire/functions'
     );

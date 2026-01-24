@@ -26,7 +26,7 @@ export const portalWebFeaturesShellRoutes: Route[] = [
           import('@legislative-tracker/portal-web-features-static-pages').then(
             (m) => m.AboutComponent,
           ),
-        title: 'About | Legislative Tracker',
+        title: 'About Us | Legislative Tracker',
       },
       {
         path: 'privacy',
@@ -48,12 +48,14 @@ export const portalWebFeaturesShellRoutes: Route[] = [
       },
 
       // --- Feature: Admin ---
-      //   {
-      //     path: 'admin',
-      //     canActivate: [adminGuard],
-      //     loadChildren: () =>
-      //       import('./admin/admin.routes').then((m) => m.ADMIN_ROUTES),
-      //   },
+      {
+        path: 'admin',
+        canActivate: [adminGuard],
+        loadChildren: () =>
+          import('@legislative-tracker/portal-web-data-access-auth').then(
+            (m) => m.ADMIN_ROUTES,
+          ),
+      },
 
       // --- Feature: User Profile ---
       {
