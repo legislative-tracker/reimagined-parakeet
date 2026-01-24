@@ -73,10 +73,20 @@ module.exports = [
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
                 'type:feature',
+                'type:shell',
                 'type:ui',
                 'type:data-access',
                 'type:util',
                 'type:plugin',
+              ],
+            },
+            {
+              sourceTag: 'type:shell',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:ui',
+                'type:data-access',
+                'type:util',
               ],
             },
             {
