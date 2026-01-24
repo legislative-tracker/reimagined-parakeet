@@ -72,28 +72,28 @@ module.exports = [
             {
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
+                'type:data-access',
                 'type:feature',
+                'type:plugin',
                 'type:shell',
                 'type:ui',
-                'type:data-access',
                 'type:util',
-                'type:plugin',
               ],
             },
             {
               sourceTag: 'type:shell',
               onlyDependOnLibsWithTags: [
+                'type:data-access',
                 'type:feature',
                 'type:ui',
-                'type:data-access',
                 'type:util',
               ],
             },
             {
               sourceTag: 'type:feature',
               onlyDependOnLibsWithTags: [
-                'type:ui',
                 'type:data-access',
+                'type:ui',
                 'type:util',
               ],
             },
@@ -104,9 +104,9 @@ module.exports = [
             {
               sourceTag: 'type:data-access',
               onlyDependOnLibsWithTags: [
-                'type:util',
                 'type:data-models',
                 'type:plugin',
+                'type:util',
               ],
             },
             {

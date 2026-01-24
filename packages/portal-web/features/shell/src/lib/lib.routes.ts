@@ -50,9 +50,8 @@ export const portalWebFeaturesShellRoutes: Route[] = [
       // --- Feature: Admin ---
       {
         path: 'admin',
-        canActivate: [adminGuard],
         loadChildren: () =>
-          import('@legislative-tracker/portal-web-data-access-auth').then(
+          import('@legislative-tracker/portal-web-features-admin').then(
             (m) => m.ADMIN_ROUTES,
           ),
       },
