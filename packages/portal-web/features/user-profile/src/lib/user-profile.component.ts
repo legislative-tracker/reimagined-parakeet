@@ -55,7 +55,7 @@ export class ProfileComponent {
    * @param e - The structured search address emitted by the AddressForm.
    * @returns A promise that resolves when the network request completes.
    */
-  public searchAddress = async (e: SearchAddress): Promise<void> => {
+  public searchAddress = async (e: Partial<SearchAddress>): Promise<void> => {
     let addressStr = e.address;
     if (e.address2) addressStr += `, ${e.address2}`;
     addressStr += `, ${e.city}, ${e.state} ${e.postalCode}`;

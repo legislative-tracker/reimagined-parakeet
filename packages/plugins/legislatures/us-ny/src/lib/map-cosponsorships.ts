@@ -1,14 +1,9 @@
 import type { Bill } from '../types/bills.js';
 import type { Member } from '../types/members.js';
-
-type Cosponsor = {
-  id: string;
-  name: string;
-};
-
-type Cosponsorship = {
-  [key: string]: Cosponsor[];
-};
+import type {
+  Cosponsor,
+  Cosponsorship,
+} from '@legislative-tracker/shared-data-models';
 
 export const mapToCosponsorships = (b: Bill): Cosponsorship => {
   const cosponsorsByVersion: Cosponsorship = {};
@@ -22,6 +17,7 @@ export const mapToCosponsorships = (b: Bill): Cosponsorship => {
         cosponsors.push({
           id: c.fullName.replaceAll('.', '').replaceAll(' ', '-'),
           name: c.fullName,
+          district: c.districtCode.toString(),
         }),
       );
     }

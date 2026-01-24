@@ -11,7 +11,7 @@ import {
   type Legislator,
   SPONSORSHIP_COLS,
 } from '@legislative-tracker/shared-data-models';
-import { ImgFallbackDirective } from '';
+import { ImgFallbackDirective } from '@legislative-tracker/portal-web-ui';
 
 @Component({
   selector: 'lib-detail-member',

@@ -7,8 +7,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { ImplementedStatePairs } from '../../../core/app-config/implemented-states.js';
-import { LegislationService } from '@legislative-tracker/portal-web-data-access-legislature';
+import {
+  LegislationService,
+  LegislatureService,
+} from '@legislative-tracker/portal-web-data-access-legislature';
 
 @Component({
   selector: 'lib-bill-add',
@@ -21,10 +23,11 @@ import { LegislationService } from '@legislative-tracker/portal-web-data-access-
     MatButtonModule,
     MatSnackBarModule,
   ],
-  templateUrl: './add-bill.html',
-  styleUrl: './add-bill.scss',
+  templateUrl: 'bill-add.component.html',
+  styleUrl: 'bill-add.component.scss',
 })
 export class AddBill {
+  private legislature = inject(LegislatureService);
   private legislation = inject(LegislationService);
   private snackBar = inject(MatSnackBar);
 
@@ -34,7 +37,7 @@ export class AddBill {
   // Data Model
   state = '';
   billId = '';
-  implementedStates = ImplementedStatePairs;
+  implementedStates = this.legislature.supportedLegislatures();
 
   async onSubmit() {
     if (!this.billId || !this.billId) return;

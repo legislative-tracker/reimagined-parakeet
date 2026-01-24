@@ -1,9 +1,9 @@
 export interface SearchAddress {
   address: string;
-  address2: string | null;
+  address2?: string;
   city: string;
   state: string;
-  postalCode: number;
+  postalCode: string;
 }
 
 export interface ShippingAddress extends SearchAddress {

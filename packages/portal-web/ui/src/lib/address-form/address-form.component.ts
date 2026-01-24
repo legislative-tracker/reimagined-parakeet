@@ -6,31 +6,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCardModule } from '@angular/material/card';
 
-/**
- * Common fields shared across all address form types.
- */
-export interface BaseAddress {
-  address: string | null;
-  address2?: string | null;
-  city: string | null;
-  state: string | null;
-  postalCode: string | null;
-}
-
-/**
- * Specific fields for shipping scenarios.
- */
-export interface ShippingAddress extends BaseAddress {
-  company?: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  shipping: string | null;
-}
+import type {
+  SearchAddress,
+  ShippingAddress,
+} from '@legislative-tracker/shared-data-models';
 
 /**
  * Union type representing the possible data payloads emitted by the form.
  */
-export type AddressFormOutput = Partial<BaseAddress> | Partial<ShippingAddress>;
+export type AddressFormOutput =
+  | Partial<SearchAddress>
+  | Partial<ShippingAddress>;
 
 /**
  * A reusable address form component supporting search and shipping configurations.
@@ -167,7 +153,7 @@ export class AddressFormComponent {
    */
   public onSubmit(): void {
     if (this.formType() === 'search') {
-      this.formSubmit.emit(this.searchAddress.value as Partial<BaseAddress>);
+      this.formSubmit.emit(this.searchAddress.value as Partial<SearchAddress>);
     } else if (this.formType() === 'shipping') {
       this.formSubmit.emit(
         this.shippingAddress.value as Partial<ShippingAddress>,

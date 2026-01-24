@@ -7,8 +7,8 @@ import { AuthService } from '@legislative-tracker/portal-web-data-access-auth';
 @Component({
   selector: 'lib-login',
   imports: [MatCardModule, MatButtonModule],
-  templateUrl: './login.html',
-  styleUrl: './login.scss',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   private authService = inject(AuthService);

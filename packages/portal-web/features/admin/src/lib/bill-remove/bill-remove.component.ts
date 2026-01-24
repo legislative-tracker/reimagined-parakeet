@@ -10,8 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 // App imports
-import { ImplementedStatePairs } from '../../../core/app-config/implemented-states.js';
-import { LegislationService } from '@legislative-tracker/portal-web-data-access-legislature';
+import {
+  LegislationService,
+  LegislatureService,
+} from '@legislative-tracker/portal-web-data-access-legislature';
+
+import { AuthService } from '@legislative-tracker/portal-web-data-access-auth';
 
 interface SimpleBill {
   id: string;
@@ -36,6 +40,8 @@ interface SimpleBill {
 })
 export class RemoveBill {
   private app = inject(FirebaseApp);
+  protected auth = inject(AuthService);
+  private legislature = inject(LegislatureService);
   private legislation = inject(LegislationService);
   private snackBar = inject(MatSnackBar);
 
@@ -46,7 +52,7 @@ export class RemoveBill {
   isLoadingBills = signal(false);
   isDeleting = signal(false);
 
-  states = ImplementedStatePairs;
+  states = this.legislature.supportedLegislatures();
 
   /**
    * Effect: Automatically fetches bills when the selectedState changes.

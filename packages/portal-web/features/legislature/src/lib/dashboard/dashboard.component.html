@@ -18,39 +18,39 @@
   >
     <mat-tab label="Bills">
       <div class="tab-content">
-        <app-table
+        <ui-table
           [dataSource]="bills()"
           [columnSource]="billCols"
           routeType="bill"
           [stateCd]="stateCd()"
         >
-        </app-table>
+        </ui-table>
       </div>
     </mat-tab>
 
     <mat-tab label="Senate">
       <div class="tab-content">
-        <app-table
+        <ui-table
           [dataSource]="senateMembers()"
           [columnSource]="memberCols"
           routeType="member"
           chamber="SENATE"
           [stateCd]="stateCd()"
         >
-        </app-table>
+        </ui-table>
       </div>
     </mat-tab>
 
     <mat-tab label="Assembly">
       <div class="tab-content">
-        <app-table
+        <ui-table
           [dataSource]="assemblyMembers()"
           [columnSource]="memberCols"
           routeType="member"
           chamber="ASSEMBLY"
           [stateCd]="stateCd()"
         >
-        </app-table>
+        </ui-table>
       </div>
     </mat-tab>
   </mat-tab-group>

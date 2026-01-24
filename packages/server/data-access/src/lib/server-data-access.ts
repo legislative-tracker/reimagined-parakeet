@@ -124,6 +124,7 @@ export const updateFirestoreSponsorships = async (stateCd: string) => {
       sponsors.push({
         id: bill.sponsorships[0].id,
         name: bill.sponsorships[0].name,
+        district: '',
       });
     }
 

@@ -9,7 +9,7 @@
       <h1>Hello, {{ u['displayName'] }}!</h1>
     </div>
 
-    <p>Your last login was {{ u['lastLogin'].toDate() | date: 'medium' }}</p>
+    <p>Your last login was {{ u['lastLogin'] | date: 'medium' }}</p>
     <mat-list>
       <mat-list-item>
         <mat-icon matListItemIcon>person</mat-icon>
@@ -30,32 +30,32 @@
         the fetch is complete we'll discard the address and only keep the
         districts & representatives.
       </p>
-      <app-address-form
+      <ui-address-form
         formType="search"
         (formSubmit)="searchAddress($event)"
-      ></app-address-form>
+      ></ui-address-form>
     } @else {
       <h2>Your Representatives</h2>
 
       <mat-tab-group>
         <mat-tab label="State">
           <ng-template matTabContent>
-            <app-table
+            <ui-table
               [dataSource]="u['legislators'].state"
               [columnSource]="legislatorCols"
               routeType="member"
               stateCd="ny"
-            ></app-table>
+            ></ui-table>
           </ng-template>
         </mat-tab>
         <mat-tab label="Federal">
           <ng-template matTabContent>
-            <app-table
+            <ui-table
               [dataSource]="u['legislators'].federal"
               [columnSource]="legislatorCols"
               routeType="member"
               stateCd="us"
-            ></app-table>
+            ></ui-table>
           </ng-template>
         </mat-tab>
       </mat-tab-group>

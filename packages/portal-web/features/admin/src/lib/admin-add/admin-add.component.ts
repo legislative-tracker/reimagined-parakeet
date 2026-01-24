@@ -7,10 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { UserManagementService } from '../../user-management.service.js';
+import { UserManagementService } from '@legislative-tracker/portal-web-data-access-auth';
 
 @Component({
-  selector: 'lib-admin-panel',
+  selector: 'lib-admin-add',
   standalone: true,
   imports: [
     FormsModule,

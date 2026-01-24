@@ -10,12 +10,12 @@
   <mat-tab-group>
     @for (version of billVersions(); track version.id) {
       <mat-tab [label]="version.id">
-        <app-table
+        <ui-table
           [dataSource]="version.data"
           [columnSource]="cosponsorCols"
           [stateCd]="stateCd()"
           routeType="member"
-        ></app-table>
+        ></ui-table>
       </mat-tab>
     }
   </mat-tab-group>

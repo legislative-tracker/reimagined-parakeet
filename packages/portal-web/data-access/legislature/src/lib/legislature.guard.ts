@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { type CanActivateFn, Router } from '@angular/router';
+import { LegislatureService } from './legislature/legislature.service';
 
 /**
  * A functional route guard that validates the 'stateCd' parameter against a whitelist of implemented states.
@@ -10,14 +11,12 @@ import { type CanActivateFn, Router } from '@angular/router';
  */
 export const legislatureGuard: CanActivateFn = (route) => {
   const router = inject(Router);
-
-  /** List of state codes currently supported by the platform (e.g., 'us-ny', 'us-ca') */
-  const implementedStates = ['us-ny'];
+  const legislatureService = inject(LegislatureService);
 
   // Get the 'stateCd' parameter from the current route snapshot
   const legislatureParam = route.params['stateCd']?.toLowerCase();
 
-  if (implementedStates.includes(legislatureParam)) {
+  if (legislatureService.isStateSupported(legislatureParam)) {
     return true; // Navigation allowed
   } else {
     // Redirect to home or 404 if the user tries to enter an unauthorized state

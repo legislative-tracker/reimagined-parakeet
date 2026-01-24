@@ -15,8 +15,10 @@
               name="state"
               [disabled]="isLoading()"
             >
-              @for (state of implementedStates; track state.value) {
-                <mat-option [value]="state.value">{{ state.name }}</mat-option>
+              @for (state of implementedStates; track state) {
+                <mat-option [value]="state">{{
+                  state.toUpperCase()
+                }}</mat-option>
               }
             </mat-select>
           </mat-form-field>

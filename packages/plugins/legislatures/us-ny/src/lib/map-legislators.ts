@@ -10,6 +10,8 @@ export const mapToLegislators = (
 ): Partial<Legislator>[] => {
   return members.map((member) => ({
     id: member.fullName.replaceAll(' ', '-').replaceAll('.', ''),
+    chamber: member.chamber === 'SENATE' ? 'Senate' : 'Assembly',
+    district: member.districtCode.toString(),
     given_name: member.person.firstName,
     family_name: member.person.lastName,
     name: member.fullName,
@@ -19,7 +21,7 @@ export const mapToLegislators = (
     email: isEmail(member.person.email) ? member.person.email : undefined,
     current_role: {
       title: member.chamber === 'SENATE' ? 'Senator' : 'Assembly Member',
-      district: `${member.districtCode}`,
+      district: member.districtCode.toString(),
       org_classification: member.chamber === 'SENATE' ? 'upper' : 'lower',
       division_id: `ocd-division/country:us/state:ny/${member.chamber === 'SENATE' ? 'sldu' : 'sldl'}:${member.districtCode}`,
     },
