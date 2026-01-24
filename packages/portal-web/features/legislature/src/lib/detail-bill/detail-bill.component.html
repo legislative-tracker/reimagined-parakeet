@@ -2,9 +2,13 @@
   <div class="loading-container">
     <mat-spinner diameter="50"></mat-spinner>
   </div>
-} @else if (bill()) {
-  <h1>{{ bill()?.id }}</h1>
-  <p>{{ bill()?.text }}</p>
+} @else if (bill(); as b) {
+  <h1>{{ b.id }}</h1>
+  @if (b.abstracts?.length) {
+    <p>{{ b.abstracts?.[0]?.abstract }}</p>
+  } @else {
+    <p class="empty-state">No abstract available for this bill.</p>
+  }
 
   <h2>Cosponsors</h2>
   <mat-tab-group>

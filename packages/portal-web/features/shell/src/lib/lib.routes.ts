@@ -67,14 +67,13 @@ export const portalWebFeaturesShellRoutes: Route[] = [
       },
 
       // --- Feature: Legislative Tracker (State Wildcard) ---
-      //   {
-      //     path: ':stateCd',
-      //     canActivate: [stateGuard],
-      //     loadChildren: () =>
-      //       import('./features/legislative/legislative.routes').then(
-      //         (m) => m.LEGISLATIVE_ROUTES,
-      //       ),
-      //   },
+      {
+        path: ':stateCd',
+        loadChildren: () =>
+          import('@legislative-tracker/portal-web-features-legislature').then(
+            (m) => m.LEGISLATURE_ROUTES,
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

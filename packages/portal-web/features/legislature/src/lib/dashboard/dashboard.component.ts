@@ -26,8 +26,8 @@ enum DashboardTab {
 @Component({
   selector: 'lib-dashboard',
   imports: [MatTabsModule, TableComponent, MatProgressSpinnerModule],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss',
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
   stateCd = input.required<string>();

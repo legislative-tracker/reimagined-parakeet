@@ -2,13 +2,13 @@
   <div class="loading-container">
     <mat-spinner diameter="50"></mat-spinner>
   </div>
-} @else if (member()) {
-  <h1>{{ member()?.honorific_prefix }} {{ member()?.name }}</h1>
+} @else if (member(); as m) {
+  <h1>{{ m.current_role.title }} {{ m.name }}</h1>
 
   <div class="row">
     <img
-      [src]="member()?.image"
-      alt="Headshot of {{ member()?.name }}"
+      [src]="m.image"
+      alt="Headshot of {{ m.name }}"
       class="headshot"
       uiFallback
     />
@@ -16,16 +16,16 @@
     <mat-list>
       <mat-list-item>
         <mat-icon matListItemIcon>location_city</mat-icon>
-        <span matListItemTitle>District {{ member()?.district }}</span>
+        <span matListItemTitle>District {{ m.district }}</span>
       </mat-list-item>
       <mat-list-item>
         <mat-icon matListItemIcon>ballot</mat-icon>
-        <span matListItemTitle>{{ member()?.party }} Party</span>
+        <span matListItemTitle>{{ m.party }} Party</span>
       </mat-list-item>
       <mat-list-item>
         <mat-icon matListItemIcon>email</mat-icon>
         <span matListItemTitle
-          ><a href="mailto:{{ member()?.email }}">{{ member()?.email }}</a>
+          ><a href="mailto:{{ m.email }}">{{ m.email }}</a>
         </span>
       </mat-list-item>
     </mat-list>
