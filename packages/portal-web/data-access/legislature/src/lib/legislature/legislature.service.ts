@@ -68,6 +68,6 @@ export class LegislatureService {
    */
   public isStateSupported(stateCd: string): boolean {
     const supported = this.supportedLegislatures();
-    return supported.includes(stateCd.toLowerCase());
+    return supported.includes(stateCd.toUpperCase());
   }
 }
