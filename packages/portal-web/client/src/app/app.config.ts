@@ -99,6 +99,9 @@ export const appConfig: ApplicationConfig = {
           auth,
           `http://localhost:${FIREBASE_EMULATOR_PORTS.auth}`,
         );
+        console.log(
+          `[Firebase] Auth Emulator connected on port ${FIREBASE_EMULATOR_PORTS.auth}`,
+        );
       }
       return auth;
     }),
@@ -114,6 +117,9 @@ export const appConfig: ApplicationConfig = {
           'localhost',
           FIREBASE_EMULATOR_PORTS.firestore,
         );
+        console.log(
+          `[Firebase] Firestore Emulator connected on port ${FIREBASE_EMULATOR_PORTS.firestore}`,
+        );
       }
       return firestore;
     }),
@@ -128,6 +134,9 @@ export const appConfig: ApplicationConfig = {
           functions,
           'localhost',
           FIREBASE_EMULATOR_PORTS.functions,
+        );
+        console.log(
+          `[Firebase] Functions Emulator connected on port ${FIREBASE_EMULATOR_PORTS.functions}`,
         );
       }
       return functions;
