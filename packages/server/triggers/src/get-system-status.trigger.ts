@@ -1,5 +1,5 @@
-import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import * as logger from 'firebase-functions/logger';
+import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { REGISTERED_PLUGINS } from '@legislative-tracker/server-data-access';
 import type { SystemStatusResponse } from '@legislative-tracker/shared-data-models';
 
@@ -13,7 +13,9 @@ export const getSystemStatus = onCall<void, Promise<SystemStatusResponse>>(
   async () => {
     try {
       // 1. Extract the active plugin keys from the registry
-      const enabledLegislatures = Object.keys(REGISTERED_PLUGINS);
+      const enabledLegislatures = REGISTERED_PLUGINS.map(
+        (plugin) => plugin.pluginJurisdiction,
+      );
 
       logger.info('System Status Requested', {
         count: enabledLegislatures.length,

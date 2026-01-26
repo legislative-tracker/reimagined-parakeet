@@ -15,6 +15,7 @@ type PluginConstructor = new () => LegislativePlugin;
  */
 interface PluginRegistration {
   pluginClass: PluginConstructor; // The Class definition
+  pluginJurisdiction: string;
   secret: SecretParam;
   apiUrl: string;
 }
@@ -26,6 +27,7 @@ interface PluginRegistration {
 export const REGISTERED_PLUGINS: PluginRegistration[] = [
   {
     pluginClass: USNYPlugin,
+    pluginJurisdiction: 'US-NY',
     secret: backendConfig.allSecrets.find(
       (s) => s.name === 'US_NY_API_KEY',
     ) as SecretParam,

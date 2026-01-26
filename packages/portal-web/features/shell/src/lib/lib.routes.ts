@@ -1,6 +1,6 @@
 import type { Route } from '@angular/router';
 import { ShellComponent } from './shell/shell.component';
-// import { legislatureGuard } from '@legislative-tracker/portal-web-data-access-legislature';
+import { legislatureGuard } from '@legislative-tracker/portal-web-data-access-legislature';
 
 export const portalWebFeaturesShellRoutes: Route[] = [
   {
@@ -70,7 +70,7 @@ export const portalWebFeaturesShellRoutes: Route[] = [
       // --- Feature: Legislative Tracker (State Wildcard) ---
       {
         path: ':stateCd',
-        // canActivate: [legislatureGuard],
+        canActivate: [legislatureGuard],
         loadChildren: () =>
           import('@legislative-tracker/portal-web-features-legislature').then(
             (m) => m.LEGISLATURE_ROUTES,
