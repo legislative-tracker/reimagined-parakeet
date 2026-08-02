@@ -15,7 +15,7 @@
     "dev:functions": "concurrently --kill-others-on-fail --names \"BUILD,EMUL\" --prefix-colors \"bgBlue.bold,bgMagenta.bold\" \"npm run build:watch\" \"npm run serve\""
   },
   "engines": {
-    "node": "24"
+    "node": "22.22.3"
   },
   "main": "lib/index.js",
   "dependencies": {
@@ -26,6 +26,7 @@
     "graphql": "^16.12.0"
   },
   "devDependencies": {
+    "@types/node": "^22.22.3",
     "@jpstroud/nys-openlegislation-types": "^1.0.1",
     "@jpstroud/opencivicdata-types": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^5.12.0",

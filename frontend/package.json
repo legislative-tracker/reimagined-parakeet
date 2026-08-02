@@ -40,7 +40,11 @@
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
+  "engines": {
+    "node": ">=22.22.3"
+  },
   "devDependencies": {
+    "@types/node": "^22.22.3",
     "@analogjs/vite-plugin-angular": "^2.2.1",
     "@angular/build": "^20.3.13",
     "@angular/cli": "^20.0.6",

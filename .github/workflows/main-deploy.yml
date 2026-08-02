@@ -41,7 +41,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: "22.22.3"
           cache: "npm"
 
       - name: Install Dependencies
@@ -61,7 +61,7 @@ jobs:
     if: needs.check-changes.outputs.app_changed == 'true'
     uses: ./.github/workflows/workflow-build-frontend.yml
     with:
-      node-version: 24
+      node-version: "22.22.3"
       app-version: ${{ needs.calculate-version.outputs.new_tag }}
     secrets: inherit
 
@@ -100,7 +100,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: "22.22.3"
           cache: "npm"
 
       - name: Install Dependencies

@@ -5,8 +5,8 @@ on:
     inputs:
       node-version:
         required: false
-        type: number
-        default: 24
+        type: string
+        default: "22.22.3"
         description: "The version of Node.js to use for the build."
 
 jobs:
